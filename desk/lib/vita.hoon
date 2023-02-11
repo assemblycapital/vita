@@ -1,4 +1,4 @@
-/-  sur=greg
+/-  sur=vita
 =<  [sur .]
 =,  sur
 |%

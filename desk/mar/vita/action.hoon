@@ -1,5 +1,5 @@
-/-  store=greg
-/+  *greg
+/-  store=vita
+/+  *vita
 ::
 |_  act=action:store
 ++  grad  %noun

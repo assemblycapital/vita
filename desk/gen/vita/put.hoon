@@ -1,9 +1,10 @@
-/-  *greg
+/-  *vita
 :-  %say
 |=  $:  [now=@da eny=@uvJ bec=beak]
         [dek=@tas ~]
         ~
     ==
-:-  %greg-action
+:-  %vita-action
 ^-  action
-[%show dek]
+[%get-downloads dek]
+

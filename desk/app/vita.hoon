@@ -1,7 +1,7 @@
-:: greg
+:: vita
 ::  
-/-  store=greg
-/+  greg
+/-  store=vita
+/+  vita
 /+  default-agent, verb, dbug, agentio
 =,  format
 :: ::
@@ -65,7 +65,7 @@
       %noun
     `this
     ::
-      %greg-action
+      %vita-action
     ?>  =(src.bowl our.bowl)
     =/  act  !<(action:store vase)
     ?-  -.act
@@ -94,9 +94,9 @@
   |=  [desk=@tas]
   =/  h  (~(has in ~(key by apps)) desk)
   ?:  h
-    %-  (slog leaf+"greg: {<desk>} is registered" ~)
+    %-  (slog leaf+"vita: {<desk>} is registered" ~)
     h
-  %-  (slog leaf+"greg: {<desk>} is not registered" ~)
+  %-  (slog leaf+"vita: {<desk>} is not registered" ~)
   h
 ++  scry-clay
   |=  [desk=@tas]

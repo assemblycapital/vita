@@ -1,7 +1,7 @@
 |%
-:: greg
+:: vita
 :: ::
-+$  set-ship-by-time
++$  ships-by-time
   :: a current piece of data: (set ship),
   :: and its lent at various timestamps.
   $:
