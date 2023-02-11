@@ -6,5 +6,5 @@
     ==
 :-  %vita-action
 ^-  action
-[%get-downloads dek]
+[%get dek]
 

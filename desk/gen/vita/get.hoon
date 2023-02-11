@@ -6,4 +6,4 @@
     ==
 :-  %vita-action
 ^-  action
-[%show dek]
+[%get dek]

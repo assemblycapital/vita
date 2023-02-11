@@ -69,15 +69,12 @@
     ?>  =(src.bowl our.bowl)
     =/  act  !<(action:store vase)
     ?-  -.act
-        %show
-      ~&  [desk.act (~(got by apps) desk.act)]
-      `this
-        %delete
+        %del
       =.  apps
         %-  ~(del by apps)
         desk.act
       `this
-        %get-downloads
+        %get
       =/  scry-result  (scry-clay:hc desk.act)
       =.  apps
         (put-downloads:hc desk.act scry-result)

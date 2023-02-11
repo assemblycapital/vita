@@ -9,13 +9,12 @@
   history=(map time @ud)
   ==
 +$  downloads  ships-by-time
-+$  dailies    ships-by-time
++$  activity   ships-by-time
 +$  metrics
-  [=downloads =dailies]
+  [=downloads =activity]
 +$  action
   $%
-    [%show =desk]
-    [%delete =desk]
-    [%get-downloads =desk]
+    [%del =desk]
+    [%get =desk]
   ==
 --
