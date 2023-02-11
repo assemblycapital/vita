@@ -6,8 +6,9 @@
   :: and its lent at various timestamps.
   $:
   latest=(set ship)
-  history=(map time @ud)
+  history=(list nat)
   ==
++$  nat  [time @ud]
 +$  downloads  ships-by-time
 +$  activity   ships-by-time
 +$  metrics
@@ -16,5 +17,7 @@
   $%
     [%del =desk]
     [%get =desk]
+    ::
+    [%declare-activity =time]
   ==
 --

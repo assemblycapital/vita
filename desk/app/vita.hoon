@@ -68,7 +68,7 @@
       %vita-action
     ?>  =(src.bowl our.bowl)
     =/  act  !<(action:store vase)
-    ?-  -.act
+    ?+  -.act  `this
         %del
       =.  apps
         %-  ~(del by apps)
@@ -112,8 +112,7 @@
       =.  latest.downloads.met
           scry-result
       =.  history.downloads.met
-        %+  ~(put by history.downloads.met)
-        now.bowl
-        (lent ~(tap in scry-result))
+        :_  history.downloads.met
+        [now.bowl (lent ~(tap in scry-result))]
       met
 -- 
