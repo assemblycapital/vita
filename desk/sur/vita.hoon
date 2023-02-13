@@ -12,7 +12,7 @@
 +$  activity
     ships-by-time
 +$  downloads
-  $:  cumulative=(set ship)  :: all downloaders ever
+  $:  cumulative=(set ship)  :: all downloaders ever recorded
       ships-by-time
   ==
 +$  metrics
@@ -22,7 +22,5 @@
     [%del =desk]
     [%get =desk]
     [%get-all ~]
-    ::
-    [%declare-activity =time]
   ==
 --

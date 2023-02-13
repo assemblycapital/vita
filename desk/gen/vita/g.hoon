@@ -1,10 +1,11 @@
 /-  *vita
 :-  %say
 |=  $:  [now=@da eny=@uvJ bec=beak]
-        [dek=@tas ~]
+        arg=?(~ [desk=@tas ~])
         ~
     ==
 :-  %vita-action
 ^-  action
-[%get dek]
-
+?^  arg
+  [%get desk.arg]
+[%get-all ~]

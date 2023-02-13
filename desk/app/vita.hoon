@@ -59,7 +59,6 @@
   `this
 ++  on-init
   ^-  (quip card _this)
-  ~&  >  get-all-card:hc
   :_  this
   :~
     get-all-card:hc
@@ -77,43 +76,47 @@
   ^-  (quip card _this)
   ?+  mark  (on-poke:def mark vase)
       %vita-action
+    ?>  =(src.bowl our.bowl)
     =/  act  !<(action:store vase)
-    ?+  -.act  `this
+    ?-  -.act
         %del
-      ?>  =(src.bowl our.bowl)
       =.  apps
         %-  ~(del by apps)
         desk.act
       `this
+      :: ::
+      :: ::
         %get
       ?>  =(src.bowl our.bowl)
-      =/  scry-result  (scry-clay:hc desk.act)
       =.  apps
-        (put-downloads:hc desk.act scry-result)
+        (put-downloads:hc desk.act)
       `this
-      %get-all
-      ~&  >  'vita get-all'
+      :: ::
+      :: ::
+        %get-all
       ?>  =(src.bowl our.bowl)
-      :: self-poke %get foreach desk in state and any extra from treaty allies
-      =/  deks=(set desk)  ~(key by apps)
-      =.  deks
-        %-  %~  gas  in  deks
-          ^-  (list desk)
-          =/  ally
-            .^(update:alliance:tt %gx /[(scot %p our.bowl)]/treaty/[(scot %da now.bowl)]/alliance/noun)
-          ?+  -.ally  ~
-            %ini
-            %+  turn  ~(tap in init.ally)
-              |=  [=ship =desk]
-              desk
-          ==
-      ::
-      :_  this
-      %+  turn  ~(tap in deks)
-        |=  =desk
-        ^-  card
-        %-  poke-self:pass:io
-        :-  %vita-action  !>([%get desk])
+      :: get each desk in state
+      ::  and any extra from treaty allies
+      =/  dex=(set desk)  ~(key by apps)
+      =.  dex
+        %-  %~  gas  in  dex
+        ^-  (list desk)
+        =/  ally
+          scry-treaty-alliance:hc
+        ?+  -.ally  ~
+          %ini
+          %+  turn  ~(tap in init.ally)
+            |=  [=ship =desk]
+            desk
+        ==
+      =/  lex=(list desk)  ~(tap in dex)
+      =.  apps
+        |-
+        ?~  lex  apps
+        =.  apps
+          (put-downloads:hc i.lex)
+        $(lex t.lex)
+      `this
     ==
   ==
 --
@@ -131,28 +134,31 @@
   ^-  card
   %-  poke-self:pass:io
   :-  %vita-action  !>([%get-all ~])
-++  scry-clay
+++  scry-clay-subs
   |=  [desk=@tas]
   ^-  (set ship)
   =/  s  .^((set ship) %cs /[(scot %p our.bowl)]/[desk]/[(scot %da now.bowl)]/subs)
   %-  (slog leaf+"vita: our {<desk>} has {<(lent ~(tap in s))>} subs" ~)
   s
+++  scry-treaty-alliance
+  .^(update:alliance:tt %gx /[(scot %p our.bowl)]/treaty/[(scot %da now.bowl)]/alliance/noun)
 ++  put-downloads
-  |=  [desk=@tas scry-result=(set ship)]
+  |=  [desk=@tas]
   ^-  _apps
+  =/  scry-result  (scry-clay-subs desk)
   :: ingest desk subs data from clay
   %+  ~(put by apps)  desk
-      =/  met=metrics:store
-        ?~  (~(get by apps) desk)
-          *metrics:store
-        (~(got by apps) desk)
-      =.  latest.downloads.met
-          scry-result
-      =.  cumulative.downloads.met
-          %-  ~(uni in cumulative.downloads.met)
-          scry-result
-      =.  history.downloads.met
-        :_  history.downloads.met
-        [now.bowl (lent ~(tap in scry-result))]
-      met
+    =/  met=metrics:store
+      ?~  (~(get by apps) desk)
+        *metrics:store
+      (~(got by apps) desk)
+    =.  latest.downloads.met
+        scry-result
+    =.  cumulative.downloads.met
+        %-  ~(uni in cumulative.downloads.met)
+        scry-result
+    =.  history.downloads.met
+      :_  history.downloads.met
+      [now.bowl (lent ~(tap in scry-result))]
+    met
 -- 
