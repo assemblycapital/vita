@@ -9,14 +9,19 @@
   history=(list nat)
   ==
 +$  nat  [time @ud]
-+$  downloads  ships-by-time
-+$  activity   ships-by-time
++$  activity
+    ships-by-time
++$  downloads
+  $:  cumulative=(set ship)  :: all downloaders ever
+      ships-by-time
+  ==
 +$  metrics
   [=downloads =activity]
 +$  action
   $%
     [%del =desk]
     [%get =desk]
+    [%get-all ~]
     ::
     [%declare-activity =time]
   ==
