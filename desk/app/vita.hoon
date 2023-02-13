@@ -43,8 +43,14 @@
 ++  on-arvo
   |=  [=wire =sign-arvo]
   ^-  (quip card _this)
-  ~&  >  ['on-arvo' wire]
-  `this
+  ?+  -.sign-arvo  `this
+      %behn
+    :_  this
+    :~ 
+      get-all-card:hc
+      set-interval:hc
+    ==
+  ==
 ++  on-save
   ^-  vase
   !>(state)
@@ -53,10 +59,11 @@
   `this
 ++  on-init
   ^-  (quip card _this)
+  ~&  >  get-all-card:hc
   :_  this
   :~
-    %-  poke-self:pass:io
-    :-  %vita-action  !>([%get-all ~])
+    get-all-card:hc
+    set-interval:hc
   ==
 ++  on-peek
   |=  =path
@@ -85,20 +92,22 @@
         (put-downloads:hc desk.act scry-result)
       `this
       %get-all
+      ~&  >  'vita get-all'
       ?>  =(src.bowl our.bowl)
       :: self-poke %get foreach desk in state and any extra from treaty allies
-      =/  ally
-        .^(update:alliance:tt %gx /[(scot %p our.bowl)]/treaty/[(scot %da now.bowl)]/alliance/noun)
       =/  deks=(set desk)  ~(key by apps)
       =.  deks
         %-  %~  gas  in  deks
           ^-  (list desk)
+          =/  ally
+            .^(update:alliance:tt %gx /[(scot %p our.bowl)]/treaty/[(scot %da now.bowl)]/alliance/noun)
           ?+  -.ally  ~
             %ini
             %+  turn  ~(tap in init.ally)
               |=  [=ship =desk]
               desk
           ==
+      ::
       :_  this
       %+  turn  ~(tap in deks)
         |=  =desk
@@ -112,15 +121,16 @@
 :: :: helper core
 :: ::
 |_  bowl=bowl:gall
++*  io    ~(. agentio bowl)
 ++  period  ~d1
-++  has-desk
-  |=  [desk=@tas]
-  =/  h  (~(has in ~(key by apps)) desk)
-  ?:  h
-    %-  (slog leaf+"vita: {<desk>} is registered" ~)
-    h
-  %-  (slog leaf+"vita: {<desk>} is not registered" ~)
-  h
+++  set-interval
+  ^-  card
+  =/  =time  (add now.bowl period)
+  [%pass /vita/downloads/(scot %da time) %arvo %b %wait time]
+++  get-all-card
+  ^-  card
+  %-  poke-self:pass:io
+  :-  %vita-action  !>([%get-all ~])
 ++  scry-clay
   |=  [desk=@tas]
   ^-  (set ship)
@@ -130,6 +140,7 @@
 ++  put-downloads
   |=  [desk=@tas scry-result=(set ship)]
   ^-  _apps
+  :: ingest desk subs data from clay
   %+  ~(put by apps)  desk
       =/  met=metrics:store
         ?~  (~(get by apps) desk)
