@@ -196,12 +196,89 @@
     met
 ++  make-downloads-csv
   ^-  @t
+  =/  dex=(list desk)
+    ~(tap in ~(key by apps))
+  =/  title-row=tape
+    "TIME,"
+  =.  title-row
+    |-  ?~  dex  (weld title-row "\0a")
+    =.  title-row
+      (weld title-row (weld (trip i.dex) ","))
+    $(dex t.dex)
+  ::
+  =/  data-rows=(list tape)
+      make-data-rows
+  ::
+  =/  z-data-rows=tape
+    (zing data-rows)
+  ::
   %-  crip
-  ;:  weld
- ",A,B,C\0a"
- "0,100,200,300\0a"
- "1,100,200,300\0a"
- "2,100,200,300\0a"
- "3,100,200,300\0a"
- ==
+  %+  weld
+  title-row
+  z-data-rows
+:: ::
+++  make-data-rows
+  ^-  (list tape)
+  :: get all unique times from full dataset
+  =|  times=(set time)
+  =/  lapps  ~(tap by apps)
+  =.  times
+    |-  ?~  lapps  times
+    =/  met
+      q.i.lapps
+    =/  his
+        history.downloads.met
+    =.  times
+      |-  ?~  his  times
+      =.  times  (~(put in times) -.i.his)
+      $(his t.his)
+    $(lapps t.lapps)
+  ~&  >  ['got times' times]
+  ::
+  :: reduce times to all unique DAYS
+  =/  limes  ~(tap in times)
+  =|  days=(set date)
+  =.  days
+    |-  ?~  limes  days
+      =/  myday  (normalize-date (yore i.limes))
+      =.  days
+        (~(put in days) myday)
+      $(limes t.limes)
+  ~&  >  ['got days' days]
+  ::
+  :: foreach day, lookup data foreach desk
+  :: TODO probably remove, extremely time-complex
+  :: replace with reduction of history.downloads for each desk
+  ::  O(n) for n cumulative 'nat' entries
+  =/  dex=(list desk)
+    ~(tap in ~(key by apps))
+  =|  row=(map date (list @ud))
+  ~&  >  ['got down-at-date' (downloads-at-date %basket (snag 0 ~(tap in days)))]
+  ::
+  :: form each row as a tape
+  :~
+  "0,100,200,300\0a"
+  "0,100,200,300\0a"
+  ==
+++  downloads-at-date
+  |=  [=desk =date]
+  :: TODO probably remove, extremely time-complex
+  ^-  @ud
+  =/  met  (~(get by apps) desk)
+  ?~  met  0
+  =/  his  history.downloads.u.met
+  |-  ?~  his  0
+  =/  yo  (normalize-date (yore -.i.his))
+  ?:  =(yo date)
+    +.i.his
+  $(his t.his)
+++  normalize-date
+  |=  [day=date]
+  ^-  date
+  =.  h.t.day  0
+  =.  m.t.day  0
+  =.  s.t.day  0
+  =.  f.t.day  ~
+  day
+::
 -- 
