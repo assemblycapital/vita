@@ -48,7 +48,7 @@
   ^-  (quip card _this)
   ?+  -.sign-arvo  `this
       %behn
-  %-  (slog leaf+"vita: running scheduled collection {<now.bowl>}" ~)
+    %-  (slog leaf+"vita: running scheduled collection {<now.bowl>}" ~)
     :_  this
     [get-all-card:hc ~]
   ==
@@ -67,6 +67,10 @@
     [%x %metrics @ ~]
       ~&  >  +>-.path
       ``json+!>(~)
+    :: .^(* %gx /=vita=/downloads/noun)
+    :: https://myship.com/~/scry/vita/downloads.csv
+    [%x %downloads ~]
+      ``csv+!>(make-downloads-csv:hc)
   ==
 ++  on-poke
   |=  [=mark =vase]
@@ -190,4 +194,14 @@
       :_  history.downloads.met
       [now.bowl (lent ~(tap in scry-result))]
     met
+++  make-downloads-csv
+  ^-  @t
+  %-  crip
+  ;:  weld
+ ",A,B,C\0a"
+ "0,100,200,300\0a"
+ "1,100,200,300\0a"
+ "2,100,200,300\0a"
+ "3,100,200,300\0a"
+ ==
 -- 
