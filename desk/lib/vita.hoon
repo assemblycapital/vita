@@ -10,6 +10,10 @@
     |=  act=^action
     ^-  json
     ~
+  ++  metrics
+    |=  met=^metrics
+    ^-  json
+    ~
   --
 ::
 ++  dejs
@@ -19,5 +23,9 @@
     |=  jon=json
     ^-  ^action
     *^action
+  ++  metrics
+    |=  jon=json
+    ^-  ^metrics
+    *^metrics
   --
 --

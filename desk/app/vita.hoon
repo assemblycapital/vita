@@ -5,14 +5,15 @@
 /+  vita
 /+  default-agent, verb, dbug, agentio
 =,  format
-:: ::
+:: :: ::
 |%
 +$  versioned-state
   $%  state-0
   ==
 +$  state-0  $:
   %0
-  apps=(map desk =metrics:store)
+  period=(unit @dr)
+  apps=app-metrics:store
   ==
 +$  card     card:agent:gall
 --
@@ -31,26 +32,6 @@
 ++  on-fail   on-fail:def
 ++  on-watch  on-watch:def
 ++  on-agent  on-agent:def
-++  on-load
-  |=  old-state=vase
-  ^-  (quip card _this)
-  ?:  =(-:old-state -:!>(state))
-    :: if type matches, remember
-    =/  old  !<(versioned-state old-state)
-    `this(state old)
-  :: else, forget
-  `this 
-++  on-arvo
-  |=  [=wire =sign-arvo]
-  ^-  (quip card _this)
-  ?+  -.sign-arvo  `this
-      %behn
-    :_  this
-    :~ 
-      get-all-card:hc
-      set-interval:hc
-    ==
-  ==
 ++  on-save
   ^-  vase
   !>(state)
@@ -59,16 +40,31 @@
   `this
 ++  on-init
   ^-  (quip card _this)
+  =.  period  [~ ~s30]
   :_  this
-  :~
-    get-all-card:hc
-    set-interval:hc
+  [get-all-card:hc ~]
+++  on-arvo
+  |=  [=wire =sign-arvo]
+  ^-  (quip card _this)
+  ?+  -.sign-arvo  `this
+      %behn
+    :_  this
+    [get-all-card:hc ~]
   ==
+++  on-load
+  |=  old-state=vase
+  ^-  (quip card _this)
+  =/  old  !<(versioned-state old-state)
+  :_  this(state old)
+  [get-all-card:hc ~]
+::
 ++  on-peek
   |=  =path
   ^-  (unit (unit cage))
   ?+    path  (on-peek:def path)
-    [%x %downloads ~]
+    :: .^(* %gx /=vita=/metrics/basket/noun)
+    [%x %metrics @ ~]
+      ~&  >  +>-.path
       ``json+!>(~)
   ==
 ++  on-poke
@@ -79,6 +75,12 @@
     ?>  =(src.bowl our.bowl)
     =/  act  !<(action:store vase)
     ?-  -.act
+        %set-period
+      =.  period  period.act
+      :_  this
+      manage-timers:hc
+      :: ::
+      :: ::
         %del
       =.  apps
         %-  ~(del by apps)
@@ -109,6 +111,7 @@
             |=  [=ship =desk]
             desk
         ==
+      :: process each desk into state
       =/  lex=(list desk)  ~(tap in dex)
       =.  apps
         |-
@@ -116,7 +119,9 @@
         =.  apps
           (put-downloads:hc i.lex)
         $(lex t.lex)
-      `this
+      :_  this
+          :: set timers on every get-all
+          manage-timers:hc
     ==
   ==
 --
@@ -125,11 +130,34 @@
 :: ::
 |_  bowl=bowl:gall
 +*  io    ~(. agentio bowl)
-++  period  ~d1
-++  set-interval
-  ^-  card
-  =/  =time  (add now.bowl period)
+++  manage-timers
+  ^-  (list card)
+  %+  weld
+    kill-old-timers
+    maybe-set-timer
+++  maybe-set-timer
+  ^-  (list card)
+  :: set a new timer if nonnull period
+  ?~  period  ~
+  =/  =time  (add now.bowl u.period)
+  :~
   [%pass /vita/downloads/(scot %da time) %arvo %b %wait time]
+  ==
+++  kill-old-timers
+  ^-  (list card)
+  :: scry behn, find any vita timers and destroy them
+  =/  timers  .^((list [@da duct]) %bx (scot %p our.bowl) %$ (scot %da now.bowl) /debug/timers)
+  =.  timers  %+  skim  timers
+        |=  [time=@da =duct]
+        ^-  ?
+        ?.  ?=(^ duct)
+            %.n 
+        ?=([%gall %use %vita *] i.duct)
+  %+  turn  timers
+    |=  [time=@da =duct]
+    ^-  card
+    [%pass /vita/downloads/(scot %da time) %arvo %b %rest time]
+::
 ++  get-all-card
   ^-  card
   %-  poke-self:pass:io

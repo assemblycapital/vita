@@ -1,7 +1,7 @@
 :~  title+'vita'
     info+'monitor your app distributions'
     color+0xff.ffff
-    image+'https://em-content.zobj.net/thumbs/240/apple/325/eye_1f441-fe0f.png'
+    image+'https://em-content.zobj.net/thumbs/240/apple/325/mouth_1f444.png'
     version+[0 0 0]
     site+/vita
     website+'https://github.com/assemblycapital/vitaorius'

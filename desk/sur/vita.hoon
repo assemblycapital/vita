@@ -17,10 +17,13 @@
   ==
 +$  metrics
   [=downloads =activity]
++$  app-metrics
+  (map desk metrics)
 +$  action
   $%
     [%del =desk]
     [%get =desk]
     [%get-all ~]
+    [%set-period period=(unit @dr)]
   ==
 --
