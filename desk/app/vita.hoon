@@ -48,6 +48,7 @@
   ^-  (quip card _this)
   ?+  -.sign-arvo  `this
       %behn
+  %-  (slog leaf+"vita: running scheduled collection {<now.bowl>}" ~)
     :_  this
     [get-all-card:hc ~]
   ==
