@@ -75,7 +75,7 @@
     ?>  =(src.bowl our.bowl)
     =/  act  !<(action:store vase)
     ?-  -.act
-        %set-period
+        %set-interval
       =.  period  period.act
       :_  this
       manage-timers:hc

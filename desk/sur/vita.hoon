@@ -24,6 +24,6 @@
     [%del =desk]
     [%get =desk]
     [%get-all ~]
-    [%set-period period=(unit @dr)]
+    [%set-interval period=(unit @dr)]
   ==
 --
