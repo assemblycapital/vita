@@ -2,8 +2,9 @@
 :: keep track of your app distributions
 ::  
 /-  store=vita, tt=treaty
-/+  vita
+/+  vita, server, schooner
 /+  default-agent, verb, dbug, agentio
+/*  vita-ui  %html  /app/vita-ui/html
 =,  format
 :: :: ::
 |%
@@ -30,8 +31,14 @@
     io    ~(. agentio bowl)
 ::
 ++  on-fail   on-fail:def
-++  on-watch  on-watch:def
 ++  on-agent  on-agent:def
+++  on-watch
+  |=  =path
+  ^-  (quip card _this)
+  ?+    path  (on-watch:def path) 
+      [%http-response *]
+    `this
+  ==
 ++  on-save
   ^-  vase
   !>(state)
@@ -40,9 +47,11 @@
   `this
 ++  on-init
   ^-  (quip card _this)
-  =.  period  [~ ~s30]
+  =.  period  [~ ~h1]
   :_  this
-  [get-all-card:hc ~]
+  :-  get-all-card:hc
+  :-  [%pass /eyre/connect %arvo %e %connect [~ /apps/[dap.bowl]] dap.bowl]
+  ~
 ++  on-arvo
   |=  [=wire =sign-arvo]
   ^-  (quip card _this)
@@ -57,6 +66,8 @@
   ^-  (quip card _this)
   =/  old  !<(versioned-state old-state)
   :_  this(state old)
+  :: anomoly: bad data for %vita when doing this from on-load
+  :: must be some event timing, something about clay not resetting subs until after on-load completes???
   [get-all-card:hc ~]
 ::
 ++  on-peek
@@ -76,6 +87,13 @@
   |=  [=mark =vase]
   ^-  (quip card _this)
   ?+  mark  (on-poke:def mark vase)
+    ::   %noun
+    :: :_  this
+    :: :~  [%pass /eyre/connect %arvo %e %connect [~ /apps/[dap.bowl]] dap.bowl]  ==
+      %handle-http-request
+    =^  cards  state
+      (handle-http:hc !<([@ta =inbound-request:eyre] vase))
+    [cards this]
       %vita-action
     ?>  =(src.bowl our.bowl)
     =/  act  !<(action:store vase)
@@ -194,20 +212,50 @@
       :_  history.downloads.met
       [now.bowl (lent ~(tap in scry-result))]
     met
+::
+++  handle-http
+  |=  [eyre-id=@ta =inbound-request:eyre]
+  ^-  (quip card _state)
+  =/  ,request-line:server
+    (parse-request-line:server url.request.inbound-request)
+  =+  send=(cury response:schooner eyre-id)
+  ?.  authenticated.inbound-request
+    :_  state
+    %-  send
+    [302 ~ [%login-redirect './apps/vita']]
+  ::           
+  ?+    method.request.inbound-request 
+    [(send [405 ~ [%stock ~]]) state]
+    ::
+      %'GET'
+    ?+    site  
+      :_  state 
+      (send [404 ~ [%plain "404 - Not Found"]])
+      ::
+        [%apps %vita ~]
+      :_  state
+      ::(send [200 ~ [%csv make-downloads-csv]])
+      (send [200 ~ [%html vita-ui]])
+    ==
+  ==
+::
 ++  make-downloads-csv
   ^-  @t
   =/  dex=(list desk)
     ~(tap in ~(key by apps))
   =/  title-row=tape
-    "TIME,"
+    ","
   =.  title-row
     |-  ?~  dex  (weld title-row "\0a")
     =.  title-row
+      ?~  t.dex  
+        (weld title-row (trip i.dex))
       (weld title-row (weld (trip i.dex) ","))
     $(dex t.dex)
   ::
   =/  data-rows=(list tape)
-      make-data-rows
+      :: flop to put latest info at bottom
+      (flop make-data-rows)
   ::
   =/  z-data-rows=tape
     (zing data-rows)
@@ -218,6 +266,21 @@
   z-data-rows
 :: ::
 ++  make-data-rows
+  :: this arm is way too complex
+  :: extract and reduce data from this huge app-metrics:store noun into a csv file
+  ::  reduce finer-detail info to normalized by day (or hour or whatever)
+  ::
+  :: sacrificed some code simplicity for the sake of a decent algorithm:
+  ::   1. collect all times from dataset
+  ::   2. normalize, reduce, and sort set of times
+  ::   3. create a column for each desk with values at each time
+  ::   4. transform columns into rows, 
+  ::       because we know they are sorted, we pop one at a time off of each
+  ::
+  :: a naive way of doing this could easily have performance issues
+  ::
+  :: im starting to think vita should use the uqbar rdb
+  ::
   ^-  (list tape)
   :: get all unique times from full dataset
   =|  times=(set time)
@@ -234,7 +297,7 @@
       $(his t.his)
     $(lapps t.lapps)
   ::
-  :: reduce times to all unique DAYS
+  :: reduce times to normalized
   =/  limes  ~(tap in times)
   =|  days=(set date)
   =.  days
@@ -250,18 +313,15 @@
       ~(tap in days)
       |=  [a=date b=date]
       (gth (year a) (year b))
-  ~&  >  ['got days' days]
+  :: ~&  >  ['got days' days]
   ::
   =/  dex=(list desk)
     ~(tap in ~(key by apps))
   ::
-  :: another option: remove [%get =desk]
-  ::   and just do rows without reduction
-  ::   BUT the naive solution is still just as time-complex
-  ::       and the good solution is still just as code-complex
   :: 
   :: create one column at a time, get a value foreach day
-  ::  TODO
+  :: run thru each history once, comparing against top of 'day'stack,
+  :: ignoring bad values, defaulting to 0
   ::
   =|  cols=(map desk (list @ud))
   =.  cols
@@ -282,43 +342,43 @@
       (~(put by cols) dek col)
     $(dex t.dex)
   ::
-  ~&  >>  ['got-cols' cols] 
+  :: ~&  >>  ['got-cols' cols] 
   ::
   :: format columns as tape rows
-  ::   e.g. "0,100,200,300\0a"
+  ^-  (list tape)
   |-  ?~  days  ~
-  =/  day  i.days
-  =/  row=tape  ""
-  =.  row
-    (weld row (trip (scot %da (year day))))
-  =.  row  (weld row ",")
-  ::
-  :: for each desk, pop from col
-  =/  kms
-      :: pop values from cols, accumulate into row
-      |-  ?~  dex
-        [row cols]
-      =/  col  (~(got by cols) i.dex)
-      :: for each val, concat with ","
-      ?~  col  !!
-      =/  js  (numb:enjs:format i.col)
-      ?.  ?=([%n *] js)  !!
-      =/  val=tape  (trip p.js)
-      =.  row  (weld row val)
-      =.  row  (weld row ",")
-      =.  cols  (~(put by cols) i.dex t.col)
-      $(dex t.dex)
-  ::
-  =.  row   -.kms
-  =.  cols  +.kms
-  ::
-  =.  row  (weld row "\0a")
-  :-  row
-  $(days t.days)
-:: ::
+    =/  day=date  i.days
+    =/  row=tape  ""
+    ::
+    =.  row  (weld row (date-to-tape day))
+    =.  row  (weld row ",")
+    ::
+    :: for each desk, pop from col
+    =^  row   cols
+        :: pop values from cols, accumulate into row
+        |-  ?~  dex
+          [row cols]
+        :: pop
+        =/  col  (~(got by cols) i.dex)
+        ?~  col  !!
+        =.  cols  (~(put by cols) i.dex t.col)
+        :: put in row
+        =/  js  (numb:enjs:format i.col)
+        ?.  ?=([%n *] js)  !!
+        =/  val=tape  (trip p.js)
+        =.  row  (weld row val)
+        =.  row
+          ?~  t.dex  row
+          (weld row ",")
+        $(dex t.dex)
+    ::
+    =.  row  (weld row "\0a")
+    :-  row
+    $(days t.days)
+:: :: ::
 ++  downloads-at-date
   |=  [=desk =date]
-  :: TODO probably remove, extremely time-complex
+  :: TODO probably remove, poorly optimized
   ^-  @ud
   =/  met  (~(get by apps) desk)
   ?~  met  0
@@ -336,5 +396,13 @@
   =.  s.t.day  0
   =.  f.t.day  ~
   day
+++  date-to-tape
+  |=  [day=date]
+  ^-  tape
+  =/  jyyy  (numb:enjs:format y.-.day)
+  ?.  ?=([%n *] jyyy)  !!
+  =/  yyyy=tape  (trip p.jyyy)
+  "{<m.day>}/{<d.t.day>}/{yyyy} {<h.t.day>}:{<m.t.day>}:{<s.t.day>}"
 ::
+
 -- 

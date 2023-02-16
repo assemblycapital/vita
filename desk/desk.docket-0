@@ -1,9 +1,9 @@
 :~  title+'vita'
     info+'monitor your app distributions'
     color+0xff.ffff
-    image+'https://em-content.zobj.net/thumbs/240/apple/325/mouth_1f444.png'
+    image+'https://em-content.zobj.net/thumbs/240/apple/325/flying-saucer_1f6f8.png'
     version+[0 0 0]
-    site+/vita
+    site+/apps/vita
     website+'https://github.com/assemblycapital/vitaorius'
     license+'MIT'
 ==
