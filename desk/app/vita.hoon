@@ -233,7 +233,6 @@
       =.  times  (~(put in times) -.i.his)
       $(his t.his)
     $(lapps t.lapps)
-  ~&  >  ['got times' times]
   ::
   :: reduce times to all unique DAYS
   =/  limes  ~(tap in times)
@@ -244,22 +243,79 @@
       =.  days
         (~(put in days) myday)
       $(limes t.limes)
+  ::
+  :: sorted
+  =/  days=(list date)
+      %+  sort
+      ~(tap in days)
+      |=  [a=date b=date]
+      (gth (year a) (year b))
   ~&  >  ['got days' days]
   ::
-  :: foreach day, lookup data foreach desk
-  :: TODO probably remove, extremely time-complex
-  :: replace with reduction of history.downloads for each desk
-  ::  O(n) for n cumulative 'nat' entries
   =/  dex=(list desk)
     ~(tap in ~(key by apps))
-  =|  row=(map date (list @ud))
-  ~&  >  ['got down-at-date' (downloads-at-date %basket (snag 0 ~(tap in days)))]
   ::
-  :: form each row as a tape
-  :~
-  "0,100,200,300\0a"
-  "0,100,200,300\0a"
-  ==
+  :: another option: remove [%get =desk]
+  ::   and just do rows without reduction
+  ::   BUT the naive solution is still just as time-complex
+  ::       and the good solution is still just as code-complex
+  :: 
+  :: create one column at a time, get a value foreach day
+  ::  TODO
+  ::
+  =|  cols=(map desk (list @ud))
+  =.  cols
+    |-  ?~  dex  cols
+    =/  dek  i.dex
+    =/  met  (~(got by apps) dek)
+    =/  his  history.downloads.met
+    =/  col=(list @ud)
+      |-  :: lol
+      ?~  days  ~
+      ?~  his
+        [0 $(days t.days)]
+      ?:  =(i.days (normalize-date (yore -.i.his)))
+        :-  +.i.his
+        $(days t.days, his t.his)
+      $(his t.his) 
+    =.  cols
+      (~(put by cols) dek col)
+    $(dex t.dex)
+  ::
+  ~&  >>  ['got-cols' cols] 
+  ::
+  :: format columns as tape rows
+  ::   e.g. "0,100,200,300\0a"
+  |-  ?~  days  ~
+  =/  day  i.days
+  =/  row=tape  ""
+  =.  row
+    (weld row (trip (scot %da (year day))))
+  =.  row  (weld row ",")
+  ::
+  :: for each desk, pop from col
+  =/  kms
+      :: pop values from cols, accumulate into row
+      |-  ?~  dex
+        [row cols]
+      =/  col  (~(got by cols) i.dex)
+      :: for each val, concat with ","
+      ?~  col  !!
+      =/  js  (numb:enjs:format i.col)
+      ?.  ?=([%n *] js)  !!
+      =/  val=tape  (trip p.js)
+      =.  row  (weld row val)
+      =.  row  (weld row ",")
+      =.  cols  (~(put by cols) i.dex t.col)
+      $(dex t.dex)
+  ::
+  =.  row   -.kms
+  =.  cols  +.kms
+  ::
+  =.  row  (weld row "\0a")
+  :-  row
+  $(days t.days)
+:: ::
 ++  downloads-at-date
   |=  [=desk =date]
   :: TODO probably remove, extremely time-complex
@@ -275,7 +331,7 @@
 ++  normalize-date
   |=  [day=date]
   ^-  date
-  =.  h.t.day  0
+  :: =.  h.t.day  0
   =.  m.t.day  0
   =.  s.t.day  0
   =.  f.t.day  ~
