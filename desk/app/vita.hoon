@@ -81,7 +81,9 @@
     :: .^(* %gx /=vita=/downloads/noun)
     :: https://myship.com/~/scry/vita/downloads.csv
     [%x %downloads ~]
-      ``csv+!>(make-downloads-csv:hc)
+      ``csv+!>((make-csv:hc %downloads))
+    [%x %activity ~]
+      ``csv+!>((make-csv:hc %activity))
   ==
 ++  on-poke
   |=  [=mark =vase]
@@ -95,16 +97,20 @@
       (handle-http:hc !<([@ta =inbound-request:eyre] vase))
     [cards this]
       %vita-action
-    ?>  =(src.bowl our.bowl)
     =/  act  !<(action:store vase)
     ?-  -.act
+        %activity
+      =.  apps  (put-activity:hc +.act)
+      `this
         %set-interval
+      ?>  =(src.bowl our.bowl)
       =.  period  period.act
       :_  this
       manage-timers:hc
       :: ::
       :: ::
         %del
+      ?>  =(src.bowl our.bowl)
       =.  apps
         %-  ~(del by apps)
         desk.act
@@ -212,6 +218,51 @@
       :_  history.downloads.met
       [now.bowl (lent ~(tap in scry-result))]
     met
+++  put-activity
+  |=  [desk=@tas]
+  ^-  _apps
+  %+  ~(put by apps)  desk
+  ^-  metrics:store
+  =/  met=metrics:store
+    ?~  (~(get by apps) desk)
+      *metrics:store
+    (~(got by apps) desk)
+  =/  his
+    history.activity.met
+  ?~  his
+    :: base case, first item in history
+      =.  latest.activity.met
+        (~(put in latest.activity.met) src.bowl)
+      =.  history.activity.met
+        :-  [now.bowl 1]
+        history.activity.met
+      met
+  =/  today=date  (yore now.bowl)
+  =/  last-history=date  (yore -.i.his)
+  ::
+  :: if last history is today, put
+  :: else, reset for current day
+  ?.  ?&  =(y.-.today y.-.last-history)
+          =(m.today m.last-history)
+          =(d.t.today d.t.last-history)
+      ==
+    :: start a fresh day
+    =.  latest.activity.met  *(set ship)
+    =.  latest.activity.met
+      (~(put in latest.activity.met) src.bowl)
+    =.  history.activity.met
+      :-  [now.bowl 1]
+      history.activity.met
+    met
+  :: add onto the current day
+  =.  latest.activity.met
+    (~(put in latest.activity.met) src.bowl)
+  =/  new-his-item
+    :-  now.bowl
+      (lent ~(tap in latest.activity.met))
+  =.  history.activity.met
+    :-  new-his-item  t.his
+  met
 ::
 ++  handle-http
   |=  [eyre-id=@ta =inbound-request:eyre]
@@ -239,7 +290,8 @@
     ==
   ==
 ::
-++  make-downloads-csv
+++  make-csv
+  |=  [doa=?(%downloads %activity)]
   ^-  @t
   =/  dex=(list desk)
     ~(tap in ~(key by apps))
@@ -255,7 +307,7 @@
   ::
   =/  data-rows=(list tape)
       :: flop to put latest info at bottom
-      (flop make-data-rows)
+      (flop (make-data-rows doa))
   ::
   =/  z-data-rows=tape
     (zing data-rows)
@@ -281,6 +333,7 @@
   ::
   :: im starting to think vita should use the uqbar rdb
   ::
+  |=  [doa=?(%downloads %activity)]
   ^-  (list tape)
   :: get all unique times from full dataset
   =|  times=(set time)
@@ -290,7 +343,9 @@
     =/  met
       q.i.lapps
     =/  his
-        history.downloads.met
+        ?:  =(doa %downloads)
+          history.downloads.met
+        history.activity.met
     =.  times
       |-  ?~  his  times
       =.  times  (~(put in times) -.i.his)
@@ -328,7 +383,10 @@
     |-  ?~  dex  cols
     =/  dek  i.dex
     =/  met  (~(got by apps) dek)
-    =/  his  history.downloads.met
+    =/  his
+        ?:  =(doa %downloads)
+          history.downloads.met
+        history.activity.met
     =/  col=(list @ud)
       |-  :: lol
       ?~  days  ~
@@ -404,5 +462,4 @@
   =/  yyyy=tape  (trip p.jyyy)
   "{<m.day>}/{<d.t.day>}/{yyyy} {<h.t.day>}:{<m.t.day>}:{<s.t.day>}"
 ::
-
 -- 

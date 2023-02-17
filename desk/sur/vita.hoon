@@ -24,6 +24,7 @@
     [%del =desk]
     [%get =desk]
     [%get-all ~]
+    [%activity =desk]
     [%set-interval period=(unit @dr)]
   ==
 --
