@@ -76,7 +76,7 @@
   ?+    path  (on-peek:def path)
     :: .^(* %gx /=vita=/metrics/basket/noun)
     [%x %metrics @ ~]
-      ~&  >  +>-.path
+      :: ~&  >  +>-.path
       ``json+!>(~)
     :: .^(* %gx /=vita=/downloads/noun)
     :: https://myship.com/~/scry/vita/downloads.csv
@@ -412,6 +412,7 @@
     =.  row  (weld row ",")
     ::
     :: for each desk, pop from col
+    :: TODO im pretty sure this is dumb
     =^  row   cols
         :: pop values from cols, accumulate into row
         |-  ?~  dex
