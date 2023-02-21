@@ -82,8 +82,30 @@
     :: https://myship.com/~/scry/vita/downloads.csv
     [%x %downloads ~]
       ``csv+!>((make-csv:hc %downloads))
+    [%x %downloads %latest @ ~]
+      :: return latest (set ship) for downloads
+      =/  dek=@tas  +30.path
+      =/  mut=(unit metrics:store)  (~(get by apps) dek)
+      ?~  mut
+        ``noun+!>(*(set ship))
+      ``noun+!>(latest.downloads.u.mut)
+    [%x %downloads %cumulative @ ~]
+      :: return cumulative (set ship) for downloads
+      =/  dek=@tas  +30.path
+      =/  mut=(unit metrics:store)  (~(get by apps) dek)
+      ?~  mut
+        ``noun+!>(*(set ship))
+      ``noun+!>(cumulative.downloads.u.mut)
+    :: ::
     [%x %activity ~]
       ``csv+!>((make-csv:hc %activity))
+    [%x %activity %latest @ ~]
+      :: return latest (set ship) for activity
+      =/  dek=@tas  +30.path
+      =/  mut=(unit metrics:store)  (~(get by apps) dek)
+      ?~  mut
+        ``noun+!>(*(set ship))
+      ``noun+!>(latest.activity.u.mut)
   ==
 ++  on-poke
   |=  [=mark =vase]
