@@ -122,6 +122,7 @@
     =/  act  !<(action:store vase)
     ?-  -.act
         %activity
+      %-  (slog leaf+"vita: {<src.bowl>} is using {<+.act>}" ~)
       =.  apps  (put-activity:hc +.act)
       `this
         %set-interval
@@ -227,19 +228,20 @@
   =/  scry-result  (scry-clay-subs desk)
   :: ingest desk subs data from clay
   %+  ~(put by apps)  desk
-    =/  met=metrics:store
-      ?~  (~(get by apps) desk)
-        *metrics:store
-      (~(got by apps) desk)
-    =.  latest.downloads.met
-        scry-result
-    =.  cumulative.downloads.met
-        %-  ~(uni in cumulative.downloads.met)
-        scry-result
-    =.  history.downloads.met
-      :_  history.downloads.met
-      [now.bowl (lent ~(tap in scry-result))]
-    met
+  ^-  metrics:store
+  =/  met=metrics:store
+    ?~  (~(get by apps) desk)
+      *metrics:store
+    (~(got by apps) desk)
+  =.  latest.downloads.met
+      scry-result
+  =.  cumulative.downloads.met
+      %-  ~(uni in cumulative.downloads.met)
+      scry-result
+  =.  history.downloads.met
+    :_  history.downloads.met
+    [now.bowl (lent ~(tap in scry-result))]
+  met
 ++  put-activity
   |=  [desk=@tas]
   ^-  _apps
@@ -340,20 +342,36 @@
   z-data-rows
 :: ::
 ++  make-data-rows
-  :: this arm is way too complex
+  :: this arm is too complex
   :: extract and reduce data from this huge app-metrics:store noun into a csv file
-  ::  reduce finer-detail info to normalized by day (or hour or whatever)
+  ::  reduce finer-detail info to normalized by day (or hour or whatever, depending on +normalize-date)
   ::
-  :: sacrificed some code simplicity for the sake of a decent algorithm:
+  :: sacrificed some code simplicity for the sake of a 'sound' algorithm:
   ::   1. collect all times from dataset
   ::   2. normalize, reduce, and sort set of times
   ::   3. create a column for each desk with values at each time
+  ::       pop values instead of lookup foreach time index
   ::   4. transform columns into rows, 
-  ::       because we know they are sorted, we pop one at a time off of each
+  ::       just pop one at a time off of each, and format
   ::
-  :: a naive way of doing this could easily have performance issues
+  :: a naive way of doing this could have performance issues:
+  ::   1. collect all times from dataset
+  ::   2. normalize, reduce, and sort set of times
+  ::   3. create rows, grabbing each value by a lookup into app-metrics
+  ::        thats just a lot of lookups...
   ::
-  :: im starting to think vita should use the uqbar rdb
+  :: worth it??? maybe some jet makes the naive way more efficient somehow.
+  :: or maybe the difference is just negligable.
+  :: naive would definitely be more readable.
+  ::
+  :: im starting to think vita may want to use the uqbar rdb (nectar?)
+  :: isnt this why that exists? nectar-bros hmu
+  ::
+  :: some of this could probably be cleaned up / extracted / modularized but
+  :: I think it would be kind of a LARP and just add indirection.
+  ::
+  :: the fact is, we are noun-wrangling here.
+  :: anyone who wants to tidy this up, PR plz
   ::
   |=  [doa=?(%downloads %activity)]
   ^-  (list tape)
@@ -425,6 +443,10 @@
   :: ~&  >>  ['got-cols' cols] 
   ::
   :: format columns as tape rows
+  :: iter over days
+  :: create a row=tape foreach day
+  :: null terminated
+  :: fill with values
   ^-  (list tape)
   |-  ?~  days  ~
     =/  day=date  i.days
@@ -434,8 +456,7 @@
     =.  row  (weld row ",")
     ::
     :: for each desk, pop from col
-    :: TODO im pretty sure this is dumb
-    =^  row   cols
+    =^  newrow   cols
         :: pop values from cols, accumulate into row
         |-  ?~  dex
           [row cols]
@@ -444,15 +465,14 @@
         ?~  col  !!
         =.  cols  (~(put by cols) i.dex t.col)
         :: put in row
-        =/  js  (numb:enjs:format i.col)
-        ?.  ?=([%n *] js)  !!
-        =/  val=tape  (trip p.js)
+        =/  val=tape  (atom-to-tape i.col)
         =.  row  (weld row val)
         =.  row
           ?~  t.dex  row
           (weld row ",")
         $(dex t.dex)
     ::
+    =.  row  newrow
     =.  row  (weld row "\0a")
     :-  row
     $(days t.days)
@@ -477,12 +497,17 @@
   =.  s.t.day  0
   =.  f.t.day  ~
   day
+++  atom-to-tape
+  :: format without dots
+  |=  a=@
+  ^-  tape
+  =/  js  (numb:enjs:format a)
+  ?.  ?=([%n *] js)  !!
+  (trip p.js)
 ++  date-to-tape
   |=  [day=date]
   ^-  tape
-  =/  jyyy  (numb:enjs:format y.-.day)
-  ?.  ?=([%n *] jyyy)  !!
-  =/  yyyy=tape  (trip p.jyyy)
+  =/  yyyy=tape  (atom-to-tape y.-.day)
   "{<m.day>}/{<d.t.day>}/{yyyy} {<h.t.day>}:{<m.t.day>}:{<s.t.day>}"
 ::
 -- 
