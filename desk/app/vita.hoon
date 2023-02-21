@@ -74,10 +74,19 @@
   |=  =path
   ^-  (unit (unit cage))
   ?+    path  (on-peek:def path)
+    :: .^((set desk) %gx /=vita=/desks/noun)
+    [%x %desks ~]
+      ``noun+!>(~(key by apps))
+    ::
     :: .^(* %gx /=vita=/metrics/basket/noun)
+    :: https://myship.com/~/scry/vita/metrics/mydesk.json
     [%x %metrics @ ~]
-      :: ~&  >  +>-.path
-      ``json+!>(~)
+      =/  dek=desk  +>-.path
+      =/  mut=(unit metrics:store)  (~(get by apps) dek)
+      ?~  mut
+        ``noun+!>(~)
+      ``vita-metrics+!>(u.mut)
+    ::
     :: .^(* %gx /=vita=/downloads/noun)
     :: https://myship.com/~/scry/vita/downloads.csv
     [%x %downloads ~]
@@ -97,6 +106,7 @@
         ``noun+!>(*(set ship))
       ``noun+!>(cumulative.downloads.u.mut)
     :: ::
+    :: https://myship.com/~/scry/vita/activity.csv
     [%x %activity ~]
       ``csv+!>((make-csv:hc %activity))
     [%x %activity %latest @ ~]
