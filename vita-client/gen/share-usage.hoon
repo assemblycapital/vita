@@ -10,7 +10,7 @@
 :-  %say
 |=  [* arg=?(~ [share=? ~]) ~]
 :-  %vita-client
-:-  %enabled
+:-  %set-enabled
 ?^  arg
   share.arg
 &

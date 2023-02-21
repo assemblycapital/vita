@@ -15,6 +15,7 @@
 ++  active-to-parent
   |=  [parent=ship =bowl:gall]
   ^-  card:agent:gall
+  %-  (slog leaf+"{<dap.bowl>} vita-client: sending activity to {<parent>}" ~)
   :*  %pass
       /
       %agent
@@ -26,6 +27,7 @@
 ::
 +$  action
   $%
+  [%set-enabled enabled=?]
   [%config cfg=[enabled=? parent=@p]]
   [%log-activity ~]
   ==
@@ -59,30 +61,39 @@
       =.  config  init
       =^  cards  inner  on-init:ag
       [cards this]
-    ::
-    ++  on-save
-      on-save:ag
-    ::
+    ++  on-save  !>([[%vita-client state] on-save:ag])
     ++  on-load
-      |=  old-state=vase
+      |=  ole=vase
       ^-  (quip card _this)
-      =.  config  init
-      =^  cards  inner  (on-load:ag old-state)
+      ?.  ?=([[%vita-client *] *] q.ole)
+        =.  config  init
+        =^  cards   inner   (on-load:ag ole)
+        [cards this]
+      ::
+      :: reference lib/gossip to retain wrapper state
+      =+  !<([[%vita-client old=state-0] ile=vase] ole)
+      =.  state  old
+      =^  cards  inner  (on-load:ag ile)
       [cards this]
-    ::
     ++  on-poke
       |=  [=mark =vase]
       ^-  (quip card _this)
       ?:  ?=(%vita-client mark)
+        ::TODO remove, replace with on-peek access
+        ~&  ['vita-client on-poke' config]
+        ?>  =(src.bowl our.bowl)
         =/  pok  !<(action vase)
         ?-  -.pok
+            %set-enabled
+          `this(enabled.config enabled.pok)
             %config
-          =.  config  cfg.pok
-          `this
+          `this(config cfg.pok)
             %log-activity
-          ?.  (gth now.bowl (add last ~h1)) ::TODO ~d1 constant?
-            `this
           ?.  enabled.config
+            %-  (slog leaf+"{<dap.bowl>} vita-client: not sending activity, disabled." ~)
+            `this
+          ?.  (gth now.bowl (add last ~s30)) ::TODO ~d1 constant?
+            %-  (slog leaf+"{<dap.bowl>} vita-client: not sending activity. already sent." ~)
             `this
           =.  last  now.bowl
           :_  this

@@ -8,9 +8,10 @@
 ::   disables sharing
 ::
 :-  %say
-|=  $:  *
-        [[=desk ~] ~]
+|=  $:  [now=@da eny=@uvJ bec=beak]
+        ~
+        ~
     ==   
 :-  %vita-client
-:-  %active
-desk
+:-  %log-activity
+~
