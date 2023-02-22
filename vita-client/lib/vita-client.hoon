@@ -1,4 +1,18 @@
-::  share daily activity with central :vita
+:: /lib/vita-client/hoon
+:: :: share daily activity with central :vita
+::
+:: accept a %log-activity poke from our.bowl
+::   usually initiated by inner agent self-poking
+::   from somewhere that indicates real user activity
+::
+:: on %log-activity, we check if we already poked :~parent/vita today.
+:: if so, ignore. if not, poke :~parent/vita with 
+::
+:: on init, vita-client can be set to be enabled / disabled by default.
+:: on init, vita-client is configured with its parent @p
+::
+:: to disable, poke the inner agent
+:: :myagent %vita-client [%set-enabled |]
 ::
 |%
 ++  active
@@ -62,6 +76,8 @@
       =^  cards  inner  on-init:ag
       [cards this]
     ++  on-save  !>([[%vita-client state] on-save:ag])
+    ::
+    :: use pattern from lib/gossip to retain wrapper state
     ++  on-load
       |=  ole=vase
       ^-  (quip card _this)
@@ -69,8 +85,6 @@
         =.  config  init
         =^  cards   inner   (on-load:ag ole)
         [cards this]
-      ::
-      :: reference lib/gossip to retain wrapper state
       =+  !<([[%vita-client old=state-0] ile=vase] ole)
       =.  state  old
       =^  cards  inner  (on-load:ag ile)
@@ -79,8 +93,6 @@
       |=  [=mark =vase]
       ^-  (quip card _this)
       ?:  ?=(%vita-client mark)
-        ::TODO remove, replace with on-peek access
-        ~&  ['vita-client on-poke' config]
         ?>  =(src.bowl our.bowl)
         =/  pok  !<(action vase)
         ?-  -.pok
@@ -92,7 +104,7 @@
           ?.  enabled.config
             %-  (slog leaf+"{<dap.bowl>} vita-client: not sending activity, disabled." ~)
             `this
-          ?.  (gth now.bowl (add last ~s30)) ::TODO ~d1 constant?
+          ?.  (gth now.bowl (add last ~h8)) ::TODO ~d1 constant?
             %-  (slog leaf+"{<dap.bowl>} vita-client: not sending activity. already sent." ~)
             `this
           =.  last  now.bowl

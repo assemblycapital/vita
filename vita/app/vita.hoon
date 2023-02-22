@@ -1,5 +1,13 @@
-:: vita
-:: keep track of your app distributions
+:: /app/vita/hoon
+:: :: keep track of your app distributions
+:: downloads
+::  periodically scry clay for %cs /subs for each desk
+::  cache results, export to csv
+:: activity
+::  :: empty unless you use /lib/vita-client/hoon with your app
+::  accept foreign pokes attesting to activity on a desk
+::  count unique active users each day
+::  export to csv
 ::  
 /-  store=vita, tt=treaty
 /+  vita, server, schooner
@@ -505,7 +513,7 @@
 ++  normalize-date
   |=  [day=date]
   ^-  date
-  :: =.  h.t.day  0
+  =.  h.t.day  0
   =.  m.t.day  0
   =.  s.t.day  0
   =.  f.t.day  ~
@@ -521,6 +529,7 @@
   |=  [day=date]
   ^-  tape
   =/  yyyy=tape  (atom-to-tape y.-.day)
-  "{<m.day>}/{<d.t.day>}/{yyyy} {<h.t.day>}:{<m.t.day>}:{<s.t.day>}"
+  :: "{<m.day>}/{<d.t.day>}/{yyyy} {<h.t.day>}:{<m.t.day>}:{<s.t.day>}"
+  "{<m.day>}/{<d.t.day>}/{yyyy}"
 ::
 -- 
