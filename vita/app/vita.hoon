@@ -259,7 +259,10 @@
   ^-  metrics:store
   =/  met=metrics:store
     ?~  (~(get by apps) desk)
-      *metrics:store
+      :: DoS protection,
+      :: dont let just anyone create a new
+      :: app metrics item
+      !!
     (~(got by apps) desk)
   =/  his
     history.activity.met
