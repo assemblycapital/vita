@@ -19,7 +19,7 @@ vita: our %houston has 133 subs
 vita: our %radio has 326 subs
 ```
 
-this tells you how many urbit ships are signed up for OTAs for each desk.
+this tells you how many active urbit ships are signed up for OTAs for each desk.
 
 you can run this routine whenever you want with `:vita|g`
 
