@@ -13,6 +13,7 @@
 /+  vita, server, schooner
 /+  default-agent, verb, dbug, agentio
 /*  vita-ui  %html  /app/vita-ui/html
+:: /*  sail-vita-ui  %hymn  /app/vita/hymn
 =,  format
 :: :: ::
 |%
@@ -88,19 +89,19 @@
       =/  dek=@tas  +30.path
       =/  mut=(unit metrics:store)  (~(get by apps) dek)
       ?~  mut
-        ``json+!>([%s '0'])
+        ``json+!>([%n '0'])
       =/  sim=cord
         %-  crip
         %-  atom-to-tape:hc
         ~(wyt in latest.downloads.u.mut)
-      ``json+!>([%s sim])
+      ``json+!>([%n sim])
     [%x %activity %simple @ ~]
     :: https://myship.com/~/scry/vita/downloads/simple/mydesk.json
-      :: return latest (lent ~(tap in (set ship)) for downloads
+      :: return latest (lent ~(tap in (set ship)) for activity
       =/  dek=@tas  +30.path
       =/  mut=(unit metrics:store)  (~(get by apps) dek)
       ?~  mut
-        ``json+!>([%s '0'])
+        ``json+!>([%n '0'])
       =/  sim=cord
         %-  crip
         %-  atom-to-tape:hc
@@ -161,9 +162,12 @@
   |=  [=mark =vase]
   ^-  (quip card _this)
   ?+  mark  (on-poke:def mark vase)
-    ::   %noun
-    :: :_  this
-    :: :~  [%pass /eyre/connect %arvo %e %connect [~ /apps/[dap.bowl]] dap.bowl]  ==
+      %noun
+    =^  cards  state
+      get-all-procedure:hc
+    ~&  >  (page:webui:vita bowl apps)
+    :: ~&  >  (en-xml:html page:vita)
+    `this
       %handle-http-request
     =^  cards  state
       (handle-http:hc !<([@ta =inbound-request:eyre] vase))
@@ -178,7 +182,7 @@
     =/  act  !<(action:store vase)
     ?-  -.act
         %activity
-      %-  (slog leaf+"vita: {<src.bowl>} is using {<+.act>}" ~)
+      %-  (slog leaf+"vita: {<src.bowl>} is using {<desk.act>}" ~)
       =.  apps  (put-activity:hc +.act)
       `this
         %set-interval
@@ -205,31 +209,10 @@
       :: ::
         %get-all
       ?>  =(src.bowl our.bowl)
-      :: get each desk in state
-      ::  and any extra from treaty allies
-      =/  dex=(set desk)  ~(key by apps)
-      =.  dex
-        %-  %~  gas  in  dex
-        ^-  (list desk)
-        =/  ally
-          scry-treaty-alliance:hc
-        ?+  -.ally  ~
-          %ini
-          %+  turn  ~(tap in init.ally)
-            |=  [=ship =desk]
-            desk
-        ==
-      :: process each desk into state
-      =/  lex=(list desk)  ~(tap in dex)
-      =.  apps
-        |-
-        ?~  lex  apps
-        =.  apps
-          (put-downloads:hc i.lex)
-        $(lex t.lex)
-      :_  this
-          :: set timers on every get-all
-          manage-timers:hc
+      =^  cards  state
+        get-all-procedure:hc
+      [cards this]
+      
     ==
   ==
 --
@@ -270,6 +253,33 @@
   ^-  card
   %-  poke-self:pass:io
   :-  %vita-action  !>([%get-all ~])
+++  get-all-procedure
+  ^-  (quip card _state)
+  :: get each desk in state
+  ::  and any extra from treaty allies
+  =/  dex=(set desk)  ~(key by apps)
+  =.  dex
+    %-  %~  gas  in  dex
+    ^-  (list desk)
+    =/  ally
+      scry-treaty-alliance
+    ?+  -.ally  ~
+      %ini
+      %+  turn  ~(tap in init.ally)
+        |=  [=ship =desk]
+        desk
+    ==
+  :: process each desk into state
+  =/  lex=(list desk)  ~(tap in dex)
+  =.  apps
+    |-
+    ?~  lex  apps
+    =.  apps
+      (put-downloads i.lex)
+    $(lex t.lex)
+  :_  state
+      :: set timers on every get-all
+      manage-timers
 ++  scry-clay-subs
   |=  [desk=@tas]
   ^-  (set ship)
@@ -373,7 +383,16 @@
         [%apps %vita ~]
       :_  state
       ::(send [200 ~ [%csv make-downloads-csv]])
-      (send [200 ~ [%html vita-ui]])
+      =/  ht
+          %-  crip
+          %-  en-xml:html
+          (page:webui:vita bowl apps)
+      :: =.  ht
+      ::   %-  crip
+      ::   %-  weld
+      ::   :-  "<!DOCTYPE html>\0a"
+      ::   %-  trip  ht
+      (send [200 ~ [%html ht]])
     ==
   ==
 ::

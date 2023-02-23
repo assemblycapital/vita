@@ -8,37 +8,13 @@
       // alright, just a little bit of js.
       // I couldnt help myself.
       //
-      // the "load animation" from the individual scrys ends up being
-      //   very charming,
-      // and this is a lot more legible than dynamic html gen in hoon,
+      // in local dev, I thought the "load animation"
+      // from the individual scrys was charming
       //
-      // but, admittedly, scrying one value at a time is pretty dumb.
-      // I just dont really want to make a bulkier scry endpoint to support
-      // this specific data view, and I like the way the values bubble in with
-      // this implementation anyways. it implicitly communicates that the
-      // data is LIVE, and that you have to refresh to get the latest.
+      // in prod, its wayy too slow.
       //
-      // most :vita scry endpoints exist for access from dojo or other agents
-      // // there are a bunch of little scrys that return noun-marked data
-      // // for when you just want to know one thing, and dont want to build
-      // // /sur/vita/hoon and switch on a bunch of nested types
-      // 
-      // json scrys are generally supported with this endpoint:
-      //    /~/scry/vita/metrics/mydesk.json
-      // which returns the full dataset for a desk as json.
-      //
-      // I added these three just to support this frontend:
-      //   /~/scry/vita/desks.json
-      //      array of desks
-      //   /~/scry/vita/downloads/simple/mydesk.json
-      //      a number
-      //   /~/scry/vita/activity/simple/mydesk.json
-      //      a number
-      //
-      // maybe worth just writing it all in a
-      //   /~/scry/vita/frontend.json
-      // but something about that doesnt feel great.
-      // 
+      // should probably just use sail
+      
       
 
       const getScry = async (url) => {
