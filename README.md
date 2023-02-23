@@ -6,7 +6,7 @@ to get downloads, `:vita` periodically scrys %cs /subs for each desk and caches 
 
 `:vita` accepts foreign pokes attesting to activity on a desk.
 `/lib/vita-client.hoon` helps any agent send vita activity pokes.
-it send a maximum of one poke per day, and allows users to opt-in / opt-out depending on developer preference.
+it sends a maximum of one poke per day, and allows users to opt-in / opt-out depending on developer preference.
 
 ## vita downloads
 
