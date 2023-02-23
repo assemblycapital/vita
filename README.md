@@ -62,20 +62,15 @@ vita: %radio has 359 cumulative downloads
 > =t +vita!total
 ```
 
-over time, `:vita` accumulates a `history=(list [time=@da size=@ud])` for each desk. This data can be exported as CSV, and visualized as a multiple line graph.
-you can get the csv at https://yourship.com/~/scry/vita/downloads.csv
+over time, `:vita` accumulates a `history=(list [time=@da size=@ud])` for each desk.
 
-to change the interval for automatic collection: `:vita|i ~h8` will change it to 8 hours from the default 2 from the default 24
+to change the interval for automatic collection: `:vita|i ~h8` will change it to 8 hours from the default 24
 
 to turn off the interval: `:vita|i` (no arg)
 
 ## vita activity
 
 `:vita` is also capable of collecting daily-active-users.
-
-you can get the csv at https://yourship.com/~/scry/vita/activity.csv
-
-you can get the full metrics (downloads and activity) for a given app as json at https://yourship.com/~/scry/vita/metrics/mydesk.json
 
 vita accepts `vita-action+[%activity =desk]` pokes from any source. it logs daily active users by adding users to a `latest=(set ship)`.
 this set is cleared once a day. vita keeps record of the max size of this set each day in `history.activity`
@@ -99,7 +94,8 @@ you will also need to give the `(active:vita-client bowl)` card somewhere in you
 
 `vita-client` is initialized with a boolean (sets collection on/off by default), and the `@p` of your distributor ship (running vita, with the app registered).
 
-users can turn `vita-client` data collection on/off with `:myagent +mydesk!share-usage &` or `:myagent +mydesk!share-usage |`
+users can turn `vita-client` data collection on/off with `:myagent +mydesk!enable-vita` or `:tenna +mydesk!disable-vita`.
+this uses some generators packaged with vita-client. the actual poke is just `:myagent &vita-client [%set-enabled |]`
 
 `vita-client` sends a max of one activity poke per-day.
 
