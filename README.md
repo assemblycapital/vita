@@ -59,7 +59,7 @@ vita: %radio has 359 cumulative downloads
 ```
 
 over time, `:vita` accumulates a `history=(list [time=@da size=@ud])` for each desk. This data can be exported as CSV, and visualized as a multiple line graph.
-![example multiple line graph](https://0x0.st/HrJf.png)
+![example multiple line graph](https://0x0.st/HsOn.png)
 you can get the csv at https://yourship.com/~/scry/vita/downloads.csv
 
 to change the interval for automatic collection: `:vita|i ~h8` will change it to 8 hours from the default 2 from the default 24
@@ -72,7 +72,7 @@ to turn off the interval: `:vita|i` (no arg)
 
 you can get the csv at https://yourship.com/~/scry/vita/activity.csv
 
-you can get the full metrics (downloads and activity) for a given app as json at https://myship.com/~/scry/vita/metrics/mydesk.json
+you can get the full metrics (downloads and activity) for a given app as json at https://yourship.com/~/scry/vita/metrics/mydesk.json
 
 vita accepts `vita-action+[%activity =desk]` pokes from any source. it logs daily active users by adding users to a `latest=(set ship)`.
 this set is cleared once a day. vita keeps record of the max size of this set each day in `history.activity`

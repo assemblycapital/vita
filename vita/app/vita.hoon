@@ -82,9 +82,40 @@
   |=  =path
   ^-  (unit (unit cage))
   ?+    path  (on-peek:def path)
+    [%x %downloads %simple @ ~]
+    :: https://myship.com/~/scry/vita/downloads/simple/mydesk.json
+      :: return latest (lent ~(tap in (set ship)) for downloads
+      =/  dek=@tas  +30.path
+      =/  mut=(unit metrics:store)  (~(get by apps) dek)
+      ?~  mut
+        ``json+!>([%s '0'])
+      =/  sim=cord
+        %-  crip
+        %-  atom-to-tape:hc
+        ~(wyt in latest.downloads.u.mut)
+      ``json+!>([%s sim])
+    [%x %activity %simple @ ~]
+    :: https://myship.com/~/scry/vita/downloads/simple/mydesk.json
+      :: return latest (lent ~(tap in (set ship)) for downloads
+      =/  dek=@tas  +30.path
+      =/  mut=(unit metrics:store)  (~(get by apps) dek)
+      ?~  mut
+        ``json+!>([%s '0'])
+      =/  sim=cord
+        %-  crip
+        %-  atom-to-tape:hc
+        ~(wyt in latest.activity.u.mut)
+      ?~  history.activity.u.mut
+        ``json+!>([%n '0'])
+      ?.  (is-today:hc -.i.history.activity.u.mut)  
+        ``json+!>([%n '0'])
+      ``json+!>([%n sim])
     :: .^((set desk) %gx /=vita=/desks/noun)
     [%x %desks ~]
-      ``noun+!>(~(key by apps))
+      =/  dex=(list desk)
+        %-  limo
+        ~(tap in ~(key by apps))
+      ``vita-desks+!>(dex)
     ::
     :: .^(* %gx /=vita=/metrics/basket/noun)
     :: https://myship.com/~/scry/vita/metrics/mydesk.json
@@ -93,6 +124,7 @@
       =/  mut=(unit metrics:store)  (~(get by apps) dek)
       ?~  mut
         ``noun+!>(~)
+      ::TODO should this include the desk name?
       ``vita-metrics+!>(u.mut)
     ::
     :: .^(* %gx /=vita=/downloads/noun)
@@ -135,7 +167,13 @@
       %handle-http-request
     =^  cards  state
       (handle-http:hc !<([@ta =inbound-request:eyre] vase))
-    [cards this]
+    :_  this
+    :-
+       :: this is a load-bearing card
+       :: it ensures that the frontend actually loads the latest
+       :: downloads data from clay
+       get-all-card:hc
+    cards
       %vita-action
     =/  act  !<(action:store vase)
     ?-  -.act
@@ -282,15 +320,10 @@
         :-  [now.bowl 1]
         history.activity.met
       met
-  =/  today=date  (yore now.bowl)
-  =/  last-history=date  (yore -.i.his)
   ::
   :: if last history is today, put
   :: else, reset for current day
-  ?.  ?&  =(y.-.today y.-.last-history)
-          =(m.today m.last-history)
-          =(d.t.today d.t.last-history)
-      ==
+  ?.  (is-today -.i.his)
     :: start a fresh day
     =.  latest.activity.met  *(set ship)
     =.  latest.activity.met
@@ -309,6 +342,15 @@
     :-  new-his-item  t.his
   met
 ::
+++  is-today
+  |=  [=time]
+  ^-  ?
+  =/  today  (yore now.bowl)
+  =/  =date  (yore time)
+  ?&  =(y.-.today y.-.date)
+      =(m.today m.date)
+      =(d.t.today d.t.date)
+  ==
 ++  handle-http
   |=  [eyre-id=@ta =inbound-request:eyre]
   ^-  (quip card _state)

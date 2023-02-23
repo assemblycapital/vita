@@ -10,6 +10,14 @@
     |=  act=^action
     ^-  json
     ~
+  ++  desks
+    |=  dex=(list desk)
+    ^-  json
+    :-  %a
+    ^-  (list json)
+    %+  turn  dex
+    |=  =desk
+    [%s desk]
   ++  metrics
     |=  met=^metrics
     ^-  json

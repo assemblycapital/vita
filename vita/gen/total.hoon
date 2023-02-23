@@ -10,7 +10,7 @@
 :-  %noun
 =*  our  p.bec
 =/  deks=(list desk)
-   ~(tap in .^((set desk) %gx /(scot %p our)/vita/(scot %da now)/desks/noun))
+   .^((list desk) %gx /(scot %p our)/vita/(scot %da now)/desks/noun)
 ^-  (map desk (set ship))
 =|  totals=(map desk (set ship))
 |-  ?~  deks  totals

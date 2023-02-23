@@ -1,26 +1,141 @@
   <head>
     <style>
-      div { text-align: center; }
-      button { text-align: center; }
+      main { text-align: center; }
     </style>
     <title>vita</title>
+
+    <script>
+      // alright, just a little bit of js.
+      // I couldnt help myself.
+      //
+      // the "load animation" from the individual scrys ends up being
+      //   very charming,
+      // and this is a lot more legible than dynamic html gen in hoon,
+      //
+      // but, admittedly, scrying one value at a time is pretty dumb.
+      // I just dont really want to make a bulkier scry endpoint to support
+      // this specific data view, and I like the way the values bubble in with
+      // this implementation anyways. it implicitly communicates that the
+      // data is LIVE, and that you have to refresh to get the latest.
+      //
+      // most :vita scry endpoints exist for access from dojo or other agents
+      // // there are a bunch of little scrys that return noun-marked data
+      // // for when you just want to know one thing, and dont want to build
+      // // /sur/vita/hoon and switch on a bunch of nested types
+      // 
+      // json scrys are generally supported with this endpoint:
+      //    /~/scry/vita/metrics/mydesk.json
+      // which returns the full dataset for a desk as json.
+      //
+      // I added these three just to support this frontend:
+      //   /~/scry/vita/desks.json
+      //      array of desks
+      //   /~/scry/vita/downloads/simple/mydesk.json
+      //      a number
+      //   /~/scry/vita/activity/simple/mydesk.json
+      //      a number
+      //
+      // maybe worth just writing it all in a
+      //   /~/scry/vita/frontend.json
+      // but something about that doesnt feel great.
+      // 
+      
+
+      const getScry = async (url) => {
+        try {
+          const target = url;
+          
+          const res = await fetch(target, {
+            method: 'get',
+            headers: {
+              'content-type': 'text/plain;charset=UTF-8',
+            }
+          });
+
+          if (res.status === 200) {
+            const data = await res.text();
+            return data;
+
+          } else {
+            console.log(`Error code ${res.status}`);
+          }
+        } catch (err) {
+          console.log(err)
+        }
+      }
+      const makeRow = (desk, num) => {
+        return `<tr><td>%${desk} :</td><td>${num}</td></tr>`
+      }
+
+      const makeDownloadsRows = async (desks) => {
+        let dlTable = document.getElementById('downloads-data')
+        for(var i=0;i<desks.length;i++) {
+          let simple = await getScry(`/~/scry/vita/downloads/simple/${desks[i]}.json`)
+          simple = JSON.parse(simple)
+          dlTable.innerHTML += makeRow(desks[i], simple);
+        }
+      }
+      const makeActivityRows = async (desks) => {
+        let acTable = document.getElementById('activity-data')
+        for(var i=0;i<desks.length;i++) {
+          let simple = await getScry(`/~/scry/vita/activity/simple/${desks[i]}.json`)
+          simple = JSON.parse(simple)
+          if(simple!==0) {
+            acTable.innerHTML += makeRow(desks[i], simple);
+          }
+        }
+      }
+
+      const main = async () => {
+        let desks = await getScry("/~/scry/vita/desks.json")
+        desks = JSON.parse(desks)
+        makeDownloadsRows(desks);
+        makeActivityRows(desks);
+      }
+      window.onload = function() {
+        main()
+      };
+
+    </script>
   </head>
   
   <body>
     <main>
-      <div>
         <h1>vita</h1>
-        <p>monitor your app distributions</p>
+        <p id="display-date"></p>
+        <p><a href="https://github.com/assemblycapital/vita/#readme" target="_blank">README</a></p>
         <hr/>
+        <h3>downloads</h3>
+        <table style="margin:auto;">
+          <tbody id="downloads-data">
+            <!-- populated by scry -->
+          </tbody>
+        </table>
         <p>
           <a href="/~/scry/vita/downloads.csv" download="downloads.csv">
-            downloads.csv
+            downloads-history.csv
           </a>
         </p>
+        <hr />
+        <h3>activity</h3>
+        <table style="margin:auto;">
+          <tbody id="activity-data">
+            <!-- populated by scry -->
+          </tbody>
+        </table>
+
         <p>
           <a href="/~/scry/vita/activity.csv" download="activity.csv">
-            activity.csv
+            activity-history.csv
           </a>
         </p>
-      </div>
+        
+        <div
+          style="bottom: 0;position: fixed;"
+        >
+          <!-- assembly capital logo -->
+          <svg width="64" height="64" viewBox="0 0 388 194" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M194 0H97V97H0V194H97V97H194H291V194H388V97H291V0H194Z" fill="black"/>
+          </svg>
+        </div>
   </main>
