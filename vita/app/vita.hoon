@@ -1,3 +1,4 @@
+:: 🛸
 :: /app/vita/hoon
 :: :: keep track of your app distributions
 :: downloads
@@ -162,22 +163,13 @@
   |=  [=mark =vase]
   ^-  (quip card _this)
   ?+  mark  (on-poke:def mark vase)
-      %noun
-    =^  cards  state
-      get-all-procedure:hc
-    ~&  >  (page:webui:vita bowl apps)
-    :: ~&  >  (en-xml:html page:vita)
-    `this
       %handle-http-request
     =^  cards  state
+      :: get latest data before making the frontend
+      get-all-procedure:hc
+    =^  cards  state
       (handle-http:hc !<([@ta =inbound-request:eyre] vase))
-    :_  this
-    :-
-       :: this is a load-bearing card
-       :: it ensures that the frontend actually loads the latest
-       :: downloads data from clay
-       get-all-card:hc
-    cards
+    [cards this]
       %vita-action
     =/  act  !<(action:store vase)
     ?-  -.act
