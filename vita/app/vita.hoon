@@ -57,7 +57,7 @@
   `this
 ++  on-init
   ^-  (quip card _this)
-  =.  period  [~ ~h1]
+  =.  period  [~ ~h8]
   :_  this
   :-  get-all-card:hc
   :-  [%pass /eyre/connect %arvo %e %connect [~ /apps/[dap.bowl]] dap.bowl]
@@ -503,13 +503,40 @@
         history.activity.met
     =/  col=(list @ud)
       |-  :: lol
+      :: the following recursive logic is popping down two stacks:
+      ::    days : our csv row index, unique days in the full dataset
+      ::           (list date) sorted by latest
+      ::    his  : our values
+      ::           (list [@da @ud]) sortest by latest @da
+      ::  we are creating a (list @ud), a column with a value for each day
       ?~  days  ~
+      :: if we have no more history
+      ::
       ?~  his
+        :: we're out of values, fill with 0
         [0 $(days t.days)]
-      ?:  =(i.days (normalize-date (yore -.i.his)))
+      ::
+      =*  index-day  (year i.days)
+      =*  value-day  (year (normalize-date (yore -.i.his)))
+      :: if our index is newer than our value
+      ::
+      ?:  (gth index-day value-day)
+        :: pop the index, fill 0
+        [0 $(days t.days)]
+      :: if we have the correct day
+      ::
+      ?:  =(index-day value-day)
+        :: set the value
+        :: goto next index
+        :: goto next value
         :-  +.i.his
         $(days t.days, his t.his)
+      :: if our value is newer than index
+      :: 
+      :: goto next value
       $(his t.his) 
+    :: ::
+    :: ::
     =.  cols
       (~(put by cols) dek col)
     $(dex t.dex)
