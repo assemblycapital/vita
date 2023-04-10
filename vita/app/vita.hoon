@@ -84,35 +84,6 @@
   |=  =path
   ^-  (unit (unit cage))
   ?+    path  (on-peek:def path)
-    [%x %downloads %simple @ ~]
-    :: https://myship.com/~/scry/vita/downloads/simple/mydesk.json
-      :: return latest (lent ~(tap in (set ship)) for downloads
-      =/  dek=@tas  +30.path
-      =/  mut=(unit metrics:store)  (~(get by apps) dek)
-      ?~  mut
-        ``json+!>([%n '0'])
-      =/  sim=cord
-        %-  crip
-        %-  atom-to-tape:hc
-        ~(wyt in latest.downloads.u.mut)
-      ``json+!>([%n sim])
-    [%x %activity %simple @ ~]
-    :: https://myship.com/~/scry/vita/downloads/simple/mydesk.json
-      :: return latest (lent ~(tap in (set ship)) for activity
-      =/  dek=@tas  +30.path
-      =/  mut=(unit metrics:store)  (~(get by apps) dek)
-      ?~  mut
-        ``json+!>([%n '0'])
-      =/  sim=cord
-        %-  crip
-        %-  atom-to-tape:hc
-        ~(wyt in latest.activity.u.mut)
-      ?~  history.activity.u.mut
-        ``json+!>([%n '0'])
-      ?.  (is-today:hc -.i.history.activity.u.mut)  
-        ``json+!>([%n '0'])
-      ``json+!>([%n sim])
-    :: .^((set desk) %gx /=vita=/desks/noun)
     [%x %desks ~]
       =/  dex=(list desk)
         %-  limo
@@ -158,6 +129,35 @@
       ?~  mut
         ``noun+!>(*(set ship))
       ``noun+!>(latest.activity.u.mut)
+    ::
+    :: summaries as noun marks
+    :: .^((map desk @ud) %gx /=vita=/downloads/summary/noun)
+    [%x %downloads %summary ~]
+      :: return a summary of downloads as (map desk @ud)
+      =/  sum=(map desk @ud)
+        %-  ~(urn by apps)
+        |=  [=desk =metrics:store]
+        ^-  @ud
+        ~(wyt in latest.downloads.metrics)
+      ``noun+!>(sum)
+    :: .^((map desk @ud) %gx /=vita=/cumulative-downloads/summary/noun)
+    [%x %cumulative-downloads %summary ~]
+      =/  sum=(map desk @ud)
+        %-  ~(urn by apps)
+        |=  [=desk =metrics:store]
+        ^-  @ud
+        ~(wyt in cumulative.downloads.metrics)
+      ``noun+!>(sum)
+    :: .^((map desk @ud) %gx /=vita=/activity/summary/noun)
+    [%x %activity %summary ~]
+      =/  sum=(map desk @ud)
+        %-  ~(urn by apps)
+        |=  [=desk =metrics:store]
+        ^-  @ud
+        ?.  ?=(^ history.activity.metrics)  0
+        ?.  (is-today:hc -.i.history.activity.metrics)  0
+        ~(wyt in latest.activity.metrics)
+      ``noun+!>(sum)
   ==
 ++  on-poke
   |=  [=mark =vase]
