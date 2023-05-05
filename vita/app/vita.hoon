@@ -13,7 +13,7 @@
 /-  store=vita, tt=treaty
 /+  vita, server, schooner
 /+  default-agent, verb, dbug, agentio
-/*  vita-ui  %html  /app/vita-ui/html
+:: /*  vita-ui  %html  /app/vita-ui/html
 :: /*  sail-vita-ui  %hymn  /app/vita/hymn
 =,  format
 :: :: ::
