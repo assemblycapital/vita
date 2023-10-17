@@ -3,7 +3,8 @@
     color+0xff.ffff
     image+'https://bwyl.nyc3.digitaloceanspaces.com/vita%2Fvita.png'
     version+[0 1 0]
-    site+/apps/vita
+    base+'vita-js'
+    glob-http+['https://bootstrap.urbit.org/glob-0v5.hurm4.ejod5.ngg9h.iub9i.n1j7o.glob' 0v5.hurm4.ejod5.ngg9h.iub9i.n1j7o]
     website+'https://github.com/assemblycapital/vita'
     license+'MIT'
 ==
