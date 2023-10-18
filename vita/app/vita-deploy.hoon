@@ -1,6 +1,6 @@
 
 /-  sur=vita-deploy
-/+  vita-deploy
+/+  lib=vita-deploy
 /+  default-agent, verb, dbug, agentio
 :: :: ::
 |%
@@ -23,6 +23,7 @@
     def   ~(. (default-agent this %|) bowl)
     hc    ~(. +> bowl)
     io    ~(. agentio bowl)
+    b     ~(. b:lib bowl)
 ::
 ++  on-init   on-init:def
 ++  on-load   on-load:def
@@ -52,7 +53,13 @@
     ?-  -.act
         %deploy
       ~&  >  act
-      `this
+      =/  has  (has-desk:b desk-name.act)
+      ?:  has
+        ~&  "{<desk-name.act>} exists already"
+        `this
+      =/  o  (new-desk:b desk-name.act)
+      :_  this
+      [o ~]
     ==
   ==
 --
