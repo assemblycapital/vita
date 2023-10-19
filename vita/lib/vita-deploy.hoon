@@ -41,6 +41,9 @@
           /sys/kelvin
           /mar/bill/hoon
           /mar/mime/hoon
+          /mar/html/hoon
+          /mar/css/hoon
+          /mar/js/hoon
           /mar/json/hoon
           /lib/skeleton/hoon
           /lib/default-agent/hoon
@@ -62,12 +65,12 @@
       ==
     --
   --
-::
+:: ::
 ++  default-glob-reference
   ^-  glob-reference:docket-sur
-  :-  0v5.hurm4.ejod5.ngg9h.iub9i.n1j7o
+  :-  0v155e4.7i5n2.raqos.pfu60.8vgsg
   :-  %http
-  'https://bootstrap.urbit.org/glob-0v5.hurm4.ejod5.ngg9h.iub9i.n1j7o.glob'
+  'https://bwyl.nyc3.digitaloceanspaces.com/vita/example-app-globs/example-0-0v155e4.7i5n2.raqos.pfu60.8vgsg.glob'
 ::
 ++  default-docket
   |=  desk-name=@tas
