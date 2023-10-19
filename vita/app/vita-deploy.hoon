@@ -9,6 +9,7 @@
   ==
 +$  state-0  $:
   %0
+    desks=(map desk desk-metadata:sur)
   ==
 +$  card  card:agent:gall
 --
@@ -49,15 +50,27 @@
   ^-  (quip card _this)
   ?+  mark  (on-poke:def mark vase)
       %vita-deploy-action
+    ?>  =(src.bowl our.bowl)
     =/  act  !<(action:sur vase)
     ?-  -.act
-        %deploy
-      ~&  >  act
+        %new-desk
+      =.  desks
+        (~(put by desks) desk-name.act *desk-metadata:sur)
       :: =/  has  (has-desk:b desk-name.act)
       :: TODO use has?
       =/  o  (new-desk:b desk-name.act)
       :_  this
       [o ~]
+      ::
+        %fetch-desk-metadata
+      =*  dek  desk-name.act
+      ?~  mut=(~(get by desks) dek)
+        `this
+      =*  met  u.mut
+      =.  exists-in-clay.met
+        (has-desk:b dek)
+      =.  desks  (~(put by desks) dek met)
+      `this
     ==
   ==
 --

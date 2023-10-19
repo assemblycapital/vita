@@ -270,8 +270,8 @@
       (put-downloads i.lex)
     $(lex t.lex)
   :_  state
-      :: set timers on every get-all
-      manage-timers
+    :: set timers on every get-all
+    manage-timers
 ++  scry-clay-subs
   |=  [desk=@tas]
   ^-  (set ship)
