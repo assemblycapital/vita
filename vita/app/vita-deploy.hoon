@@ -41,8 +41,9 @@
   |=  =path
   ^-  (quip card _this)
   ?+    path  (on-watch:def path) 
-      [%http-response *]
-    `this
+      [%frontend ~]
+    :_  this
+    [(fact:io vita-deploy-update+!>([%all-metadata desks]) ~[/frontend]) ~]
   ==
 ::
 ++  on-poke
@@ -70,7 +71,8 @@
       =.  exists-in-clay.met
         (has-desk:b dek)
       =.  desks  (~(put by desks) dek met)
-      `this
+      :_  this
+      [(fact:io json+!>(~) ~[/frontend]) ~]
     ==
   ==
 --

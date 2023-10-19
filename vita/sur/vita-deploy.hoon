@@ -7,6 +7,11 @@
     is-published=_|
     maybe-docket=(unit docket:docket-sur)
   ==
++$  update
+  $%
+    [%all-metadata all=(map desk desk-metadata)]
+    [%desk-metadata =desk =desk-metadata]
+  ==
 +$  action
   $%
     [%new-desk desk-name=@tas]

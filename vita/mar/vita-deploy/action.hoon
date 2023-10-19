@@ -1,7 +1,7 @@
-/-  store=vita-deploy
+/-  sur=vita-deploy
 /+  *vita-deploy
 ::
-|_  act=action:store
+|_  act=action:sur
 ++  grad  %noun
 ++  grow
   |%
@@ -11,7 +11,7 @@
 ::
 ++  grab
   |%
-  ++  noun  action:store
+  ++  noun  action:sur
   ++  json  action:dejs
   --
 --

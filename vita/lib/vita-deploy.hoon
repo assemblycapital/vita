@@ -1,4 +1,4 @@
-/-  sur=vita, docket-sur=docket
+/-  sur=vita-deploy, docket-sur=docket
 /+  docket-lib=docket
 =<  [sur .]
 =,  sur
@@ -87,6 +87,34 @@
     |=  act=^action
     ^-  json
     ~
+  ::
+  ++  update
+    |=  upd=^update
+    ~&  >  ['enjs upd' upd]
+    ^-  json
+    %-  pairs
+    :_  ~
+    ^-  [cord json]
+    :-  -.upd
+    |^
+      ?+  -.upd  !!
+          %all-metadata
+        (en-all-metadata +.upd)
+      ==
+    ++  en-all-metadata
+      |=  amd=(map desk desk-metadata)
+      :-  %a
+      %+  turn  ~(tap by amd)
+      en-metadata
+    ++  en-metadata
+      |=  [d=desk dm=desk-metadata]
+      ^-  json
+      %-  pairs:enjs
+      :~
+      ['desk' %s d]
+      ['existsInClay' %b exists-in-clay.dm]
+      ==
+    --
   --
 ++  dejs
   =,  dejs:format
@@ -95,5 +123,9 @@
     |=  jon=json
     ^-  ^action
     *^action
+  ++  update
+    |=  jon=json
+    ^-  ^update
+    *^update
   --
 --
