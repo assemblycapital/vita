@@ -1,4 +1,5 @@
-/-  sur=vita
+/-  sur=vita, docket-sur=docket
+/+  docket-lib=docket
 =<  [sur .]
 =,  sur
 |%
@@ -18,30 +19,33 @@
     ^-  card:agent:gall
     =;  h-pass
         [%pass /vita-deploy/new-desk %agent [our.bowl %hood] %poke helm-pass+!>(h-pass)]
-    =/  from  %base
+    =/  from  %vita
     =/  gall  &
     %^  new-desk:cloy  desk
       ~   
     %-  ~(gas by *(map path page:clay))
-    |^  =-  (turn - mage)
+    |^  =;  paz
+          :_  (turn paz mage)
+          :+  /desk/docket-0  %docket-0
+          (default-docket desk)
+      ::
         ^-  (list path)
-        =/  common-files=(list path)  :~
-            /mar/noun/hoon
-            /mar/hoon/hoon
-            /mar/txt/hoon
-            /mar/kelvin/hoon
-            /sys/kelvin
-          ==
-        =/  extra-files=(list path)  ?.  gall  [~]
-          :~
-            /mar/bill/hoon
-            /mar/mime/hoon
-            /mar/json/hoon
-            /lib/skeleton/hoon
-            /lib/default-agent/hoon
-            /lib/dbug/hoon
-          ==
-        (weld common-files extra-files)
+        :~
+          /mar/noun/hoon
+          /mar/hoon/hoon
+          /mar/txt/hoon
+          /mar/kelvin/hoon
+          /mar/docket-0/hoon
+          /lib/docket/hoon
+          /sur/docket/hoon
+          /sys/kelvin
+          /mar/bill/hoon
+          /mar/mime/hoon
+          /mar/json/hoon
+          /lib/skeleton/hoon
+          /lib/default-agent/hoon
+          /lib/dbug/hoon
+        ==
     ::
     ++  mage
       |=  =path
@@ -58,6 +62,21 @@
       ==
     --
   --
+::
+++  default-glob-reference
+  ^-  glob-reference:docket-sur
+  :-  0v5.hurm4.ejod5.ngg9h.iub9i.n1j7o
+  :-  %http
+  'https://bootstrap.urbit.org/glob-0v5.hurm4.ejod5.ngg9h.iub9i.n1j7o.glob'
+::
+++  default-docket
+  |=  desk-name=@tas
+  =|  d=docket:docket-sur
+  =.  title.d  desk-name
+  =.  href.d
+    [%glob desk-name default-glob-reference]
+  d
+::
 ++  enjs
   =,  enjs:format
   |%

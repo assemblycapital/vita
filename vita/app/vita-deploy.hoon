@@ -53,10 +53,8 @@
     ?-  -.act
         %deploy
       ~&  >  act
-      =/  has  (has-desk:b desk-name.act)
-      ?:  has
-        ~&  "{<desk-name.act>} exists already"
-        `this
+      :: =/  has  (has-desk:b desk-name.act)
+      :: TODO use has?
       =/  o  (new-desk:b desk-name.act)
       :_  this
       [o ~]
