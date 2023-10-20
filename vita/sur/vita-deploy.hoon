@@ -15,6 +15,9 @@
 +$  action
   $%
     [%new-desk desk-name=@tas]
+    [%install desk-name=@tas]
+    [%publish desk-name=@tas]
+    [%unpublish desk-name=@tas]
     [%fetch-desk-metadata desk-name=@tas]
   ==
 --

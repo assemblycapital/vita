@@ -63,16 +63,30 @@
       :_  this
       [o ~]
       ::
+        %install
+      :: TODO
+      `this
+        %publish
+      :: TODO
+      `this
+        %unpublish
+      :: TODO
+      `this
+      ::
         %fetch-desk-metadata
       =*  dek  desk-name.act
+      ~&  [act]
       ?~  mut=(~(get by desks) dek)
         `this
       =*  met  u.mut
       =.  exists-in-clay.met
         (has-desk:b dek)
+      :: TODO fetch isinstalled
+      :: TODO fetch ispublished
+      :: TODO fetch docket
       =.  desks  (~(put by desks) dek met)
       :_  this
-      [(fact:io json+!>(~) ~[/frontend]) ~]
+      [(fact:io vita-deploy-update+!>([%all-metadata desks]) ~[/frontend]) ~]
     ==
   ==
 --

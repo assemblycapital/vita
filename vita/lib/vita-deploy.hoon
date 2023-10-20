@@ -90,7 +90,6 @@
   ::
   ++  update
     |=  upd=^update
-    ~&  >  ['enjs upd' upd]
     ^-  json
     %-  pairs
     :_  ~
@@ -113,6 +112,11 @@
       :~
       ['desk' %s d]
       ['existsInClay' %b exists-in-clay.dm]
+      ['isInstalled' %b is-installed.dm]
+      ['isPublished' %b is-published.dm]
+      :-  'docket'
+        ?~  maybe-docket.dm  ~
+        [%s 'TODO']
       ==
     --
   --
@@ -122,7 +126,19 @@
   ++  action
     |=  jon=json
     ^-  ^action
-    *^action
+    ~&  ['decoding' jon]
+    =<  (decode jon)
+    |%
+    ++  decode
+      %-  of
+      :~
+        [%new-desk so]
+        [%install so]
+        [%publish so]
+        [%unpublish so]
+        [%fetch-desk-metadata so]
+      ==
+    --
   ++  update
     |=  jon=json
     ^-  ^update
