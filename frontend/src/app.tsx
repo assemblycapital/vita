@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import Urbit from '@urbit/http-api';
-import { Charges, ChargeUpdateInitial, scryCharges } from '@urbit/api';
-import { AppTile } from './components/AppTile';
+
+// a type of an array of {desk=string, existsinclay:boolean}
+interface DeskMetadata {
+  desk: string;
+  existsInClay: boolean;
+}
 
 const api = new Urbit('', '', window.desk);
 api.ship = window.ship;
 
 export function App() {
   // @ts-ignore
-  const [apps, setApps] = useState<Charges>();
+  const [desks, setDesks] = useState<Array<DeskMetadata>>();
 
   useEffect(() => {
     async function init() {
-      // @ts-ignore
-      const charges = (await api.scry<ChargeUpdateInitial>(scryCharges)).initial;
-      setApps(charges);
 
       api.subscribe({
         app: "vita-deploy",
@@ -36,6 +37,11 @@ export function App() {
 
   function handleSub(data: any) {
     console.log('got update', data)
+    const allMetadata = 'all-metadata'
+    if (data[allMetadata] !== undefined) {
+      const newDesks: Array<DeskMetadata> = data[allMetadata]
+      setDesks(newDesks);
+    }
   }
 
   function newDesk(deskName: string) {
@@ -51,14 +57,30 @@ export function App() {
   }
 
   return (
-    <main className="flex items-center justify-center min-h-screen">
-      <div className="max-w-md space-y-6 py-20">
+    <main className="flex p-3">
+      <div className="">
         <a href="/apps/vita" className="text-blue-500 underline"> &lt;- app metrics </a>
-        <h1 className="text-3xl font-bold">vita app deployer</h1>
-        <p>TODO</p>
+        <h1 className="text-3xl font-bold mb-3">vita app deployer</h1>
+        <div>
+          {desks?.map((desk: DeskMetadata) => (
+            <div key={desk.desk}
+              className="border border-black m-1 p-1 flex flex-col">
+              <div className="font-bold">
+                {'%'}{desk.desk}
+              </div>
+              <div className="flex flex-row gap-1">
+                <div> exists in clay: </div>
+                <div>
+                  {desk.existsInClay ? 'yes' : 'no'}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
 
 
       </div>
-    </main>
+    </main >
   );
 }
