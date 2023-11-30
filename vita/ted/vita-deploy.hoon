@@ -4,30 +4,23 @@
 =,  strand=strand:spider
 =>
 |%
-++  create-app
+++  deploys
   |=  =desk
-  =/  m  (strand ,~)
-  ^-  form:m
-  |=  tin=strand-input:strand
-  =/  b     ~(. b:lib [our.bowl.tin now.bowl.tin])
-  :_  [%done ~]
-  ~[(new-desk:b desk)]
-++  install-app
-  |=  =desk
-  =/  m  (strand ,~)
-  ^-  form:m
-  |=  tin=strand-input:strand
-  =/  b     ~(. b:lib [our.bowl.tin now.bowl.tin])
-  :_  [%done ~]
-  ~[(install-desk:b desk)]
-++  publish-app
-  |=  =desk
-  =/  m  (strand ,~)
-  ^-  form:m
-  |=  tin=strand-input:strand
-  =/  b     ~(. b:lib [our.bowl.tin now.bowl.tin])
-  :_  [%done ~]
-  ~[(publish-desk:b desk)]
+  |%
+  ++  run
+    |=  choice=?(%create %install %publish)
+    =/  m  (strand ,~)
+    ^-  form:m
+    |=  tin=strand-input:strand
+    =/  b  ~(. b:lib [our.bowl.tin now.bowl.tin])
+    :_  [%done ~]
+    :_  ~
+    ?-  choice
+      %create   (new-desk:b desk)
+      %install  (install-desk:b desk)
+      %publish  (publish-desk:b desk)
+    ==
+  --
 --
 ^-  thread:spider
 |=  arg=vase
@@ -35,7 +28,8 @@
 =/  m  (strand ,vase)
 ^-  form:m
 ::
-;<  ~         bind:m  (create-app desk-name)
+=/  dep  (deploys desk-name)
+;<  ~         bind:m  (run:dep %create)
 ;<  ~         bind:m  (sleep:strandio ~s2)
 ::
 ;<  our=ship  bind:m  get-our:strandio
@@ -44,7 +38,7 @@
 ?.  (has-desk:b desk-name)
   ::TODO retry?
   !!
-;<  ~         bind:m  (install-app desk-name)
-;<  ~         bind:m  (publish-app desk-name)
+;<  ~         bind:m  (run:dep %install)
+;<  ~         bind:m  (run:dep %publish)
 :: 
-(pure:m !>([our now]))
+(pure:m !>(~))

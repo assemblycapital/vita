@@ -90,8 +90,6 @@
         %-  (slog leaf+"Thread failed: {(trip p.err)}" q.err)
         `this
           %thread-done
-        =/  res  !<([@p @da] q.cage.sign)
-        ~&  >  res
         =.  desks
           %-  %~  gas  in  desks
           ^-  (list desk)
