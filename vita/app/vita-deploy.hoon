@@ -1,7 +1,7 @@
 
 /-  sur=vita-deploy
 /+  lib=vita-deploy
-/+  default-agent, verb, dbug, agentio
+/+  default-agent, verb, dbug, agentio, strandio
 :: :: ::
 |%
 +$  versioned-state
@@ -31,7 +31,6 @@
 ++  on-fail   on-fail:def
 ++  on-leave  on-leave:def
 ++  on-peek   on-peek:def
-++  on-agent  on-agent:def
 ++  on-arvo   on-arvo:def
 ++  on-save
   ^-  vase
@@ -55,13 +54,21 @@
     =/  act  !<(action:sur vase)
     ?-  -.act
         %new-desk
-      =.  desks
-        (~(put by desks) desk-name.act *desk-metadata:sur)
+      :: =.  desks
+      ::   (~(put by desks) desk-name.act *desk-metadata:sur)
       :: =/  has  (has-desk:b desk-name.act)
       :: TODO use has?
-      =/  o  (new-desk:b desk-name.act)
+      :: =/  o  (new-desk:b desk-name.act)
+      :: :_  this
+      :: [o ~]
+      =/  tid  `@ta`(cat 3 'thread_' (scot %uv (sham eny.bowl)))
+      =/  ta-now  `@ta`(scot %da now.bowl)
+      =/  start-args  [~ `tid byk.bowl(r da+now.bowl) %vita-deploy !>(%foo)]
       :_  this
-      [o ~]
+      :~
+        [%pass /thread/[ta-now] %agent [our.bowl %spider] %watch /thread-result/[tid]]
+        [%pass /thread/[ta-now] %agent [our.bowl %spider] %poke %spider-start !>(start-args)]
+      ==
       ::
         %install
       :: TODO
@@ -87,6 +94,34 @@
       =.  desks  (~(put by desks) dek met)
       :_  this
       [(fact:io vita-deploy-update+!>([%all-metadata desks]) ~[/frontend]) ~]
+    ==
+  ==
+::
+++  on-agent
+  |=  [=wire =sign:agent:gall]
+  ^-  (quip card _this)
+  ~&  [wire sign]
+  ?+    -.wire  (on-agent:def wire sign)
+      %thread
+    ?+    -.sign  (on-agent:def wire sign)
+        %poke-ack
+      ?~  p.sign
+        %-  (slog leaf+"Thread started successfully" ~)
+        `this
+      %-  (slog leaf+"Thread failed to start" u.p.sign)
+      `this
+      ::
+        %fact
+      ?+    p.cage.sign  (on-agent:def wire sign)
+          %thread-fail
+        =/  err  !<  (pair term tang)  q.cage.sign
+        %-  (slog leaf+"Thread failed: {(trip p.err)}" q.err)
+        `this
+          %thread-done
+        =/  res  !<([@p @da] q.cage.sign)
+        ~&  >  res
+        `this
+      ==
     ==
   ==
 --

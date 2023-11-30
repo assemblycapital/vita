@@ -69,10 +69,10 @@ export function App() {
       },
     });
 
-    //set timer to call fetchDeskMetadata
-    setTimeout(() => {
-      fetchDeskMetadata(deskName);
-    }, 1000);
+    // //set timer to call fetchDeskMetadata
+    // setTimeout(() => {
+    //   fetchDeskMetadata(deskName);
+    // }, 1000);
 
   }
 
