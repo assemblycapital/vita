@@ -1,23 +1,10 @@
-/-  docket-sur=docket
 |%
-+$  desk-metadata
-  $:
-    exists-in-clay=_|
-    is-installed=_|
-    is-published=_|
-    maybe-docket=(unit docket:docket-sur)
-  ==
 +$  update
   $%
-    [%all-metadata all=(map desk desk-metadata)]
-    [%desk-metadata =desk =desk-metadata]
+    [%desks desks=(set @tas)]
   ==
 +$  action
   $%
-    [%new-desk desk-name=@tas]
-    [%install desk-name=@tas]
-    [%publish desk-name=@tas]
-    [%unpublish desk-name=@tas]
-    [%fetch-desk-metadata desk-name=@tas]
+    [%create-app desk-name=@tas]
   ==
 --

@@ -1,5 +1,6 @@
 
 /-  sur=vita-deploy
+/-  tt=treaty
 /+  lib=vita-deploy
 /+  default-agent, verb, dbug, agentio, strandio
 :: :: ::
@@ -9,7 +10,7 @@
   ==
 +$  state-0  $:
   %0
-    desks=(map desk desk-metadata:sur)
+    desks=(set desk)
   ==
 +$  card  card:agent:gall
 --
@@ -42,7 +43,7 @@
   ?+    path  (on-watch:def path) 
       [%frontend ~]
     :_  this
-    [(fact:io vita-deploy-update+!>([%all-metadata desks]) ~[/frontend]) ~]
+    [(fact:io vita-deploy-update+!>([%desks desks]) ~[/frontend]) ~]
   ==
 ::
 ++  on-poke
@@ -53,47 +54,18 @@
     ?>  =(src.bowl our.bowl)
     =/  act  !<(action:sur vase)
     ?-  -.act
-        %new-desk
-      :: =.  desks
-      ::   (~(put by desks) desk-name.act *desk-metadata:sur)
+        %create-app
       :: =/  has  (has-desk:b desk-name.act)
       :: TODO use has?
-      :: =/  o  (new-desk:b desk-name.act)
-      :: :_  this
-      :: [o ~]
       =/  tid  `@ta`(cat 3 'thread_' (scot %uv (sham eny.bowl)))
       =/  ta-now  `@ta`(scot %da now.bowl)
-      =/  start-args  [~ `tid byk.bowl(r da+now.bowl) %vita-deploy !>(%foo)]
+      =/  start-args  [~ `tid byk.bowl(r da+now.bowl) %vita-deploy !>(desk-name.act)]
       :_  this
       :~
         [%pass /thread/[ta-now] %agent [our.bowl %spider] %watch /thread-result/[tid]]
         [%pass /thread/[ta-now] %agent [our.bowl %spider] %poke %spider-start !>(start-args)]
       ==
       ::
-        %install
-      :: TODO
-      `this
-        %publish
-      :: TODO
-      `this
-        %unpublish
-      :: TODO
-      `this
-      ::
-        %fetch-desk-metadata
-      =*  dek  desk-name.act
-      ~&  [act]
-      ?~  mut=(~(get by desks) dek)
-        `this
-      =*  met  u.mut
-      =.  exists-in-clay.met
-        (has-desk:b dek)
-      :: TODO fetch isinstalled
-      :: TODO fetch ispublished
-      :: TODO fetch docket
-      =.  desks  (~(put by desks) dek met)
-      :_  this
-      [(fact:io vita-deploy-update+!>([%all-metadata desks]) ~[/frontend]) ~]
     ==
   ==
 ::
@@ -120,7 +92,19 @@
           %thread-done
         =/  res  !<([@p @da] q.cage.sign)
         ~&  >  res
-        `this
+        =.  desks
+          %-  %~  gas  in  desks
+          ^-  (list desk)
+          =/  ally
+            scry-treaty-alliance:hc
+          ?+  -.ally  ~
+            %ini
+            %+  turn  ~(tap in init.ally)
+              |=  [=ship =desk]
+              desk
+          ==
+        :_  this
+        [give-desks:hc ~]
       ==
     ==
   ==
@@ -129,4 +113,9 @@
 |_  bowl=bowl:gall
 +*  io    ~(. agentio bowl)
 ++  nil  ~
+++  give-desks
+  ^-  card
+  (fact:io vita-deploy-update+!>([%desks desks]) ~[/frontend])
+++  scry-treaty-alliance
+  .^(update:alliance:tt %gx /[(scot %p our.bowl)]/treaty/[(scot %da now.bowl)]/alliance/noun)
 --

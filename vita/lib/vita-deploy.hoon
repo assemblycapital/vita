@@ -5,20 +5,30 @@
 |%
 ::
 ++  b
-  |_  =bowl:gall
+  |_  [our=@p now=@da]
   ++  has-desk
     |=  =desk
     ^-  ?
-    =/  bek=beak  [our.bowl %$ da+now.bowl]
+    =/  bek=beak  [our %$ da+now]
     (~(has in .^((set ^desk) %cd (en-beam bek /))) desk)
   ::
+  ++  install-desk
+    :: referenced |install
+    |=  =desk
+    ^-  card:agent:gall
+    [%pass /vita-deploy/install-app/[desk]/[(scot %da now)] %agent [our %hood] %poke [%kiln-install !>([desk our desk])]]
+  ++  publish-desk
+    :: referenced :treaty|publish
+    |=  =desk
+    ^-  card:agent:gall
+    [%pass /vita-deploy/publish-app/[desk]/[(scot %da now)] %agent [our %treaty] %poke [%alliance-update-0 !>([%add our desk])]]
   ++  new-desk
     :: referenced /gen/hood/new-desk
     ::
     |=  =desk
     ^-  card:agent:gall
     =;  h-pass
-        [%pass /vita-deploy/new-desk %agent [our.bowl %hood] %poke helm-pass+!>(h-pass)]
+        [%pass /vita-deploy/new-desk %agent [our %hood] %poke helm-pass+!>(h-pass)]
     =/  from  %vita
     =/  gall  &
     %^  new-desk:cloy  desk
@@ -58,9 +68,9 @@
       ~|  [%missing-source-file from path]
       .^  *
         %cx
-        (scot %p our.bowl)
+        (scot %p our)
         from
-        (scot %da now.bowl)
+        (scot %da now)
         path
       ==
     --
@@ -96,28 +106,16 @@
     ^-  [cord json]
     :-  -.upd
     |^
-      ?+  -.upd  !!
-          %all-metadata
-        (en-all-metadata +.upd)
+      ?-  -.upd
+          %desks
+        (en-desks +.upd)
       ==
-    ++  en-all-metadata
-      |=  amd=(map desk desk-metadata)
+    ++  en-desks
+      |=  dez=(set @tas)
       :-  %a
-      %+  turn  ~(tap by amd)
-      en-metadata
-    ++  en-metadata
-      |=  [d=desk dm=desk-metadata]
-      ^-  json
-      %-  pairs:enjs
-      :~
-      ['desk' %s d]
-      ['existsInClay' %b exists-in-clay.dm]
-      ['isInstalled' %b is-installed.dm]
-      ['isPublished' %b is-published.dm]
-      :-  'docket'
-        ?~  maybe-docket.dm  ~
-        [%s 'TODO']
-      ==
+      %+  turn  ~(tap in dez)
+      |=  d=@tas
+      [%s d]
     --
   --
 ++  dejs
@@ -126,17 +124,12 @@
   ++  action
     |=  jon=json
     ^-  ^action
-    ~&  ['decoding' jon]
     =<  (decode jon)
     |%
     ++  decode
       %-  of
       :~
-        [%new-desk so]
-        [%install so]
-        [%publish so]
-        [%unpublish so]
-        [%fetch-desk-metadata so]
+        [%create-app so]
       ==
     --
   ++  update

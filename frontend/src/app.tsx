@@ -4,9 +4,6 @@ import Urbit from '@urbit/http-api';
 // a type of an array of {desk=string, existsinclay:boolean}
 interface DeskMetadata {
   desk: string;
-  existsInClay: boolean;
-  isInstalled: boolean;
-  isPublished: boolean;
 }
 
 const api = new Urbit('', '', window.desk);
@@ -14,7 +11,7 @@ api.ship = window.ship;
 
 export function App() {
   // @ts-ignore
-  const [desks, setDesks] = useState<Array<DeskMetadata>>();
+  const [desks, setDesks] = useState<Array<string>>();
 
   useEffect(() => {
     async function init() {
@@ -39,21 +36,11 @@ export function App() {
 
   function handleSub(data: any) {
     console.log('got update', data)
-    const allMetadata = 'all-metadata'
-    if (data[allMetadata] !== undefined) {
-      const newDesks: Array<DeskMetadata> = data[allMetadata]
+    const desks = 'desks'
+    if (data[desks] !== undefined) {
+      const newDesks: Array<string> = data[desks]
       setDesks(newDesks);
     }
-  }
-
-  function fetchDeskMetadata(deskName: string) {
-    api.poke({
-      app: "vita-deploy",
-      mark: "vita-deploy-action",
-      json: {
-        'fetch-desk-metadata': deskName
-      },
-    });
   }
 
   const invalidDeskNames = ['base', 'landscape', 'groups', 'talk', 'realm', 'vita', 'lemur', 'pals', 'radio', 'rumors', 'portal']
@@ -65,14 +52,9 @@ export function App() {
       app: "vita-deploy",
       mark: "vita-deploy-action",
       json: {
-        'new-desk': deskName
+        'create-app': deskName
       },
     });
-
-    // //set timer to call fetchDeskMetadata
-    // setTimeout(() => {
-    //   fetchDeskMetadata(deskName);
-    // }, 1000);
 
   }
 
@@ -83,13 +65,11 @@ export function App() {
         <h1>vita app deployer</h1>
         <div>
           <div>
-            <div>new desk</div>
-
-            {/* text input and submit button onclick=newDesk function */}
 
             <div>
 
               <input type="text" id="new-desk-name"
+                placeholder="unique-desk-name"
 
               />
               <button onClick={() => {
@@ -104,61 +84,33 @@ export function App() {
 
               }}
               >
-                create
+                create app
               </button>
             </div>
           </div>
 
 
           <div>
-            {/* created desks */}
-            {desks?.map((desk: DeskMetadata) => (
-              <div key={desk.desk} >
-                <div>
-                  {'%'}{desk.desk}
-                </div>
-                <div>
-                  <div> exists in clay: </div>
+            <ul>
+              {/* created desks */}
+              {desks?.map((desk: string) => (
+                <li key={desk} >
                   <div>
-                    {desk.existsInClay ? 'yes' : 'no'}
+                    {'%'}{desk}
                   </div>
-                </div>
-                <div>
-                  {!desk.isInstalled &&
-                    <div>
-                      <button
-                        onClick={() => {
-                          //todo install
-                        }}
-                      >
-                        install
-                      </button>
-                    </div>
-                  }
-
-                  {desk.isPublished ?
-                    <button
-                      onClick={() => {
-                        //todo unpublish
-                      }}
-                    >
-                      unpublish
-                    </button>
-                    :
-                    <div>
-                      <button
-                        onClick={() => {
-                          //todo publish
-                        }}
-                      >
-                        publish
-                      </button>
-                    </div>
-                  }
-
-                </div>
-              </div>
-            ))}
+                  <div>
+                    <a href="#">
+                      edit app tile
+                    </a>
+                  </div>
+                  <div>
+                    <a href="#">
+                      upload frontend
+                    </a>
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
 
 
