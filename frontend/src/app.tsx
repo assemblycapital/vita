@@ -77,20 +77,20 @@ export function App() {
   }
 
   return (
-    <main className="flex p-3">
-      <div className="">
-        <a href="/apps/vita" className="text-blue-500 underline"> &lt;- app metrics </a>
-        <h1 className="text-3xl font-bold mb-3">vita app deployer</h1>
-        <div className="flex flex-col gap-3">
-          <div className="border border-black p-3">
+    <main>
+      <div>
+        <a href="/apps/vita"> &lt;- app metrics </a>
+        <h1>vita app deployer</h1>
+        <div>
+          <div>
             <div>new desk</div>
 
             {/* text input and submit button onclick=newDesk function */}
 
-            <div className="flex flex-row gap-2">
+            <div>
 
               <input type="text" id="new-desk-name"
-                className="border border-black"
+
               />
               <button onClick={() => {
                 const deskName = (document.getElementById('new-desk-name') as HTMLInputElement).value;
@@ -113,21 +113,20 @@ export function App() {
           <div>
             {/* created desks */}
             {desks?.map((desk: DeskMetadata) => (
-              <div key={desk.desk}
-                className="border border-black m-1 p-1 flex flex-col">
-                <div className="font-bold">
+              <div key={desk.desk} >
+                <div>
                   {'%'}{desk.desk}
                 </div>
-                <div className="flex flex-row gap-1">
+                <div>
                   <div> exists in clay: </div>
                   <div>
                     {desk.existsInClay ? 'yes' : 'no'}
                   </div>
                 </div>
-                <div className="flex flex-row gap-1">
+                <div>
                   {!desk.isInstalled &&
                     <div>
-                      <button className="border border-black p-1"
+                      <button
                         onClick={() => {
                           //todo install
                         }}
@@ -138,7 +137,7 @@ export function App() {
                   }
 
                   {desk.isPublished ?
-                    <button className="border border-black p-1"
+                    <button
                       onClick={() => {
                         //todo unpublish
                       }}
@@ -147,7 +146,7 @@ export function App() {
                     </button>
                     :
                     <div>
-                      <button className="border border-black p-1"
+                      <button
                         onClick={() => {
                           //todo publish
                         }}
