@@ -95,18 +95,23 @@ export function App() {
               {/* created desks */}
               {desks?.map((desk: string) => (
                 <li key={desk} >
-                  <div>
-                    {'%'}{desk}
-                  </div>
-                  <div>
-                    <a href="#">
-                      edit app tile
-                    </a>
-                  </div>
-                  <div>
-                    <a href="#">
-                      upload frontend
-                    </a>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      gap: '1rem',
+                      padding: '0.5rem',
+                      margin: '0.5rem 0'
+                    }}
+                  >
+                    <div>
+                      {'%'}{desk}
+                    </div>
+                    <div>
+                      <a href="#">
+                        config
+                      </a>
+                    </div>
                   </div>
                 </li>
               ))}

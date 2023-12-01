@@ -59,9 +59,7 @@
   ^-  (quip card _this)
   =.  period  [~ ~h8]
   :_  this
-  :-  get-all-card:hc
-  :-  [%pass /eyre/connect %arvo %e %connect [~ /apps/[dap.bowl]] dap.bowl]
-  ~
+  [get-all-card:hc ~]
 ++  on-arvo
   |=  [=wire =sign-arvo]
   ^-  (quip card _this)
@@ -71,6 +69,7 @@
     :_  this
     [get-all-card:hc ~]
   ==
+::
 ++  on-load
   |=  old-state=vase
   ^-  (quip card _this)
@@ -78,7 +77,12 @@
   :_  this(state old)
   :: anomoly: bad data for %vita when doing this from on-load
   :: must be some event timing, something about clay not resetting subs until after on-load completes???
-  [get-all-card:hc ~]
+  ::
+  :~
+  get-all-card:hc
+  [%pass /eyre/connect %arvo %e %disconnect [~ /apps/[dap.bowl]]]
+  [%pass /eyre/connect %arvo %e %connect [~ /[dap.bowl]] dap.bowl]
+  ==
 ::
 ++  on-peek
   |=  =path
@@ -362,7 +366,7 @@
   ?.  authenticated.inbound-request
     :_  state
     %-  send
-    [302 ~ [%login-redirect './apps/vita']]
+    [302 ~ [%login-redirect '/vita']]
   ::           
   ?+    method.request.inbound-request 
     [(send [405 ~ [%stock ~]]) state]
@@ -370,9 +374,9 @@
       %'GET'
     ?+    site  
       :_  state 
-      (send [404 ~ [%plain "404 - Not Found"]])
+      (send [404 ~ [%plain "404 - Not Found :("]])
       ::
-        [%apps %vita ~]
+        [%vita ~]
       :_  state
       ::(send [200 ~ [%csv make-downloads-csv]])
       =/  ht

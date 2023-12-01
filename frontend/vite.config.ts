@@ -10,6 +10,6 @@ export default ({ mode }) => {
   console.log(SHIP_URL);
 
   return defineConfig({
-    plugins: [urbitPlugin({ base: 'vita-js', target: SHIP_URL, secure: false }), reactRefresh()]
+    plugins: [urbitPlugin({ base: 'vita', target: SHIP_URL, secure: false }), reactRefresh()]
   });
 };
