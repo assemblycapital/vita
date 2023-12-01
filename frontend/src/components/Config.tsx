@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Urbit from '@urbit/http-api';
 import { Route, useParams } from 'react-router-dom';
+import './Config.css';
+
 
 const api = new Urbit('', '', window.desk);
 api.ship = window.ship;
@@ -11,8 +13,33 @@ export function Config() {
   return (
     <div>
       <a href="/apps/vita/"> &lt;- deployer </a>
-      <h1>vita app CONFIG</h1>
-      <p>{subdirectory}</p>
+      <h1>config %{subdirectory}</h1>
+      <hr />
+      <div>
+        <h3>edit app tile</h3>
+        <form>
+          <label htmlFor="app-title">title</label>
+          <input type="text" id="app-title"></input>
+
+          <label htmlFor="app-description">description</label>
+          <input type="text" id="app-description"></input>
+
+          <button>submit</button>
+        </form>
+      </div>
+      <hr />
+      <div>
+        <h3>upload frontend</h3>
+        <form>
+          <input type="file" id="app-files"></input>
+          <button>upload</button>
+        </form>
+      </div>
+      <hr />
+
+      <form>
+        <button>delete %{subdirectory}</button>
+      </form>
     </div>
   )
 
