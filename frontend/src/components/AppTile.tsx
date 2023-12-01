@@ -8,7 +8,7 @@ function normalizeUrbitColor(color: string): string {
   return `#${color.slice(2).replace('.', '').toUpperCase()}`;
 }
 
-export const AppTile = ({ image, color }: Charge) => {
+export const AppTile = ({ image, color }: any) => {
   const [imageError, setImageError] = useState(false);
 
   return (

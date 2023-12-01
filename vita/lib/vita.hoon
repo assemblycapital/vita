@@ -154,7 +154,7 @@
             ;a(target "_blank", href "https://github.com/assemblycapital/vita/#readme"): README
           ==
           ;p
-            ;a(href "/apps/vita"): app deployment
+            ;a(href "/apps/vita/"): app deployment
           ==
           ;hr;
         
