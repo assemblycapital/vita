@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Urbit from '@urbit/http-api';
 import { GlobalState, GlobalStateContext } from './Global';
+import { Link } from 'react-router-dom';
 
 
 const api = new Urbit('', '', window.desk);
@@ -71,12 +72,11 @@ export function Deployer() {
                   }}
                 >
                   <div>
-                    {'%'}{desk}
                   </div>
                   <div>
-                    <a href={`/apps/vita/config/${desk}`} >
-                      config
-                    </a>
+                    <Link to={`/config/${desk}`} >
+                      {'%'}{desk}
+                    </Link>
                   </div>
                 </div>
               </li>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Urbit from '@urbit/http-api';
-import { Route, useParams } from 'react-router-dom';
+import { Link, Route, useParams } from 'react-router-dom';
 import './Config.css';
 
 
@@ -12,7 +12,7 @@ export function Config() {
 
   return (
     <div>
-      <a href="/apps/vita/"> &lt;- deployer </a>
+      <Link to="/"> &lt;- deployer </Link>
       <h1>config %{subdirectory}</h1>
       <hr />
       <div>
