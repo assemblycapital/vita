@@ -1,5 +1,6 @@
 import Urbit from '@urbit/http-api';
 import React, { createContext, useEffect, useState } from 'react';
+import { scryCharges } from '@urbit/api';
 
 export interface DeskMetrics {
   downloads: number;
@@ -10,9 +11,66 @@ export interface DeskMetrics {
 export interface Desk {
   desk: string;
   metrics: DeskMetrics | null;
+  charge: Charge | null;
 }
 export type Desks = {
   [key: string]: Desk;
+};
+
+export type Charges = {
+  [key: string]: Charge;
+};
+export interface ChargeUpdateInitial {
+  initial: {
+    [desk: string]: Charge;
+  }
+}
+
+export type DocketHref = DocketHrefSite | DocketHrefGlob;
+
+export interface DocketHrefGlob {
+  glob: {
+    base: string;
+  }
+}
+
+export interface DocketHrefSite {
+  site: string;
+}
+
+export type Chad = HungChad | GlobChad | SiteChad | InstallChad | SuspendChad;
+
+export interface HungChad {
+  hung: string;
+}
+
+export interface GlobChad {
+  glob: null;
+}
+export interface SiteChad {
+  site: null;
+}
+export interface InstallChad {
+  install: null;
+
+}
+export interface SuspendChad {
+  suspend: null;
+}
+
+export interface Docket {
+  title: string;
+  info?: string;
+  color: string;
+  href: DocketHref;
+  website: string;
+  license: string;
+  version: string;
+  image?: string;
+}
+
+export interface Charge extends Docket {
+  chad: Chad;
 };
 
 export interface GlobalState {
@@ -30,6 +88,36 @@ api.ship = window.ship;
 
 export const GlobalStateProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, setState] = useState<GlobalState>(buntGlobalState);
+
+  useEffect(() => {
+    async function init() {
+      const charges: Charges = (await api.scry<ChargeUpdateInitial>(scryCharges)).initial;
+      console.log('charges', charges)
+      let newState = { ...state };
+      // if no desk, create desk
+      let keys = Object.keys(charges);
+      for (let i = 0; i < keys.length; i++) {
+        const deskName = keys[i];
+        let alreadyDesk = newState.desks[deskName];
+
+        if (!alreadyDesk) {
+          alreadyDesk = {
+            desk: deskName,
+            metrics: null,
+            charge: null,
+          }
+        }
+
+        alreadyDesk.charge = charges[deskName];
+
+
+        newState.desks[deskName] = alreadyDesk;
+      }
+
+    }
+
+    init();
+  }, []);
 
   useEffect(() => {
     async function init() {
@@ -66,15 +154,14 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
 
       for (let i = 0; i < result.length; i++) {
         const row = result[i];
-        // let alreadyDesk = newState.desks[row.desk];
-        // let alreadyDeskMetrics = alreadyDesk ? alreadyDesk.metrics : null;
 
         // if no desk, create desk
         let alreadyDesk = newState.desks[row.desk];
         if (!alreadyDesk) {
           alreadyDesk = {
             desk: row.desk,
-            metrics: null
+            metrics: null,
+            charge: null,
           }
         }
 
@@ -118,7 +205,8 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
         if (state.desks[desk]) continue;
         newState.desks[desk] = {
           desk: desk,
-          metrics: null
+          metrics: null,
+          charge: null,
         }
       }
       setState(newState);
