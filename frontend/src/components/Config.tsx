@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Urbit from '@urbit/http-api';
 import { Link, Route, useParams } from 'react-router-dom';
 import './Config.css';
+import { Footer } from './Footer';
 
 
 const api = new Urbit('', '', window.desk);
@@ -40,6 +41,7 @@ export function Config() {
       <form>
         <button>delete %{subdirectory}</button>
       </form>
+      <Footer />
     </div>
   )
 
