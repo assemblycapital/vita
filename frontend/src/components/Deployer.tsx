@@ -1,7 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Urbit from '@urbit/http-api';
-import { GlobalState, GlobalStateContext } from './Global';
+import { Desk, GlobalState, GlobalStateContext } from './Global';
 import { Link } from 'react-router-dom';
+import './Deployer.css';
+import { Footer } from './Footer';
 
 
 const api = new Urbit('', '', window.desk);
@@ -27,11 +29,17 @@ export function Deployer() {
 
   }
 
+
   return (
-    <div>
-      <a href="/vita"> &lt;- app metrics </a>
-      <h1>vita app deployer</h1>
-      <div>
+    <div className="vita-body">
+      <h1>vita</h1>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '1rem',
+        }}
+      >
         <div>
 
           <div>
@@ -58,35 +66,51 @@ export function Deployer() {
         </div>
 
         <div>
-          <ul>
+          <table
+          >
+            <thead>
+              <tr>
+                <th>desk</th>
+                <th>downloads</th>
+                <th>activity</th>
+              </tr>
+            </thead>
             {/* created desks */}
-            {desks.map((desk: string) => (
-              <li key={desk} >
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    gap: '1rem',
-                    padding: '0.5rem',
-                    margin: '0.5rem 0'
-                  }}
-                >
-                  <div>
-                  </div>
-                  <div>
-                    <Link to={`/config/${desk}`} >
-                      {'%'}{desk}
-                    </Link>
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
+            {console.log(desks)}
+            <tbody>
+              {Object.keys(desks).map((deskName) => {
+                const desk = desks[deskName];
+
+                return (
+                  <tr key={desk.desk} >
+                    <td>
+                      <Link to={`/config/${desk.desk}`} >
+                        {'%'}{desk.desk}
+                      </Link>
+                    </td>
+                    <td>
+                      {desk.metrics ? desk.metrics.downloads : '-'}
+                    </td>
+                    <td>
+                      {(() => {
+                        if (desk.metrics) {
+                          return (desk.metrics.activity > 0) ? desk.metrics.activity : '-';
+                        } else {
+                          return '-';
+                        }
+                      })()}
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
         </div>
 
 
       </div>
 
+      <Footer />
     </div >
   );
 }

@@ -144,6 +144,14 @@
         ^-  @ud
         ~(wyt in latest.downloads.metrics)
       ``noun+!>(sum)
+    [%x %json %metrics %summary ~]
+      :: return a summary of downloads as (map desk @ud)
+      =/  sum=(map desk [dow=@ud act=@ud])
+        %-  ~(urn by apps)
+        |=  [=desk =metrics:store]
+        :-  ~(wyt in latest.downloads.metrics)
+        ~(wyt in latest.activity.metrics)
+      ``json+!>((desk-by-metrics:enjs:vita sum))
     :: .^((map desk @ud) %gx /=vita=/cumulative-downloads/summary/noun)
     [%x %cumulative-downloads %summary ~]
       =/  sum=(map desk @ud)

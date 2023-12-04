@@ -12,8 +12,8 @@ export function Config() {
 
   return (
     <div>
-      <Link to="/"> &lt;- deployer </Link>
-      <h1>config %{subdirectory}</h1>
+      <Link to="/"> home</Link>
+      <h1>vita / %{subdirectory}</h1>
       <hr />
       <div>
         <h3>edit app tile</h3>

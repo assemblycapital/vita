@@ -67,6 +67,18 @@
       ~(tap in ships)
       |=  her=@p
       [%s (scot %p her)]
+  ++  desk-by-metrics
+    |=  val=(map desk [@ud @ud])
+    ^-  json
+    :-  %a
+    %+  turn  ~(tap by val)
+    |=  [=desk [dow=@ud act=@ud]]
+    %-  pairs
+    :~
+      [%desk %s desk]
+      [%downloads [%n (scot %ud dow)]]
+      [%activity [%n (scot %ud act)]]
+    ==
   --
 ::
 ++  dejs
@@ -75,7 +87,14 @@
   ++  action
     |=  jon=json
     ^-  ^action
-    *^action
+    =<  (decode jon)
+    |%
+    ++  decode
+      %-  of
+      :~
+        [%get-all ul]
+      ==
+    --
   ++  metrics
     |=  jon=json
     ^-  ^metrics

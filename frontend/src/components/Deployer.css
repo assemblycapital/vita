@@ -1,0 +1,16 @@
+
+div.vita-body {
+  margin:auto;
+  text-align: center;
+}
+table {
+  margin:auto;
+}
+table th {
+  padding:0 0.5rem;
+  text-align:left
+}
+table td {
+  padding:0.2rem 0.5rem;
+  text-align:left
+}
