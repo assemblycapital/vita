@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { Deployer } from './components/Deployer';
+import { Home } from './components/Home';
 import { Config } from './components/Config';
 import { GlobalStateProvider } from './components/Global';
 
@@ -11,7 +11,7 @@ function App() {
     <GlobalStateProvider>
       <Router basename="/apps/vita">
         <Routes>
-          <Route path="/" element={<Deployer />} />
+          <Route path="/" element={<Home />} />
           <Route path="/config/:subdirectory" element={<Config />} />
         </Routes>
       </Router>

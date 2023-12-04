@@ -2,14 +2,14 @@ import React, { useContext, useEffect, useState } from 'react';
 import Urbit from '@urbit/http-api';
 import { Desk, GlobalState, GlobalStateContext } from './Global';
 import { Link } from 'react-router-dom';
-import './Deployer.css';
+import './Home.css';
 import { Footer } from './Footer';
 
 
 const api = new Urbit('', '', window.desk);
 api.ship = window.ship;
 
-export function Deployer() {
+export function Home() {
 
   const { desks } = useContext(GlobalStateContext);
 
@@ -75,8 +75,6 @@ export function Deployer() {
                 <th>activity</th>
               </tr>
             </thead>
-            {/* created desks */}
-            {console.log(desks)}
             <tbody>
               {Object.keys(desks).map((deskName) => {
                 const desk = desks[deskName];
