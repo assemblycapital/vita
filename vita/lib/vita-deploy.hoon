@@ -126,6 +126,7 @@
       [%s d]
     --
   --
+::
 ++  dejs
   =,  dejs:format
   |%
@@ -139,8 +140,49 @@
       :~
         [%create-app so]
         [%delete-app so]
+        [%get-desks ul]
+          :-  %set-docket
+        %-  ot
+        :~  
+          [%desk-name so]
+          [%docket de-docket]
+        ==
       ==
     --
+  ++  de-docket
+    |=  jon=json
+    =|  dot=docket:docket-sur
+    :-  %1
+    =;  result=inner-docket:sur
+      result
+    =<  (decode jon)
+    |%
+      ++  decode
+      %-  ot
+      :~  
+        [%title so]
+        [%info so]
+        [%color nu] ::TODO
+        [%href href]
+        [%image image]
+        [%version version]
+        [%website so]
+        [%license so]
+      ==
+    --
+  ++  image 
+    |=  jon=json
+    ?>  ?=(%s -.jon)
+    ?:  =('' p.jon)  ~
+    `p.jon
+  ++  version
+    |=  jon=json
+    ^-  version:docket-sur
+    [0 0 0]
+  ++  href 
+    |=  jon=json
+    ^-  href:docket-sur
+    *href:docket-sur
   ++  update
     |=  jon=json
     ^-  ^update

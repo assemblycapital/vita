@@ -1,11 +1,26 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Urbit from '@urbit/http-api';
-import { Link, Route, useParams } from 'react-router-dom';
 import './Config.css';
-import { GlobalStateContext } from './Global';
+import { Charge, Docket, GlobalStateContext } from './Global';
 
 
-// deskname string is passed in from the parent component
+const api = new Urbit('', '', window.desk);
+api.ship = window.ship;
+
+function setDocket(deskName: string, docket: Docket) {
+  api.poke({
+    app: "vita-deploy",
+    mark: "vita-deploy-action",
+    json: {
+      'set-docket': {
+        "desk-name": deskName,
+        docket: docket
+      }
+    },
+  });
+  console.log('set docket', deskName, docket)
+}
+
 
 export function ConfigDocketForm({ deskName }: { deskName: string }) {
 
@@ -98,7 +113,30 @@ export function ConfigDocketForm({ deskName }: { deskName: string }) {
       </div>
 
       <br />
-      <button>submit</button>
-    </form>
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          const title = (document.getElementById('app-title') as HTMLInputElement).value;
+          const info = (document.getElementById('app-info') as HTMLInputElement).value;
+          const color = (document.getElementById('app-color') as HTMLInputElement).value;
+          const website = (document.getElementById('app-website') as HTMLInputElement).value;
+          const license = (document.getElementById('app-license') as HTMLInputElement).value;
+          const version = (document.getElementById('app-version') as HTMLInputElement).value;
+          const image = (document.getElementById('app-image') as HTMLInputElement).value;
+
+          const newDocket: Docket = {
+            title: title, info: info,
+            color: "ff", //TODO remove dots and `0x` prefix
+            website: website, license: license, version: version,
+            image: image,
+            href: docket.href
+          }
+
+          setDocket(deskName, newDocket)
+        }}
+      >
+        submit
+      </button>
+    </form >
   )
 }

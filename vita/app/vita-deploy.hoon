@@ -86,6 +86,10 @@
         (unpublish-desk:b desk-name.act)
         give-desks:hc
       ==
+        %set-docket
+      ::todo
+      ~&  >  [%todo %set-docket act]
+      `this
     ==
   ==
 ::
