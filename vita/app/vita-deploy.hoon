@@ -25,10 +25,8 @@
     def   ~(. (default-agent this %|) bowl)
     hc    ~(. +> bowl)
     io    ~(. agentio bowl)
-    b     ~(. b:lib bowl)
+    b     ~(. b:lib [our.bowl now.bowl])
 ::
-++  on-init   on-init:def
-++  on-load   on-load:def
 ++  on-fail   on-fail:def
 ++  on-leave  on-leave:def
 ++  on-peek   on-peek:def
@@ -37,13 +35,25 @@
   ^-  vase
   !>(state)
 ::
+++  on-init
+  ^-  (quip card _this)
+  :_  this
+  ~
+  :: ~[(~(poke-our pass:io /) vita-deploy-action+!>(%get-desks ~))]
+++  on-load
+  |=  old-state=vase
+  ^-  (quip card _this)
+  =/  old  !<(versioned-state old-state)
+  :_  this(state old)
+  ~[poke-get-desks:hc]
+::
 ++  on-watch
   |=  =path
   ^-  (quip card _this)
   ?+    path  (on-watch:def path) 
       [%frontend ~]
     :_  this
-    [(fact:io vita-deploy-update+!>([%desks desks]) ~[/frontend]) ~]
+    ~[give-desks:hc]
   ==
 ::
 ++  on-poke
@@ -54,6 +64,8 @@
     ?>  =(src.bowl our.bowl)
     =/  act  !<(action:sur vase)
     ?-  -.act
+      %get-desks  `this(desks get-desks:hc)
+      ::
         %create-app
       :: =/  has  (has-desk:b desk-name.act)
       :: TODO use has?
@@ -66,14 +78,23 @@
         [%pass /thread/[ta-now] %agent [our.bowl %spider] %poke %spider-start !>(start-args)]
       ==
       ::
+        %delete-app
+      =.  desks  (~(del in desks) desk-name.act)
+      :_  this
+      :~
+        (uninstall-desk:b desk-name.act)
+        (unpublish-desk:b desk-name.act)
+        give-desks:hc
+      ==
     ==
   ==
+::
 ::
 ++  on-agent
   |=  [=wire =sign:agent:gall]
   ^-  (quip card _this)
   ~&  [wire sign]
-  ?+    -.wire  (on-agent:def wire sign)
+  ?+    -.wire  `this
       %thread
     ?+    -.sign  (on-agent:def wire sign)
         %poke-ack
@@ -91,16 +112,7 @@
         `this
           %thread-done
         =.  desks
-          %-  %~  gas  in  desks
-          ^-  (list desk)
-          =/  ally
-            scry-treaty-alliance:hc
-          ?+  -.ally  ~
-            %ini
-            %+  turn  ~(tap in init.ally)
-              |=  [=ship =desk]
-              desk
-          ==
+          get-desks:hc
         :_  this
         [give-desks:hc ~]
       ==
@@ -110,10 +122,21 @@
 ::
 |_  bowl=bowl:gall
 +*  io    ~(. agentio bowl)
-++  nil  ~
+++  get-desks
+  ^-  (set desk)
+  %-  %~  gas  in  *(set desk)
+  ^-  (list desk)
+  =/  ally  scry-treaty-alliance
+  ?.  ?=(%ini -.ally)  ~
+  %+  turn  ~(tap in init.ally)
+  |=  [=ship =desk]
+  desk
 ++  give-desks
   ^-  card
   (fact:io vita-deploy-update+!>([%desks desks]) ~[/frontend])
+++  poke-get-desks
+  ^-  card
+  (~(poke-self pass:io /self-poke/get-desks) vita-deploy-action+!>([%get-desks ~]))
 ++  scry-treaty-alliance
   .^(update:alliance:tt %gx /[(scot %p our.bowl)]/treaty/[(scot %da now.bowl)]/alliance/noun)
 --

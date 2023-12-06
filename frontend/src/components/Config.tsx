@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Urbit from '@urbit/http-api';
-import { Link, Route, useParams } from 'react-router-dom';
+import { Link, Route, useParams, useNavigate } from 'react-router-dom';
 import './Config.css';
 import { Footer } from './Footer';
 import { GlobalStateContext } from './Global';
@@ -12,8 +12,10 @@ api.ship = window.ship;
 
 export function Config() {
   const { subdirectory } = useParams()
+  const navigate = useNavigate();
 
-  const { loadCharges } = useContext(GlobalStateContext);
+
+  const { loadCharges, removeDeskFromLocal } = useContext(GlobalStateContext);
 
   useEffect(() => {
     loadCharges();
@@ -43,16 +45,17 @@ export function Config() {
 
   const docket = desk.charge;
 
-  if (!docket) {
-    return (
-      <div>
-        <Link to="/"> home</Link>
-        <div>loading %{deskName} docket...</div>
-      </div>
-    )
-  }
+  function deleteApp(deskName: string) {
 
-  console.log("config desk", desk)
+    console.log('delete app', deskName)
+    api.poke({
+      app: "vita-deploy",
+      mark: "vita-deploy-action",
+      json: {
+        'delete-app': deskName
+      },
+    });
+  }
 
   return (
     <div>
@@ -74,7 +77,19 @@ export function Config() {
       <hr />
 
       <form>
-        <button>delete %{subdirectory}</button>
+        <button onClick={(e) => {
+          e.preventDefault();
+          let confirmed = confirm(`Are you sure you want to delete %${deskName}? The desk will stil exist, but it will be unpublished and uninstalled.`)
+          if (!confirmed) return;
+
+          deleteApp(deskName);
+          removeDeskFromLocal(deskName);
+          // redirect to home
+          navigate('/');
+
+        }}>
+          delete %{deskName}
+        </button>
       </form>
       <Footer />
     </div>

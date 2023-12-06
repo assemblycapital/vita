@@ -3,7 +3,7 @@
 =<  [sur .]
 =,  sur
 |%
-::
+:: ::
 ++  b
   |_  [our=@p now=@da]
   ++  has-desk
@@ -17,11 +17,19 @@
     |=  =desk
     ^-  card:agent:gall
     [%pass /vita-deploy/install-app/[desk]/[(scot %da now)] %agent [our %hood] %poke [%kiln-install !>([desk our desk])]]
+  ++  uninstall-desk
+    |=  =desk
+    ^-  card:agent:gall
+    [%pass /vita-deploy/install-app/[desk]/[(scot %da now)] %agent [our %hood] %poke [%kiln-uninstall !>([desk])]]
   ++  publish-desk
     :: referenced :treaty|publish
     |=  =desk
     ^-  card:agent:gall
     [%pass /vita-deploy/publish-app/[desk]/[(scot %da now)] %agent [our %treaty] %poke [%alliance-update-0 !>([%add our desk])]]
+  ++  unpublish-desk
+    |=  =desk
+    ^-  card:agent:gall
+    [%pass /vita-deploy/publish-app/[desk]/[(scot %da now)] %agent [our %treaty] %poke [%alliance-update-0 !>([%del our desk])]]
   ++  new-desk
     :: referenced /gen/hood/new-desk
     ::
@@ -130,6 +138,7 @@
       %-  of
       :~
         [%create-app so]
+        [%delete-app so]
       ==
     --
   ++  update

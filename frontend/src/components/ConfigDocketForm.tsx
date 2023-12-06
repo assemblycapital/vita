@@ -38,8 +38,6 @@ export function ConfigDocketForm({ deskName }: { deskName: string }) {
     )
   }
 
-  console.log("config desk", desk)
-
   return (
     <form>
       <div>

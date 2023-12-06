@@ -129,48 +129,51 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
       json: {
         'get-all': null
       },
-    });
-
-    api.scry<any>({
-      app: 'vita',
-      path: '/json/metrics/summary',
     }).then((result) => {
-      console.log('metrics scry result ', result);
-      let newState = { ...state };
 
-      for (let i = 0; i < result.length; i++) {
-        const row = result[i];
+      api.scry<any>({
+        app: 'vita',
+        path: '/json/metrics/summary',
+      }).then((result) => {
+        console.log('metrics scry result ', result);
+        let newState = { ...state };
 
-        // if no desk, create desk
-        let alreadyDesk = newState.desks[row.desk];
-        if (!alreadyDesk) {
-          alreadyDesk = {
-            desk: row.desk,
-            metrics: null,
-            charge: null,
+        for (let i = 0; i < result.length; i++) {
+          const row = result[i];
+
+          // if no desk, continue
+          let alreadyDesk = newState.desks[row.desk];
+          if (!alreadyDesk) {
+            continue;
+            // alreadyDesk = {
+            //   desk: row.desk,
+            //   metrics: null,
+            //   charge: null,
+            // }
           }
-        }
 
-        // if no metrics, create metrics
-        if (!alreadyDesk.metrics) {
-          alreadyDesk.metrics = {
-            downloads: 0,
-            downloadsShips: null,
-            activity: 0,
-            activityShips: null,
+          // if no metrics, create metrics
+          if (!alreadyDesk.metrics) {
+            alreadyDesk.metrics = {
+              downloads: 0,
+              downloadsShips: null,
+              activity: 0,
+              activityShips: null,
+            }
           }
+
+          // set downloads and activity
+          alreadyDesk.metrics!.downloads = row.downloads;
+          alreadyDesk.metrics!.activity = row.activity;
+
+          newState.desks[row.desk] = alreadyDesk;
+
         }
+        setState(newState);
 
-        // set downloads and activity
-        alreadyDesk.metrics!.downloads = row.downloads;
-        alreadyDesk.metrics!.activity = row.activity;
-
-        newState.desks[row.desk] = alreadyDesk;
-
-      }
-      setState(newState);
-
+      });
     });
+
   }
   async function loadCharges() {
     const charges: Charges = (await api.scry<ChargeUpdateInitial>(scryCharges)).initial;
@@ -194,7 +197,6 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
     }
 
     setState(newState);
-
   }
 
 
@@ -218,9 +220,15 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
     }
   }
 
+  function removeDeskFromLocal(deskName: string) {
+    let newState = { ...state };
+    delete newState.desks[deskName];
+    setState(newState);
+  }
+
 
   return (
-    <GlobalStateContext.Provider value={{ desks: state.desks, loadCharges, loadMetrics }}>
+    <GlobalStateContext.Provider value={{ desks: state.desks, loadCharges, loadMetrics, removeDeskFromLocal }}>
       {children}
     </GlobalStateContext.Provider>
   );
