@@ -2,24 +2,20 @@ import Urbit from '@urbit/http-api';
 import React, { createContext, useEffect, useState } from 'react';
 import { scryCharges } from '@urbit/api';
 
-export interface DeskMetrics {
-  downloads: number;
-  downloadsShips: Array<string> | null;
-  activity: number;
-  activityShips: Array<string> | null;
-}
-export interface Desk {
-  desk: string;
-  metrics: DeskMetrics | null;
-  charge: Charge | null;
-}
-export type Desks = {
-  [key: string]: Desk;
-};
+
+// export interface Desk {
+//   desk: string;
+//   metrics: DeskMetrics | null;
+//   charge: Charge | null;
+// }
+// export type Desks = {
+//   [key: string]: Desk;
+// };
 
 export type Charges = {
   [key: string]: Charge;
 };
+
 export interface ChargeUpdateInitial {
   initial: {
     [desk: string]: Charge;
@@ -73,15 +69,39 @@ export interface Charge extends Docket {
   chad: Chad;
 };
 
+export type DeskMetrics = {
+  [key: string]: { downloads: number; activity: number }
+};
 export interface GlobalState {
-  desks: Desks;
+  desks: Array<string>;
+  metrics: DeskMetrics;
+  charges: Charges;
 }
 
 const buntGlobalState = {
-  desks: {},
+  desks: [],
+  metrics: {},
+  charges: {},
 }
 
-export const GlobalStateContext = createContext<any>(null);
+export interface GlobalContext {
+  desks: Array<string>;
+  metrics: DeskMetrics;
+  charges: Charges;
+  loadCharges: () => void;
+  loadMetrics: () => void;
+  removeDeskFromLocal: (deskName: string) => void;
+}
+const globalContextBunt: GlobalContext = {
+  desks: [],
+  metrics: {},
+  charges: {},
+  loadCharges: () => { },
+  loadMetrics: () => { },
+  removeDeskFromLocal: (deskName: string) => { },
+};
+
+export const GlobalStateContext = createContext<GlobalContext>(globalContextBunt);
 
 const api = new Urbit('', '', window.desk);
 api.ship = window.ship;
@@ -140,34 +160,7 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
 
         for (let i = 0; i < result.length; i++) {
           const row = result[i];
-
-          // if no desk, continue
-          let alreadyDesk = newState.desks[row.desk];
-          if (!alreadyDesk) {
-            continue;
-            // alreadyDesk = {
-            //   desk: row.desk,
-            //   metrics: null,
-            //   charge: null,
-            // }
-          }
-
-          // if no metrics, create metrics
-          if (!alreadyDesk.metrics) {
-            alreadyDesk.metrics = {
-              downloads: 0,
-              downloadsShips: null,
-              activity: 0,
-              activityShips: null,
-            }
-          }
-
-          // set downloads and activity
-          alreadyDesk.metrics!.downloads = row.downloads;
-          alreadyDesk.metrics!.activity = row.activity;
-
-          newState.desks[row.desk] = alreadyDesk;
-
+          newState.metrics[row.desk] = { downloads: row.downloads, activity: row.activity };
         }
         setState(newState);
 
@@ -178,22 +171,14 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
   async function loadCharges() {
     const charges: Charges = (await api.scry<ChargeUpdateInitial>(scryCharges)).initial;
 
-    console.log('charges', charges)
+    console.log('loaded charges', charges)
 
     let newState = { ...state };
     let keys = Object.keys(charges);
     for (let i = 0; i < keys.length; i++) {
       const deskName = keys[i];
 
-      // if no desk, continue
-      let alreadyDesk = newState.desks[deskName];
-      if (!alreadyDesk) {
-        continue;
-      }
-
-      alreadyDesk.charge = charges[deskName];
-
-      newState.desks[deskName] = alreadyDesk;
+      newState.charges[deskName] = charges[deskName];
     }
 
     setState(newState);
@@ -209,11 +194,8 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
 
       for (let i = 0; i < newDesks.length; i++) {
         const desk = newDesks[i];
-        if (state.desks[desk]) continue;
-        newState.desks[desk] = {
-          desk: desk,
-          metrics: null,
-          charge: null,
+        if (state.desks.indexOf(desk) === -1) {
+          newState.desks.push(desk);
         }
       }
       setState(newState);
@@ -222,14 +204,19 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
 
   function removeDeskFromLocal(deskName: string) {
     let newState = { ...state };
-    delete newState.desks[deskName];
+    let i = state.desks.indexOf(deskName)
+
+    if (i === -1) return;
+
+    newState.desks.splice(i, 1);
     setState(newState);
   }
 
 
+  const value: GlobalContext = { desks: state.desks, metrics: state.metrics, charges: state.charges, loadCharges, loadMetrics, removeDeskFromLocal };
   return (
-    <GlobalStateContext.Provider value={{ desks: state.desks, loadCharges, loadMetrics, removeDeskFromLocal }}>
+    <GlobalStateContext.Provider value={value}>
       {children}
-    </GlobalStateContext.Provider>
+    </GlobalStateContext.Provider >
   );
 };

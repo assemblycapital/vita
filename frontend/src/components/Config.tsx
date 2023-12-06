@@ -15,11 +15,7 @@ export function Config() {
   const navigate = useNavigate();
 
 
-  const { loadCharges, removeDeskFromLocal } = useContext(GlobalStateContext);
-
-  useEffect(() => {
-    loadCharges();
-  }, []);
+  const { removeDeskFromLocal, charges } = useContext(GlobalStateContext);
 
   const deskName = subdirectory
   if (!deskName) {
@@ -30,10 +26,15 @@ export function Config() {
 
   const { desks } = useContext(GlobalStateContext);
 
-  const desk = desks[deskName];
+  useEffect(() => {
+
+    console.log('config desks', desks)
+  }, [desks]);
+
+  const hasDesk = desks.indexOf(deskName) > -1
 
 
-  if (!desk) {
+  if (!hasDesk) {
     return (
       <div>
         <Link to="/"> home</Link>
@@ -43,7 +44,7 @@ export function Config() {
     )
   }
 
-  const docket = desk.charge;
+  const docket = charges[deskName];
 
   function deleteApp(deskName: string) {
 

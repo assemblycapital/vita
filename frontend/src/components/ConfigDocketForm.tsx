@@ -2,13 +2,20 @@ import React, { useContext, useEffect, useState } from 'react';
 import Urbit from '@urbit/http-api';
 import { Link, Route, useParams } from 'react-router-dom';
 import './Config.css';
-import { Footer } from './Footer';
 import { GlobalStateContext } from './Global';
 
 
 // deskname string is passed in from the parent component
 
 export function ConfigDocketForm({ deskName }: { deskName: string }) {
+
+  const { desks, charges, loadCharges } = useContext(GlobalStateContext);
+
+  useEffect(() => {
+    loadCharges();
+  }, [desks, charges, deskName]);
+
+
   if (!deskName) {
     return (
       <div>
@@ -16,27 +23,15 @@ export function ConfigDocketForm({ deskName }: { deskName: string }) {
     )
   }
 
-  const { desks } = useContext(GlobalStateContext);
 
-  const desk = desks[deskName];
-
-
-  if (!desk) {
-    return (
-      <div>
-      </div>
-    )
-  }
-
-  const docket = desk.charge;
-
-  if (!docket) {
+  if (charges[deskName] === undefined) {
     return (
       <div>
         <div>loading %{deskName} docket...</div>
       </div>
     )
   }
+  const docket = charges[deskName];
 
   return (
     <form>
@@ -106,5 +101,4 @@ export function ConfigDocketForm({ deskName }: { deskName: string }) {
       <button>submit</button>
     </form>
   )
-
 }

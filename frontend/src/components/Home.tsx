@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Urbit from '@urbit/http-api';
-import { Desk, GlobalState, GlobalStateContext } from './Global';
+import { GlobalStateContext } from './Global';
 import { Link } from 'react-router-dom';
 import './Home.css';
 import { Footer } from './Footer';
@@ -11,7 +11,7 @@ api.ship = window.ship;
 
 export function Home() {
 
-  const { desks } = useContext(GlobalStateContext);
+  const { desks, metrics } = useContext(GlobalStateContext);
 
 
   const invalidDeskNames = ['base', 'landscape', 'groups', 'talk', 'realm', 'vita', 'lemur', 'pals', 'radio', 'rumors', 'portal']
@@ -76,27 +76,28 @@ export function Home() {
               </tr>
             </thead>
             <tbody>
-              {Object.keys(desks).map((deskName) => {
-                const desk = desks[deskName];
+              {desks.map((desk: string) => {
 
+                const mets = metrics[desk]
                 return (
-                  <tr key={desk.desk} >
+                  <tr key={desk} >
                     <td>
-                      <Link to={`/config/${desk.desk}`} >
-                        {'%'}{desk.desk}
+                      <Link to={`/config/${desk}`} >
+                        {'%'}{desk}
                       </Link>
                     </td>
                     <td>
-                      {desk.metrics ? desk.metrics.downloads : '-'}
+                      {mets ? mets.downloads : '-'}
                     </td>
                     <td>
-                      {(() => {
-                        if (desk.metrics) {
-                          return (desk.metrics.activity > 0) ? desk.metrics.activity : '-';
+                      {/* {(() => {
+                        if (mets) {
+                          return (mets.activity > 0) ? mets.activity : '-';
                         } else {
                           return '-';
                         }
-                      })()}
+                      })()} */}
+                      {mets && mets.activity > 0 ? mets.activity : '-'}
                     </td>
                   </tr>
                 )
