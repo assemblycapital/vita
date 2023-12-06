@@ -81,7 +81,7 @@ const buntGlobalState = {
   desks: {},
 }
 
-export const GlobalStateContext = createContext<GlobalState>(buntGlobalState);
+export const GlobalStateContext = createContext<any>(null);
 
 const api = new Urbit('', '', window.desk);
 api.ship = window.ship;
@@ -90,33 +90,7 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
   const [state, setState] = useState<GlobalState>(buntGlobalState);
 
   useEffect(() => {
-    async function init() {
-      const charges: Charges = (await api.scry<ChargeUpdateInitial>(scryCharges)).initial;
-      console.log('charges', charges)
-      let newState = { ...state };
-      // if no desk, create desk
-      let keys = Object.keys(charges);
-      for (let i = 0; i < keys.length; i++) {
-        const deskName = keys[i];
-        let alreadyDesk = newState.desks[deskName];
 
-        if (!alreadyDesk) {
-          alreadyDesk = {
-            desk: deskName,
-            metrics: null,
-            charge: null,
-          }
-        }
-
-        alreadyDesk.charge = charges[deskName];
-
-
-        newState.desks[deskName] = alreadyDesk;
-      }
-
-    }
-
-    init();
   }, []);
 
   useEffect(() => {
@@ -136,6 +110,18 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
         });
       });
     }
+
+
+
+
+    init().then(() => {
+      loadMetrics();
+      loadCharges();
+    });
+  }, []);
+
+
+  async function loadMetrics() {
 
     api.poke({
       app: "vita",
@@ -184,14 +170,33 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
       }
       setState(newState);
 
-
     });
+  }
+  async function loadCharges() {
+    const charges: Charges = (await api.scry<ChargeUpdateInitial>(scryCharges)).initial;
 
-    init();
-  }, []);
+    console.log('charges', charges)
 
-  useEffect(() => {
-  }, []);
+    let newState = { ...state };
+    let keys = Object.keys(charges);
+    for (let i = 0; i < keys.length; i++) {
+      const deskName = keys[i];
+
+      // if no desk, continue
+      let alreadyDesk = newState.desks[deskName];
+      if (!alreadyDesk) {
+        continue;
+      }
+
+      alreadyDesk.charge = charges[deskName];
+
+      newState.desks[deskName] = alreadyDesk;
+    }
+
+    setState(newState);
+
+  }
+
 
   function handleSub(data: any) {
     console.log('got update', data)
@@ -215,7 +220,7 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
 
 
   return (
-    <GlobalStateContext.Provider value={state}>
+    <GlobalStateContext.Provider value={{ desks: state.desks, loadCharges, loadMetrics }}>
       {children}
     </GlobalStateContext.Provider>
   );
