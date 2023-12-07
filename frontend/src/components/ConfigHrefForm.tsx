@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Urbit from '@urbit/http-api';
 import './Config.css';
-import { Charge, Docket, GlobalStateContext } from './Global';
+import { Charge, Docket, DocketHref, GlobalStateContext } from './Global';
 
 
 const api = new Urbit('', '', window.desk);
@@ -95,7 +95,10 @@ export function ConfigHrefForm({ deskName }: { deskName: string }) {
           gap: '1rem',
         }}
       >
-        <div>href settings (advanced)</div>
+        <div>
+          <div style={{ fontWeight: 'bold' }}>href settings</div>
+          (advanced)
+        </div>
         <button onClick={() => {
           toggleMinimize();
           setSelectedSite(docketHasSite);
@@ -145,6 +148,7 @@ export function ConfigHrefForm({ deskName }: { deskName: string }) {
                     <label>site</label>
                     <input
                       type="text"
+                      id="app-site"
                       name="app-site"
                       defaultValue={"site" in docket.href ? docket.href.site : ''}
                     />
@@ -161,6 +165,7 @@ export function ConfigHrefForm({ deskName }: { deskName: string }) {
                         <label>base</label>
                         <input
                           type="text"
+                          id="app-glob-base"
                           name="app-glob-base"
                           defaultValue={"glob" in docket.href ? docket.href.glob.base : ''}
                         />
@@ -169,6 +174,7 @@ export function ConfigHrefForm({ deskName }: { deskName: string }) {
                         <label> hash </label>
                         <input
                           type="text"
+                          id="app-glob-ref-hash"
                           name="app-glob-ref-hash"
                           defaultValue={"glob" in docket.href ? docket.href.glob['glob-reference'].hash : ''}
                         />
@@ -186,6 +192,7 @@ export function ConfigHrefForm({ deskName }: { deskName: string }) {
                         %http
                         <input
                           type="radio"
+                          id="glob-http-or-ames"
                           name="glob-http-or-ames"
                           value="http"
                           defaultChecked={isGlobHttp}
@@ -198,6 +205,7 @@ export function ConfigHrefForm({ deskName }: { deskName: string }) {
                         %ames
                         <input
                           type="radio"
+                          id="glob-http-or-ames"
                           name="glob-http-or-ames"
                           value="ames"
                           defaultChecked={!isGlobHttp}
@@ -219,6 +227,7 @@ export function ConfigHrefForm({ deskName }: { deskName: string }) {
                               <label> glob url </label>
                               <input
                                 type="text"
+                                id="app-glob-ref-url"
                                 name="app-glob-ref-url"
                                 defaultValue={globHttpDefaultValue()}
                               />
@@ -248,15 +257,41 @@ export function ConfigHrefForm({ deskName }: { deskName: string }) {
               onClick={(e) => {
                 e.preventDefault();
 
-                const newDocket: Docket = {
-                  title: docket.title,
-                  info: docket.info,
-                  color: docket.color,
-                  website: docket.website,
-                  license: docket.license,
-                  version: docket.version,
-                  image: docket.image,
-                  href: docket.href
+
+                function setHref(href: DocketHref) {
+                  let newDocket: Docket = {
+                    title: docket.title,
+                    info: docket.info,
+                    color: docket.color,
+                    website: docket.website,
+                    license: docket.license,
+                    version: docket.version,
+                    image: docket.image,
+                    href: href
+                  }
+
+                  return newDocket
+                }
+
+                let newDocket;
+                if (selectedSite) {
+                  const site = (document.getElementById('app-site') as HTMLInputElement).value;
+                  newDocket = setHref({ site: site })
+                } else {
+
+                  const base = (document.getElementById('app-glob-base') as HTMLInputElement).value;
+                  const hash = (document.getElementById('app-glob-ref-hash') as HTMLInputElement).value;
+
+                  if (isGlobHttp) {
+                    // glob http
+                    const http = (document.getElementById('app-glob-ref-url') as HTMLInputElement).value;
+                    newDocket = setHref({ glob: { base: base, "glob-reference": { hash: hash, location: { http: http } } } })
+
+                  } else {
+                    // glob ames
+                    const ship = (document.getElementById('app-glob-ref-ship') as HTMLInputElement).value;
+                    newDocket = setHref({ glob: { base: base, "glob-reference": { hash: hash, location: { ames: ship } } } })
+                  }
                 }
 
                 setDocket(deskName, newDocket)

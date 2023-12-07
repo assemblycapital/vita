@@ -57,7 +57,7 @@ export interface GlobLocationHttp {
   http: string;
 }
 export interface GlobLocationAmes {
-  ship: string;
+  ames: string;
 }
 
 export type Chad = HungChad | GlobChad | SiteChad | InstallChad | SuspendChad;

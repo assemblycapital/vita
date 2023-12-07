@@ -77,6 +77,8 @@ export function Config() {
       </div>
       <hr />
 
+      <ConfigHrefForm deskName={deskName} />
+      <hr />
       <form>
         <button onClick={(e) => {
           e.preventDefault();
@@ -93,10 +95,6 @@ export function Config() {
         </button>
       </form>
 
-      <hr />
-
-      <ConfigHrefForm deskName={deskName} />
-      <hr />
 
       <Footer />
     </div>

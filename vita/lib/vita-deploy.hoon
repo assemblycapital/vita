@@ -105,7 +105,6 @@
     |=  act=^action
     ^-  json
     ~
-  ::
   ++  update
     |=  upd=^update
     ^-  json
