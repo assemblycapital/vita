@@ -83,8 +83,7 @@ export function ConfigHrefForm({ deskName }: { deskName: string }) {
   }
 
   function globAmesDefaultValue() {
-    //TODO
-    return '~sampel-palnet'
+    return "~" + window.ship;
   }
 
   return (
@@ -97,7 +96,12 @@ export function ConfigHrefForm({ deskName }: { deskName: string }) {
         }}
       >
         <div>href settings (advanced)</div>
-        <button onClick={toggleMinimize}>
+        <button onClick={() => {
+          toggleMinimize();
+          setSelectedSite(docketHasSite);
+          setIsGlobHttp(initialIsGlobHttp());
+        }
+        }>
           {isMinimized ? '+' : '-'}
         </button>
       </div>

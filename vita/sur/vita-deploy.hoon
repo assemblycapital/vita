@@ -12,7 +12,7 @@
     [%set-docket desk-name=@tas docket=docket:docket-sur] 
   ==
 +$  inner-docket
-  $:   title=@t
+  $:  title=@t
       info=@t
       color=@ux
       =href:docket-sur
