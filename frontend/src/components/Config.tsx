@@ -5,6 +5,7 @@ import './Config.css';
 import { Footer } from './Footer';
 import { GlobalStateContext } from './Global';
 import { ConfigDocketForm } from './ConfigDocketForm';
+import { ConfigHrefForm } from './ConfigHrefForm';
 
 
 const api = new Urbit('', '', window.desk);
@@ -15,7 +16,7 @@ export function Config() {
   const navigate = useNavigate();
 
 
-  const { removeDeskFromLocal, charges } = useContext(GlobalStateContext);
+  const { desks, removeDeskFromLocal, charges } = useContext(GlobalStateContext);
 
   const deskName = subdirectory
   if (!deskName) {
@@ -24,7 +25,6 @@ export function Config() {
     )
   }
 
-  const { desks } = useContext(GlobalStateContext);
 
   useEffect(() => {
 
@@ -92,6 +92,12 @@ export function Config() {
           delete %{deskName}
         </button>
       </form>
+
+      <hr />
+
+      <ConfigHrefForm deskName={deskName} />
+      <hr />
+
       <Footer />
     </div>
   )

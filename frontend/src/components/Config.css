@@ -19,3 +19,8 @@ form div div {
   display:flex;
   flex-direction: column;
 }
+
+div.labeled-text {
+  display: flex;
+  flex-direction: column;
+}

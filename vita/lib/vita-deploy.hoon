@@ -206,6 +206,7 @@
     :-  %http  (so u.http)
   ++  image 
     |=  jon=json
+    ?~  jon  ~
     ?>  ?=(%s -.jon)
     ?:  =('' p.jon)  ~
     `p.jon

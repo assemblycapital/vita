@@ -24,6 +24,18 @@ export interface ChargeUpdateInitial {
 
 export type DocketHref = DocketHrefSite | DocketHrefGlob;
 
+export interface DocketHrefGlob {
+  glob: {
+    base: string;
+    "glob-reference": GlobReference;
+  }
+}
+
+export interface DocketHrefSite {
+  site: string;
+}
+
+
 export interface GlobReference {
   hash: string;
   location: GlobLocation;
@@ -46,17 +58,6 @@ export interface GlobLocationHttp {
 }
 export interface GlobLocationAmes {
   ship: string;
-}
-
-export interface DocketHrefGlob {
-  glob: {
-    base: string;
-    "glob-reference": GlobReference;
-  }
-}
-
-export interface DocketHrefSite {
-  site: string;
 }
 
 export type Chad = HungChad | GlobChad | SiteChad | InstallChad | SuspendChad;
