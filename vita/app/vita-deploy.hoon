@@ -1,7 +1,7 @@
 
 /-  sur=vita-deploy
 /-  tt=treaty
-/+  lib=vita-deploy
+/+  lib=vita-deploy, docket-lib=docket
 /+  default-agent, verb, dbug, agentio, strandio
 :: :: ::
 |%
@@ -86,10 +86,16 @@
         (unpublish-desk:b desk-name.act)
         give-desks:hc
       ==
+      ::
         %set-docket
-      ::todo
-      ~&  >  [%todo %set-docket act]
-      `this
+      =/  =nori:clay
+        :-  %&  :_  ~
+        :-  /desk/docket-0
+        [%ins docket-0+!>(docket.act)]
+      =/  =task:clay
+        [%info desk-name.act nori]
+      :_  this
+      ~[[%pass /vita-deploy/set-docket %arvo %c task]]
     ==
   ==
 ::

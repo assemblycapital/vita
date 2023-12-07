@@ -72,6 +72,7 @@ export function Config() {
         <h3>upload frontend</h3>
         <form>
           <input type="file" id="app-files"></input>
+          {/* post request to /docket/upload */}
           <button>upload</button>
         </form>
       </div>

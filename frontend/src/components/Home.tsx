@@ -46,6 +46,7 @@ export function Home() {
 
             <input type="text" id="new-desk-name"
               placeholder="unique-desk-name"
+              autoComplete='off'
 
             />
             <button onClick={() => {

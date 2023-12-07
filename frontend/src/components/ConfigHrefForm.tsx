@@ -24,13 +24,30 @@ function setDocket(deskName: string, docket: Docket) {
 }
 
 
+const initialIsGlobHttp = (docket: Docket) => {
+  if ('site' in docket.href) return false;
+  let x = 'http' in docket.href.glob['glob-reference'].location;
+  return x
+}
 export function ConfigHrefForm({ deskName }: { deskName: string }) {
 
   const { desks, charges, loadCharges } = useContext(GlobalStateContext);
+  const [selectedSite, setSelectedSite] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(true);
+  const [isGlobHttp, setIsGlobHttp] = useState(false);
 
   useEffect(() => {
     loadCharges();
-  }, [desks, charges, deskName]);
+  }, []);
+
+  useEffect(() => {
+    const docket = charges[deskName];
+    if (!docket) return;
+    const docketHasSite = 'site' in docket.href;
+    setSelectedSite(docketHasSite)
+    setIsGlobHttp(initialIsGlobHttp(docket))
+
+  }, [charges]);
 
 
   if (!deskName) {
@@ -48,30 +65,21 @@ export function ConfigHrefForm({ deskName }: { deskName: string }) {
       </div>
     )
   }
+
   const docket = charges[deskName];
-
-
   const docketHasSite = 'site' in docket.href;
 
-  const [selectedSite, setSelectedSite] = useState(docketHasSite);
   function handleSiteOrGlobChange(e: any) {
     let isSite = e.target.value === 'site'
     setSelectedSite(isSite)
   }
 
-  const [isMinimized, setIsMinimized] = useState(true);
 
   const toggleMinimize = () => {
     setIsMinimized(!isMinimized);
   };
 
-  const initialIsGlobHttp = () => {
-    if ('site' in docket.href) return false;
-    let x = 'http' in docket.href.glob['glob-reference'].location;
-    return x
-  }
 
-  const [isGlobHttp, setIsGlobHttp] = useState(initialIsGlobHttp);
 
   function globHttpDefaultValue() {
     const bunt = "http://example.com/file.glob";
@@ -102,7 +110,7 @@ export function ConfigHrefForm({ deskName }: { deskName: string }) {
         <button onClick={() => {
           toggleMinimize();
           setSelectedSite(docketHasSite);
-          setIsGlobHttp(initialIsGlobHttp());
+          setIsGlobHttp(initialIsGlobHttp(docket));
         }
         }>
           {isMinimized ? '+' : '-'}
