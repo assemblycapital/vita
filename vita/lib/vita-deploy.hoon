@@ -130,6 +130,8 @@
 ++  dejs
   =,  dejs:format
   |%
+  ++  patp
+    (su ;~(pfix sig fed:ag))
   ++  action
     |=  jon=json
     ^-  ^action
@@ -158,18 +160,50 @@
     =<  (decode jon)
     |%
       ++  decode
-      %-  ot
-      :~  
-        [%title so]
-        [%info so]
-        [%color nu] ::TODO
-        [%href href]
-        [%image image]
-        [%version version]
-        [%website so]
-        [%license so]
-      ==
+        %-  ot
+        :~  
+          [%title so]
+          [%info so]
+          [%color nu]
+          [%href href]
+          [%image image]
+          [%version version]
+          [%website so]
+          [%license so]
+        ==
     --
+  ++  href 
+    %-  of
+    :~
+      [%site pa]
+      [%glob de-glob]
+    ==
+  ++  de-glob
+    %-  ot
+    :~
+      [%base so]
+      [%glob-reference de-glob-reference]
+    ==
+  ++  de-glob-reference
+    %-  ot
+    :~
+      [%hash de-hash]
+      [%location de-glob-location]
+    ==
+  ++  de-hash
+    |=  jon=json
+    =/  sip  (so jon)
+    =/  saw  (slaw %uv sip)
+    ?~  saw  !!
+    u.saw
+  ++  de-glob-location
+    |=  jon=json
+    ?>  ?=([%o *] jon)
+    =/  http  (~(get by p.jon) 'http')
+    ?~  http
+      :-  %ames
+      (patp (~(got by p.jon) 'ames'))
+    :-  %http  (so u.http)
   ++  image 
     |=  jon=json
     ?>  ?=(%s -.jon)
@@ -178,11 +212,13 @@
   ++  version
     |=  jon=json
     ^-  version:docket-sur
-    [0 0 0]
-  ++  href 
-    |=  jon=json
-    ^-  href:docket-sur
-    *href:docket-sur
+    ?>  ?=(%s -.jon)
+    =/  res=(list @ud)
+      (scan (trip p.jon) (more dot dem))
+    ?>  =(3 (lent res))
+    :+  (snag 0 res)
+      (snag 1 res)
+    (snag 2 res)
   ++  update
     |=  jon=json
     ^-  ^update

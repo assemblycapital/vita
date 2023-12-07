@@ -8,6 +8,8 @@ const api = new Urbit('', '', window.desk);
 api.ship = window.ship;
 
 function setDocket(deskName: string, docket: Docket) {
+  docket.color = docket.color.slice(1);
+
   api.poke({
     app: "vita-deploy",
     mark: "vita-deploy-action",
@@ -126,7 +128,8 @@ export function ConfigDocketForm({ deskName }: { deskName: string }) {
 
           const newDocket: Docket = {
             title: title, info: info,
-            color: "ff", //TODO remove dots and `0x` prefix
+            // color: "ff", //TODO remove dots and `0x` prefix
+            color: color,
             website: website, license: license, version: version,
             image: image,
             href: docket.href

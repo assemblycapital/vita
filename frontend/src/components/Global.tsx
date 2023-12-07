@@ -24,9 +24,34 @@ export interface ChargeUpdateInitial {
 
 export type DocketHref = DocketHrefSite | DocketHrefGlob;
 
+export interface GlobReference {
+  hash: string;
+  location: GlobLocation;
+}
+
+// export type GlobReference = GlobReferenceHttp | GlobReferenceAmes;
+// export interface GlobReferenceAmes {
+//   hash: string;
+//   ames: string;
+// }
+
+// export interface GlobReferenceHttp {
+//   hash: string;
+//   http: string;
+// }
+
+export type GlobLocation = GlobLocationHttp | GlobLocationAmes;
+export interface GlobLocationHttp {
+  http: string;
+}
+export interface GlobLocationAmes {
+  ship: string;
+}
+
 export interface DocketHrefGlob {
   glob: {
     base: string;
+    "glob-reference": GlobReference;
   }
 }
 
@@ -131,9 +156,6 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
       });
     }
 
-
-
-
     init().then(() => {
       loadMetrics();
       loadCharges();
@@ -178,12 +200,15 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
     for (let i = 0; i < keys.length; i++) {
       const deskName = keys[i];
 
+      let charge = charges[deskName];
+      charge.color = hexColorFromPatUxString(charge.color);
+      charges[deskName] = charge;
+
       newState.charges[deskName] = charges[deskName];
     }
 
     setState(newState);
   }
-
 
   function handleSub(data: any) {
     console.log('got update', data)
@@ -200,6 +225,10 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
       }
       setState(newState);
     }
+  }
+
+  function hexColorFromPatUxString(uxString: string) {
+    return "#" + uxString.slice(2).replace(/\./g, "").padStart(6, "0");
   }
 
   function removeDeskFromLocal(deskName: string) {
