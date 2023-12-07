@@ -137,10 +137,21 @@ export function ConfigDocketForm({ deskName }: { deskName: string }) {
           const color = (document.getElementById('app-color') as HTMLInputElement).value;
           const image = (document.getElementById('app-image') as HTMLInputElement).value;
 
-          const info = (document.getElementById('app-info') as HTMLInputElement).value;
-          const website = (document.getElementById('app-website') as HTMLInputElement).value;
-          const license = (document.getElementById('app-license') as HTMLInputElement).value;
-          const version = (document.getElementById('app-version') as HTMLInputElement).value;
+          let info;
+          let website;
+          let license;
+          let version;
+          if (showExtraFields) {
+            info = (document.getElementById('app-info') as HTMLInputElement).value;
+            website = (document.getElementById('app-website') as HTMLInputElement).value;
+            license = (document.getElementById('app-license') as HTMLInputElement).value;
+            version = (document.getElementById('app-version') as HTMLInputElement).value;
+          } else {
+            info = docket.info
+            website = docket.website
+            license = docket.license
+            version = docket.version
+          }
 
           const newDocket: Docket = {
             title: title, info: info,
