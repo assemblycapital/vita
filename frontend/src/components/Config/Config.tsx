@@ -8,16 +8,12 @@ import { ConfigUploadFrontend } from './ConfigUploadFrontend';
 import { ConfigDocketForm } from './ConfigDocketForm';
 import { ConfigHrefForm } from './ConfigHrefForm';
 
-
-const api = new Urbit('', '', window.desk);
-api.ship = window.ship;
-
 export function Config() {
   const { subdirectory } = useParams()
   const navigate = useNavigate();
 
 
-  const { desks, removeDeskFromLocal, charges } = useContext(GlobalStateContext);
+  const { desks, removeDeskFromLocal, charges, contextPoke } = useContext(GlobalStateContext);
 
   const deskName = subdirectory
   if (!deskName) {
@@ -50,7 +46,7 @@ export function Config() {
   function deleteApp(deskName: string) {
 
     console.log('delete app', deskName)
-    api.poke({
+    contextPoke({
       app: "vita-deploy",
       mark: "vita-deploy-action",
       json: {

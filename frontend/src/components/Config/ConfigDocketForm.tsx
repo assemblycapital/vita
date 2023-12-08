@@ -4,18 +4,12 @@ import './Config.css';
 import { Charge, Docket, GlobalStateContext } from '../Global';
 import { IToast, Toast } from '../misc/Toast';
 
-
-const api = new Urbit('', '', window.desk);
-api.ship = window.ship;
-
-
-
 export function ConfigDocketForm({ deskName }: { deskName: string }) {
 
   const [toast, setToast] = useState<IToast>({ text: '', time: 0 });
   const [showExtraFields, setShowExtraFields] = useState(false);
 
-  const { desks, charges, loadCharges } = useContext(GlobalStateContext);
+  const { desks, charges, loadCharges, contextPoke } = useContext(GlobalStateContext);
 
   useEffect(() => {
     loadCharges();
@@ -30,7 +24,7 @@ export function ConfigDocketForm({ deskName }: { deskName: string }) {
   function setDocket(deskName: string, docket: Docket) {
     docket.color = docket.color.slice(1);
 
-    api.poke({
+    contextPoke({
       app: "vita-deploy",
       mark: "vita-deploy-action",
       json: {
@@ -39,7 +33,7 @@ export function ConfigDocketForm({ deskName }: { deskName: string }) {
           docket: docket
         }
       },
-    }).then((r) => {
+    }).then((r: any) => {
       showToast('success');
     });
 

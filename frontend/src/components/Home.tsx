@@ -5,21 +5,16 @@ import { Link } from 'react-router-dom';
 import './Home.css';
 import { Footer } from './Footer';
 
-
-const api = new Urbit('', '', window.desk);
-api.ship = window.ship;
-
 export function Home() {
 
-  const { desks, metrics } = useContext(GlobalStateContext);
-
+  const { desks, metrics, contextPoke } = useContext(GlobalStateContext);
 
   const invalidDeskNames = ['base', 'landscape', 'groups', 'talk', 'realm', 'vita', 'lemur', 'pals', 'radio', 'rumors', 'portal']
   function newDesk(deskName: string) {
     if (invalidDeskNames.includes(deskName)) {
       return;
     }
-    api.poke({
+    contextPoke({
       app: "vita-deploy",
       mark: "vita-deploy-action",
       json: {
@@ -28,7 +23,6 @@ export function Home() {
     });
 
   }
-
 
   return (
     <div className="vita-body">

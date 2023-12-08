@@ -117,6 +117,7 @@ export interface GlobalContext {
   loadCharges: () => void;
   loadMetrics: () => void;
   removeDeskFromLocal: (deskName: string) => void;
+  contextPoke: (params: any) => any,
 }
 const globalContextBunt: GlobalContext = {
   desks: [],
@@ -125,6 +126,7 @@ const globalContextBunt: GlobalContext = {
   loadCharges: () => { },
   loadMetrics: () => { },
   removeDeskFromLocal: (deskName: string) => { },
+  contextPoke: (params: any) => { },
 };
 
 export const GlobalStateContext = createContext<GlobalContext>(globalContextBunt);
@@ -134,10 +136,6 @@ api.ship = window.ship;
 
 export const GlobalStateProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, setState] = useState<GlobalState>(buntGlobalState);
-
-  useEffect(() => {
-
-  }, []);
 
   useEffect(() => {
     async function init() {
@@ -243,7 +241,22 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
   }
 
 
-  const value: GlobalContext = { desks: state.desks, metrics: state.metrics, charges: state.charges, loadCharges, loadMetrics, removeDeskFromLocal };
+  async function contextPoke(params: any) {
+
+    console.log("contextPoke", params)
+    let result = api.poke({
+      app: params.app,
+      mark: params.mark,
+      json: params.json,
+    }).then((result) => {
+      return result;
+    })
+
+    return result;
+
+  }
+
+  const value: GlobalContext = { desks: state.desks, metrics: state.metrics, charges: state.charges, loadCharges, loadMetrics, removeDeskFromLocal, contextPoke };
   return (
     <GlobalStateContext.Provider value={value}>
       {children}

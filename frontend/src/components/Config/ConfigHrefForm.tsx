@@ -3,27 +3,6 @@ import Urbit from '@urbit/http-api';
 import './Config.css';
 import { Charge, Docket, DocketHref, GlobalStateContext } from '../Global';
 
-
-const api = new Urbit('', '', window.desk);
-api.ship = window.ship;
-
-function setDocket(deskName: string, docket: Docket) {
-  docket.color = docket.color.slice(1);
-
-  api.poke({
-    app: "vita-deploy",
-    mark: "vita-deploy-action",
-    json: {
-      'set-docket': {
-        "desk-name": deskName,
-        docket: docket
-      }
-    },
-  });
-  console.log('set docket', deskName, docket)
-}
-
-
 const initialIsGlobHttp = (docket: Docket) => {
   if ('site' in docket.href) return false;
   let x = 'http' in docket.href.glob['glob-reference'].location;
@@ -31,10 +10,26 @@ const initialIsGlobHttp = (docket: Docket) => {
 }
 export function ConfigHrefForm({ deskName }: { deskName: string }) {
 
-  const { desks, charges, loadCharges } = useContext(GlobalStateContext);
+  const { charges, loadCharges, contextPoke } = useContext(GlobalStateContext);
   const [selectedSite, setSelectedSite] = useState(false);
   const [isMinimized, setIsMinimized] = useState(true);
   const [isGlobHttp, setIsGlobHttp] = useState(false);
+
+  function setDocket(deskName: string, docket: Docket) {
+    docket.color = docket.color.slice(1);
+
+    contextPoke({
+      app: "vita-deploy",
+      mark: "vita-deploy-action",
+      json: {
+        'set-docket': {
+          "desk-name": deskName,
+          docket: docket
+        }
+      },
+    });
+    console.log('set docket', deskName, docket)
+  }
 
   useEffect(() => {
     loadCharges();

@@ -1,12 +1,16 @@
 
 import React, { useContext, useEffect, useState } from 'react';
 import { IToast, Toast } from '../misc/Toast';
+import { Docket, DocketHref, GlobalStateContext } from '../Global';
+import Urbit from '@urbit/http-api';
+
 
 export function ConfigUploadFrontend({ deskName }: { deskName: string }) {
 
   const [isUploading, setIsUploading] = useState(false);
   const [toast, setToast] = useState<IToast>({ text: '', time: 0 });
 
+  const { charges, contextPoke } = useContext(GlobalStateContext);
 
   function showToast(text: string) {
     setToast({ text: '', time: 0 });
@@ -22,6 +26,7 @@ export function ConfigUploadFrontend({ deskName }: { deskName: string }) {
       console.log('null files')
       return;
     }
+    setHrefAmes();
 
     var formData = new FormData();
     // desk field required in docket agent
@@ -56,6 +61,39 @@ export function ConfigUploadFrontend({ deskName }: { deskName: string }) {
     } else {
       console.log('No files selected');
     }
+
+  }
+
+  function setHrefAmes() {
+
+    let docket = charges[deskName];
+    if (!docket) return;
+
+    if ('site' in docket.href) return;
+
+    let newDocket: Docket = {
+      title: docket.title,
+      info: docket.info,
+      color: docket.color.slice(1), // TODO this is dumb
+      website: docket.website,
+      license: docket.license,
+      version: docket.version,
+      image: docket.image,
+      href: { glob: { base: docket.href.glob.base, "glob-reference": { hash: '0v0', location: { ames: '~' + window.ship } } } }
+    }
+
+    // return newDocket
+
+    contextPoke({
+      app: 'vita-deploy',
+      mark: 'vita-deploy-action',
+      json: {
+        'set-docket': {
+          'desk-name': deskName,
+          docket: newDocket
+        }
+      }
+    })
 
   }
 
