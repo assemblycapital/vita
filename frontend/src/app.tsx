@@ -2,7 +2,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Home } from './components/Home';
-import { Config } from './components/Config';
+import { Config } from './components/Config/Config';
 import { GlobalStateProvider } from './components/Global';
 
 

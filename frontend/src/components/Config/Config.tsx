@@ -2,8 +2,9 @@ import React, { useContext, useEffect, useState } from 'react';
 import Urbit from '@urbit/http-api';
 import { Link, Route, useParams, useNavigate } from 'react-router-dom';
 import './Config.css';
-import { Footer } from './Footer';
-import { GlobalStateContext } from './Global';
+import { Footer } from '../Footer';
+import { GlobalStateContext } from '../Global';
+import { ConfigUploadFrontend } from './ConfigUploadFrontend';
 import { ConfigDocketForm } from './ConfigDocketForm';
 import { ConfigHrefForm } from './ConfigHrefForm';
 
@@ -68,62 +69,9 @@ export function Config() {
         <ConfigDocketForm deskName={deskName} />
       </div>
       <hr />
-      <div>
-        <h3>upload frontend</h3>
-        <form>
-          <input type="file" id="app-files"
-            // @ts-ignore
-            directory="true"
-            webkitdirectory="true"
-            mozdirectory="true"
-          />
-          <button
-            onClick={(e) => {
-              // post request to /docket/upload
-              e.preventDefault();
 
-              const fileInput = document.getElementById('app-files') as HTMLInputElement;
-              var files = fileInput.files;
+      <ConfigUploadFrontend deskName={deskName} />
 
-              if (!files) {
-                console.log('null files')
-                return;
-              }
-
-              var formData = new FormData();
-              // desk field required in docket agent
-              formData.append('desk', deskName)
-              for (var i = 0; i < files.length; i++) {
-                var file = files[i];
-                // glob field required in docket agent
-                formData.append('glob', file, file.webkitRelativePath || file.name);
-              }
-
-              if (files.length > 0) {
-                fetch('/docket/upload', {
-                  method: 'POST',
-                  body: formData,
-                })
-                  .then(data => {
-                    // response body is html...
-                    if (data.status === 200) {
-                      //TODO responsive success
-                      console.log('upload success')
-                    }
-                  })
-                  .catch((error) => {
-                    //TODO responsive error
-                    console.error('Error:', error);
-                  });
-              } else {
-                console.log('No files selected');
-              }
-            }}
-          >
-            upload
-          </button>
-        </form>
-      </div>
       <hr />
 
       <ConfigHrefForm deskName={deskName} />

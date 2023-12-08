@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Urbit from '@urbit/http-api';
 import './Config.css';
-import { Charge, Docket, GlobalStateContext } from './Global';
+import { Charge, Docket, GlobalStateContext } from '../Global';
 
 
 const api = new Urbit('', '', window.desk);
