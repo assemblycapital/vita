@@ -8,6 +8,11 @@ export function ConfigUploadFrontend({ deskName }: { deskName: string }) {
   const [toast, setToast] = useState<IToast>({ text: '', time: 0 });
 
 
+  function showToast(text: string) {
+    setToast({ text: '', time: 0 });
+    setToast({ text: text, time: 3000 });
+  }
+
   function uploadFiles() {
 
     const fileInput = document.getElementById('app-files') as HTMLInputElement;
@@ -37,13 +42,16 @@ export function ConfigUploadFrontend({ deskName }: { deskName: string }) {
           setIsUploading(false);
           // response body is html...
           if (data.status === 200) {
-            setToast({ text: 'upload success', time: 3000 });
-            console.log('upload success')
+            showToast('success');
+            fileInput.value = '';
+
+          } else {
+            showToast('error!');
           }
         })
         .catch((error) => {
-          setToast({ text: 'upload error', time: 3000 });
-          console.error('Error:', error);
+          console.log('/docket/upload error', error);
+          showToast('error!');
         });
     } else {
       console.log('No files selected');
@@ -74,16 +82,15 @@ export function ConfigUploadFrontend({ deskName }: { deskName: string }) {
 
         <div
           style={{
-            margin: '0 1rem',
+            margin: '0 0.5rem',
 
           }}
         >
-          {/* {isUploading && <div>uploading...</div>} */}
+          <Toast {...toast} />
         </div>
 
 
       </form>
-      <Toast {...toast} />
     </div >
   )
 }

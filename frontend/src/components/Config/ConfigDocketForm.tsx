@@ -2,30 +2,17 @@ import React, { useContext, useEffect, useState } from 'react';
 import Urbit from '@urbit/http-api';
 import './Config.css';
 import { Charge, Docket, GlobalStateContext } from '../Global';
+import { IToast, Toast } from '../misc/Toast';
 
 
 const api = new Urbit('', '', window.desk);
 api.ship = window.ship;
 
-function setDocket(deskName: string, docket: Docket) {
-  docket.color = docket.color.slice(1);
-
-  api.poke({
-    app: "vita-deploy",
-    mark: "vita-deploy-action",
-    json: {
-      'set-docket': {
-        "desk-name": deskName,
-        docket: docket
-      }
-    },
-  });
-  console.log('set docket', deskName, docket)
-}
 
 
 export function ConfigDocketForm({ deskName }: { deskName: string }) {
 
+  const [toast, setToast] = useState<IToast>({ text: '', time: 0 });
   const [showExtraFields, setShowExtraFields] = useState(false);
 
   const { desks, charges, loadCharges } = useContext(GlobalStateContext);
@@ -35,6 +22,28 @@ export function ConfigDocketForm({ deskName }: { deskName: string }) {
   }, [desks, charges, deskName]);
 
 
+  function showToast(text: string) {
+    setToast({ text: '', time: 0 });
+    setToast({ text: text, time: 3000 });
+  }
+
+  function setDocket(deskName: string, docket: Docket) {
+    docket.color = docket.color.slice(1);
+
+    api.poke({
+      app: "vita-deploy",
+      mark: "vita-deploy-action",
+      json: {
+        'set-docket': {
+          "desk-name": deskName,
+          docket: docket
+        }
+      },
+    }).then((r) => {
+      showToast('success');
+    });
+
+  }
   if (!deskName) {
     return (
       <div>
@@ -155,7 +164,6 @@ export function ConfigDocketForm({ deskName }: { deskName: string }) {
 
           const newDocket: Docket = {
             title: title, info: info,
-            // color: "ff", //TODO remove dots and `0x` prefix
             color: color,
             website: website, license: license, version: version,
             image: image,
@@ -167,6 +175,13 @@ export function ConfigDocketForm({ deskName }: { deskName: string }) {
       >
         submit
       </button>
+      <div
+        style={{
+          margin: '0 0.5rem',
+        }}
+      >
+        <Toast {...toast} />
+      </div>
     </form >
   )
 }
