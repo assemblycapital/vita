@@ -2,8 +2,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { IToast, Toast } from '../misc/Toast';
 import { Docket, DocketHref, GlobalStateContext } from '../Global';
-import Urbit from '@urbit/http-api';
-
 
 export function ConfigUploadFrontend({ deskName }: { deskName: string }) {
 
@@ -121,7 +119,6 @@ export function ConfigUploadFrontend({ deskName }: { deskName: string }) {
         <div
           style={{
             margin: '0 0.5rem',
-
           }}
         >
           <Toast {...toast} />

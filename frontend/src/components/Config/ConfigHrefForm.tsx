@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
-import Urbit from '@urbit/http-api';
 import './Config.css';
-import { Charge, Docket, DocketHref, GlobalStateContext } from '../Global';
+import { Docket, DocketHref, GlobalStateContext } from '../Global';
+import { IToast, Toast } from '../misc/Toast';
 
 const initialIsGlobHttp = (docket: Docket) => {
   if ('site' in docket.href) return false;
@@ -15,6 +15,13 @@ export function ConfigHrefForm({ deskName }: { deskName: string }) {
   const [isMinimized, setIsMinimized] = useState(true);
   const [isGlobHttp, setIsGlobHttp] = useState(false);
 
+  const [toast, setToast] = useState<IToast>({ text: '', time: 0 });
+
+  function showToast(text: string) {
+    setToast({ text: '', time: 0 });
+    setToast({ text: text, time: 3000 });
+  }
+
   function setDocket(deskName: string, docket: Docket) {
     docket.color = docket.color.slice(1);
 
@@ -27,8 +34,9 @@ export function ConfigHrefForm({ deskName }: { deskName: string }) {
           docket: docket
         }
       },
+    }).then(() => {
+      showToast('success');
     });
-    console.log('set docket', deskName, docket)
   }
 
   useEffect(() => {
@@ -73,7 +81,6 @@ export function ConfigHrefForm({ deskName }: { deskName: string }) {
   const toggleMinimize = () => {
     setIsMinimized(!isMinimized);
   };
-
 
 
   function globHttpDefaultValue() {
@@ -302,6 +309,14 @@ export function ConfigHrefForm({ deskName }: { deskName: string }) {
             >
               submit
             </button>
+
+            <div
+              style={{
+                margin: '0 0.5rem',
+              }}
+            >
+              <Toast {...toast} />
+            </div>
           </form >
         </div>
       )
