@@ -81,7 +81,9 @@
         %delete-app
       =.  desks  (~(del in desks) desk-name.act)
       :_  this
+      :: 
       :~
+        (~(poke-our pass:io /) %vita vita-action+!>([%del desk-name.act]))
         (uninstall-desk:b desk-name.act)
         (unpublish-desk:b desk-name.act)
         give-desks:hc
