@@ -37,9 +37,7 @@
 ::
 ++  on-init
   ^-  (quip card _this)
-  :_  this
-  ~
-  :: ~[(~(poke-our pass:io /) vita-deploy-action+!>(%get-desks ~))]
+  `this
 ++  on-load
   |=  old-state=vase
   ^-  (quip card _this)

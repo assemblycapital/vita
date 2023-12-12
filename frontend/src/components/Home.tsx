@@ -85,13 +85,6 @@ export function Home() {
                       {mets ? mets.downloads : '-'}
                     </td>
                     <td>
-                      {/* {(() => {
-                        if (mets) {
-                          return (mets.activity > 0) ? mets.activity : '-';
-                        } else {
-                          return '-';
-                        }
-                      })()} */}
                       {mets && mets.activity > 0 ? mets.activity : '-'}
                     </td>
                   </tr>
@@ -101,6 +94,11 @@ export function Home() {
           </table>
         </div>
 
+        <div>
+          <p>
+            <Link to="/metrics"> /metrics </Link>
+          </p>
+        </div>
 
       </div>
 
