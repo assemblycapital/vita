@@ -41,17 +41,6 @@ export interface GlobReference {
   location: GlobLocation;
 }
 
-// export type GlobReference = GlobReferenceHttp | GlobReferenceAmes;
-// export interface GlobReferenceAmes {
-//   hash: string;
-//   ames: string;
-// }
-
-// export interface GlobReferenceHttp {
-//   hash: string;
-//   http: string;
-// }
-
 export type GlobLocation = GlobLocationHttp | GlobLocationAmes;
 export interface GlobLocationHttp {
   http: string;
@@ -98,6 +87,12 @@ export interface Charge extends Docket {
 export type DeskMetrics = {
   [key: string]: { downloads: number; activity: number }
 };
+export interface BulkMetrics {
+  downloadsCsv: string;
+  activityCsv: string;
+}
+
+
 export interface GlobalState {
   desks: Array<string>;
   metrics: DeskMetrics;
@@ -113,6 +108,7 @@ const buntGlobalState = {
 export interface GlobalContext {
   desks: Array<string>;
   metrics: DeskMetrics;
+  bulkMetrics: BulkMetrics | null;
   charges: Charges;
   loadCharges: () => void;
   loadMetrics: () => void;
@@ -122,6 +118,7 @@ export interface GlobalContext {
 const globalContextBunt: GlobalContext = {
   desks: [],
   metrics: {},
+  bulkMetrics: null,
   charges: {},
   loadCharges: () => { },
   loadMetrics: () => { },
@@ -136,6 +133,8 @@ api.ship = window.ship;
 
 export const GlobalStateProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, setState] = useState<GlobalState>(buntGlobalState);
+  const [bulkMetrics, setBulkMetrics] = useState<BulkMetrics | null>(null);
+
 
   useEffect(() => {
     async function init() {
@@ -158,6 +157,7 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
     init().then(() => {
       loadMetrics();
       loadCharges();
+      loadBulkMetrics();
     });
   }, []);
 
@@ -189,6 +189,7 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
     });
 
   }
+
   async function loadCharges() {
     const charges: Charges = (await api.scry<ChargeUpdateInitial>(scryCharges)).initial;
 
@@ -256,7 +257,39 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
 
   }
 
-  const value: GlobalContext = { desks: state.desks, metrics: state.metrics, charges: state.charges, loadCharges, loadMetrics, removeDeskFromLocal, contextPoke };
+
+  async function loadBulkMetrics() {
+
+    let newBulkMetrics: BulkMetrics = { downloadsCsv: '', activityCsv: '' };
+    await fetch('/~/scry/vita/downloads.csv')
+      .then(response => {
+        if (!response.ok) throw new Error();
+        return response.text();
+      })
+      .then(data => {
+        newBulkMetrics.downloadsCsv = data;
+      })
+      .catch(error => {
+        console.error(error);
+      });
+
+    fetch('/~/scry/vita/activity.csv')
+      .then(response => {
+        if (!response.ok) throw new Error();
+        return response.text();
+      })
+      .then(data => {
+        newBulkMetrics.activityCsv = data;
+        setBulkMetrics(newBulkMetrics);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+
+
+  }
+
+  const value: GlobalContext = { desks: state.desks, metrics: state.metrics, bulkMetrics: bulkMetrics, charges: state.charges, loadCharges, loadMetrics, removeDeskFromLocal, contextPoke };
   return (
     <GlobalStateContext.Provider value={value}>
       {children}

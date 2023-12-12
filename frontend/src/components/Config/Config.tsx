@@ -23,10 +23,10 @@ export function Config() {
   }
 
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    console.log('config desks', desks)
-  }, [desks]);
+  //   console.log('config desks', desks)
+  // }, [desks]);
 
   const hasDesk = desks.indexOf(deskName) > -1
 
