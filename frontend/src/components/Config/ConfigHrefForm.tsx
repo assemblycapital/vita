@@ -40,10 +40,6 @@ export function ConfigHrefForm({ deskName }: { deskName: string }) {
   }
 
   useEffect(() => {
-    loadCharges();
-  }, []);
-
-  useEffect(() => {
     const docket = charges[deskName];
     if (!docket) return;
     const docketHasSite = 'site' in docket.href;
