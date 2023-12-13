@@ -120,11 +120,8 @@
       =/  dek=@tas  +62.path
       =/  mut=(unit metrics:store)  (~(get by apps) dek)
       =;  res=(set ship)
-        ~&  >  ['got res' res]
         ``json+!>((set-ship:enjs:vita res))
-      ?~  mut
-        ~&  >>>  ['got mut' mut dek]
-        *(set ship)
+      ?~  mut  *(set ship)
       latest.downloads.u.mut
     [%x %downloads %cumulative @ ~]
       :: return cumulative (set ship) for downloads
