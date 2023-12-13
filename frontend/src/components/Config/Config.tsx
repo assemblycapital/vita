@@ -3,7 +3,7 @@ import Urbit from '@urbit/http-api';
 import { Link, Route, useParams, useNavigate } from 'react-router-dom';
 import './Config.css';
 import { Footer } from '../Footer';
-import { GlobalStateContext } from '../Global';
+import { GlobalStateContext, loadDeskDownloads } from '../Global';
 import { ConfigUploadFrontend } from './ConfigUploadFrontend';
 import { ConfigDocketForm } from './ConfigDocketForm';
 import { ConfigHrefForm } from './ConfigHrefForm';
@@ -11,9 +11,9 @@ import { ConfigHrefForm } from './ConfigHrefForm';
 export function Config() {
   const { subdirectory } = useParams()
   const navigate = useNavigate();
+  const [downloaders, setDownloaders] = useState<string[]>([]);
 
-
-  const { desks, removeDeskFromLocal, charges, contextPoke } = useContext(GlobalStateContext);
+  const { desks, removeDeskFromLocal, contextPoke } = useContext(GlobalStateContext);
 
   const deskName = subdirectory
   if (!deskName) {
@@ -23,10 +23,18 @@ export function Config() {
   }
 
 
-  // useEffect(() => {
+  useEffect(() => {
 
-  //   console.log('config desks', desks)
-  // }, [desks]);
+    async function init() {
+
+      if (!deskName) return;
+      let res = await loadDeskDownloads(deskName);
+      if (!res) return;
+      setDownloaders(res);
+    }
+
+    init()
+  }, []);
 
   const hasDesk = desks.indexOf(deskName) > -1
 
@@ -40,8 +48,6 @@ export function Config() {
       </div>
     )
   }
-
-  const docket = charges[deskName];
 
   function deleteApp(deskName: string) {
 
@@ -87,6 +93,30 @@ export function Config() {
           delete %{deskName}
         </button>
       </form>
+
+      <hr />
+      <div>
+        <h5>downloaders</h5>
+        <div
+          style={{
+            fontSize: '0.8rem',
+          }}
+        >
+          {downloaders.map((downloader: string) => {
+            return (
+              <div key={downloader}
+                style={{
+                  display: 'inline-block',
+                  margin: '0 5px',
+                }}
+              >
+                {downloader}{', '}
+              </div>
+            )
+          })
+          }
+        </div>
+      </div>
 
 
       <Footer />

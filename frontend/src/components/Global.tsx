@@ -257,7 +257,6 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
 
   }
 
-
   async function loadBulkMetrics() {
 
     let newBulkMetrics: BulkMetrics = { downloadsCsv: '', activityCsv: '' };
@@ -296,3 +295,22 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
     </GlobalStateContext.Provider >
   );
 };
+
+export async function loadDeskDownloads(desk: string) {
+
+  let response: string | void = await fetch(`/~/scry/vita/json/downloads/latest/${desk}.json`)
+    .then(response => {
+      if (!response.ok) throw new Error();
+      return response.text()
+    })
+    .then(data => {
+      // console.log('deskdownloads response', data)
+      return data
+    })
+    .catch(error => {
+      console.error(error);
+    });
+
+  if (!response) return;
+  return JSON.parse(response);
+}

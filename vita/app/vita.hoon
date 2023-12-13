@@ -115,6 +115,17 @@
       ?~  mut
         ``noun+!>(*(set ship))
       ``noun+!>(latest.downloads.u.mut)
+    [%x %json %downloads %latest @ ~]
+      :: return latest (set ship) for downloads
+      =/  dek=@tas  +62.path
+      =/  mut=(unit metrics:store)  (~(get by apps) dek)
+      =;  res=(set ship)
+        ~&  >  ['got res' res]
+        ``json+!>((set-ship:enjs:vita res))
+      ?~  mut
+        ~&  >>>  ['got mut' mut dek]
+        *(set ship)
+      latest.downloads.u.mut
     [%x %downloads %cumulative @ ~]
       :: return cumulative (set ship) for downloads
       =/  dek=@tas  +30.path
