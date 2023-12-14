@@ -9,24 +9,20 @@
 :: [ ] change data ingestion based on config
 :: [ ] change csv formation based on config (hard)
 :: ::
-+$  ships-by-time
-  :: a current piece of data: (set ship),
-  :: and its lent at various timestamps.
-  $:
-  latest=(set ship)
-  history=(list nat)
-  ==
-+$  nat  [time @ud]
-+$  activity
-    ships-by-time
-+$  downloads
-  $:  cumulative=(set ship)  :: all downloaders ever recorded
-      ships-by-time
-  ==
-+$  metrics
-  [=downloads =activity]
+:: :: :: :: :: ::
 +$  app-metrics
   (map desk metrics)
++$  metrics
+  [downloads=ships-by-time activity=ships-by-time]
++$  ships-by-time
+  $:
+  latest=(set ship)
+  history=(map time moment)
+  cumulative=(set ship)
+  ==
++$  moment
+  [size=@ud set=(unit (set ship))]
+::
 +$  action
   $%
     [%del =desk]
@@ -35,4 +31,25 @@
     [%activity =desk]
     [%set-interval period=(unit @dr)]
   ==
+:: :: :: :: :: ::
+:: v0 (deprecated)
++$  nat  [time @ud]
++$  ships-by-time-0
+  :: a current piece of data: (set ship),
+  :: and its lent at various timestamps.
+  $:
+  latest=(set ship)
+  history=(list nat)
+  ==
++$  activity-0
+    ships-by-time-0
++$  downloads-0
+  $:  cumulative=(set ship)  :: all downloaders ever recorded
+      ships-by-time-0
+  ==
++$  metrics-0
+  [downloads=downloads-0 activity=activity-0]
++$  app-metrics-0
+  (map desk metrics-0)
+:: :: :: :: :: :: 
 --
