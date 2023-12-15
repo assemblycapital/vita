@@ -200,6 +200,10 @@
       =.  apps  (put-activity:hc +.act)
       `this
       ::
+        %set-collect-full-moments
+      ?>  =(src.bowl our.bowl)
+      `this(collect-full-moments boo.act)
+      ::
         %set-interval
       ?>  =(src.bowl our.bowl)
       =.  period  period.act

@@ -30,6 +30,7 @@
     [%get-all ~]
     [%activity =desk]
     [%set-interval period=(unit @dr)]
+    [%set-collect-full-moments boo=?]
   ==
 :: :: :: :: :: ::
 :: v0 (deprecated)
