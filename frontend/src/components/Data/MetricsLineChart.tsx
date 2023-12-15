@@ -15,7 +15,6 @@ const timeFormatter = (tick: any) => {
 
 export function MetricsLineChart(data: ChartBulkMetrics) {
 
-  // const data = parseData(csvData);
   if (data.length === 0) {
     return <div>no data</div>
   }

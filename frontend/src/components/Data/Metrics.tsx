@@ -34,17 +34,11 @@ export function Metrics() {
       <div>
         <h3>downloads</h3>
         {downloadsChart}
-        <p>
-          <a href="/~/scry/vita/downloads.csv">downloads.csv</a>
-        </p>
       </div>
       <hr />
       <div>
         <h3>activity</h3>
         {activityChart}
-        <p>
-          <a href="/~/scry/vita/activity.csv">activity.csv</a>
-        </p>
       </div>
       <hr />
       <Footer />
