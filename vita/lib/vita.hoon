@@ -18,6 +18,19 @@
     %+  turn  dex
     |=  =desk
     [%s desk]
+  ++  bulk-metrics
+    |=  bet=(map desk ^metrics)
+    ^-  json
+    :-  %a
+    ^-  (list json)
+    %+  turn  ~(tap by bet)
+    |=  [dek=@t met=^metrics]
+    ^-  json
+    %-  pairs
+    :~
+      ['desk' s+dek]
+      ['metrics' (metrics met)]
+    ==
   ++  metrics
     |=  met=^metrics
     ^-  json

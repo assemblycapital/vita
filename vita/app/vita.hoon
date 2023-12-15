@@ -101,15 +101,8 @@
         ~(tap in ~(key by apps))
       ``vita-desks+!>(dex)
     ::
-    :: .^(* %gx /=vita=/metrics/basket/noun)
-    :: https://myship.com/~/scry/vita/metrics/mydesk.json
-    [%x %metrics @ ~]
-      =/  dek=desk  +>-.path
-      =/  mut=(unit metrics:sur)  (~(get by apps) dek)
-      ?~  mut
-        ``noun+!>(~)
-      ::TODO should this include the desk name?
-      ``vita-metrics+!>(u.mut)
+    [%x %metrics ~]
+      ``vita-metrics+!>(apps)
     ::
     :: .^(* %gx /=vita=/downloads/noun)
     :: https://myship.com/~/scry/vita/downloads.csv

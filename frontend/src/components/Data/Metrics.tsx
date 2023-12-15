@@ -1,5 +1,5 @@
 import { useContext, useEffect } from 'react';
-import { GlobalStateContext } from '../Global';
+import { GlobalStateContext, processBulkMetrics } from '../Global';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Footer } from '../Footer';
@@ -9,6 +9,7 @@ import { MetricsLineChart } from './MetricsLineChart';
 export function Metrics() {
 
   const { bulkMetrics } = useContext(GlobalStateContext);
+
 
   if (!bulkMetrics) {
     return (
@@ -20,8 +21,10 @@ export function Metrics() {
       </div>
     )
   }
-  let activityChart = (MetricsLineChart(bulkMetrics.activityCsv));
-  let downloadsChart = (MetricsLineChart(bulkMetrics.downloadsCsv));
+  let [activityMetrics, downloadMetrics] = processBulkMetrics(bulkMetrics);
+
+  let activityChart = (MetricsLineChart(activityMetrics));
+  let downloadsChart = (MetricsLineChart(downloadMetrics));
 
   return (
     <div>

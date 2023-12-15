@@ -3,15 +3,6 @@ import React, { createContext, useEffect, useState } from 'react';
 import { scryCharges } from '@urbit/api';
 
 
-// export interface Desk {
-//   desk: string;
-//   metrics: DeskMetrics | null;
-//   charge: Charge | null;
-// }
-// export type Desks = {
-//   [key: string]: Desk;
-// };
-
 export type Charges = {
   [key: string]: Charge;
 };
@@ -87,11 +78,39 @@ export interface Charge extends Docket {
 export type DeskMetrics = {
   [key: string]: { downloads: number; activity: number }
 };
-export interface BulkMetrics {
-  downloadsCsv: string;
-  activityCsv: string;
+export type ChartBulkMetrics = Array<ChartBulkMetric>;
+export type ChartBulkMetric = {
+  [desk: string]: number;
+  // edge case, deskname could be `time`.
+  // should probably use uppercase `Time` for safety
+  // TODO
+  time: number;
+};
+
+export type BulkMetrics = Array<BulkMetric>;
+
+export interface BulkMetric {
+  desk: string;
+  metrics: BulkMetricMetrics;
 }
 
+export interface BulkMetricMetrics {
+  downloads: ShipsByDesk;
+  activity: ShipsByDesk;
+}
+
+export interface ShipsByDesk {
+  latest: Array<string>;
+  cumulative: Array<string>;
+  history: ShipsByDeskHistory;
+}
+
+export type ShipsByDeskHistory = Array<ShipsByDeskHistoryMoment>;
+export interface ShipsByDeskHistoryMoment {
+  time: number;
+  size: number;
+  set: null | Array<string>;
+}
 
 export interface GlobalState {
   desks: Array<string>;
@@ -257,35 +276,62 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
 
   }
 
+
+  function pruneBulkMetricsHistory(dataSet: ShipsByDeskHistory): ShipsByDeskHistory {
+    // Create a map to hold the maximum entry per day
+    const maxPerDay: Map<string, ShipsByDeskHistoryMoment> = new Map();
+
+    dataSet.forEach(entry => {
+      // Convert the timestamp to a Date object
+      const date = new Date(entry.time * 1000); // Assuming the timestamp is in seconds
+      // Normalize to midnight
+      date.setHours(0, 0, 0, 0);
+
+      // Convert back to a timestamp for consistency
+      const normalizedTimestamp = Math.floor(date.getTime() / 1000);
+      const dateKey = date.toISOString().split('T')[0]; // Key by date string
+
+      // Check if this is the max for the day or if the day hasn't been seen yet
+      const currentMax = maxPerDay.get(dateKey);
+      if (!currentMax || entry.size > currentMax.size) {
+        maxPerDay.set(dateKey, { ...entry, time: normalizedTimestamp });
+      }
+    });
+
+
+    const sortedPrunedDataSet = Array.from(maxPerDay.values()).sort((a, b) => a.time - b.time);
+    // Convert the map values to an array
+    return sortedPrunedDataSet;
+  }
+
   async function loadBulkMetrics() {
-
-    let newBulkMetrics: BulkMetrics = { downloadsCsv: '', activityCsv: '' };
-    await fetch('/~/scry/vita/downloads.csv')
+    await fetch('/~/scry/vita/metrics.json')
       .then(response => {
         if (!response.ok) throw new Error();
         return response.text();
       })
       .then(data => {
-        newBulkMetrics.downloadsCsv = data;
+        // console.log('metrics response', data)
+        // now we have to basically invert this data for displaying it as line graphs.
+        let bm: BulkMetrics = JSON.parse(data);
+
+        for (let i = 0; i < bm.length; i++) {
+          let row = bm[i];
+          row.metrics.downloads.history = pruneBulkMetricsHistory(row.metrics.downloads.history);
+          row.metrics.activity.history = pruneBulkMetricsHistory(row.metrics.activity.history);
+
+        }
+
+        console.log('bm', bm);
+
+
+        // console.log('am', activityMetrics);
+        // console.log('dm', downloadMetrics);
+        setBulkMetrics(bm);
       })
       .catch(error => {
         console.error(error);
       });
-
-    fetch('/~/scry/vita/activity.csv')
-      .then(response => {
-        if (!response.ok) throw new Error();
-        return response.text();
-      })
-      .then(data => {
-        newBulkMetrics.activityCsv = data;
-        setBulkMetrics(newBulkMetrics);
-      })
-      .catch(error => {
-        console.error(error);
-      });
-
-
   }
 
   const value: GlobalContext = { desks: state.desks, metrics: state.metrics, bulkMetrics: bulkMetrics, charges: state.charges, loadCharges, loadMetrics, removeDeskFromLocal, contextPoke };
@@ -296,6 +342,46 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
   );
 };
 
+
+
+export function processBulkMetrics(bulkMetrics: BulkMetrics): [ChartBulkMetrics, ChartBulkMetrics] {
+  const activityMetrics: ChartBulkMetrics = [];
+  const downloadMetrics: ChartBulkMetrics = [];
+
+  // Create a set of all desks
+  const allDesks = new Set<string>();
+  bulkMetrics.forEach(bulkMetric => {
+    allDesks.add(bulkMetric.desk);
+  });
+
+  bulkMetrics.forEach(bulkMetric => {
+    bulkMetric.metrics.activity.history.forEach(historyMoment => {
+      let metric = activityMetrics.find(m => m.time === historyMoment.time);
+      if (!metric) {
+        metric = { time: historyMoment.time };
+        // @ts-ignore
+        allDesks.forEach(desk => metric[desk] = 0); // Initialize all desks with zero
+        activityMetrics.push(metric);
+      }
+      metric[bulkMetric.desk] = historyMoment.size;
+    });
+
+    bulkMetric.metrics.downloads.history.forEach(historyMoment => {
+      let metric = downloadMetrics.find(m => m.time === historyMoment.time);
+      if (!metric) {
+        metric = { time: historyMoment.time };
+        // @ts-ignore
+        allDesks.forEach(desk => metric[desk] = 0); // Initialize all desks with zero
+        downloadMetrics.push(metric);
+      }
+      metric[bulkMetric.desk] = historyMoment.size;
+    });
+  });
+
+  return [activityMetrics, downloadMetrics];
+}
+
+
 export async function loadDeskDownloads(desk: string) {
 
   let response: string | void = await fetch(`/~/scry/vita/json/downloads/latest/${desk}.json`)
@@ -304,7 +390,7 @@ export async function loadDeskDownloads(desk: string) {
       return response.text()
     })
     .then(data => {
-      // console.log('deskdownloads response', data)
+      console.log('deskdownloads response', data)
       return data
     })
     .catch(error => {
