@@ -230,7 +230,7 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
   }
 
   function handleSub(data: any) {
-    console.log('got update', data)
+    // console.log('got update', data)
     const desks = 'desks'
     if (data[desks] !== undefined) {
       const newDesks: Array<string> = data[desks]
@@ -322,7 +322,7 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
 
         }
 
-        console.log('bm', bm);
+        // console.log('bm', bm);
 
 
         // console.log('am', activityMetrics);
@@ -390,7 +390,7 @@ export async function loadDeskDownloads(desk: string) {
       return response.text()
     })
     .then(data => {
-      console.log('deskdownloads response', data)
+      // console.log('deskdownloads response', data)
       return data
     })
     .catch(error => {

@@ -39,6 +39,31 @@ export function MetricsLineChart(data: ChartBulkMetrics) {
     return <Line key={key} type="monotone" dataKey={key} stroke={strokeColor} />;
   });
 
+
+  const CustomTooltip = ({ active, payload, label }: { active: boolean; payload: any[]; label: string }) => {
+    if (active && payload && payload.length) {
+      let time = timeFormatter(label)
+      return (
+        <div className="custom-tooltip">
+          <p className="label">{`${time}`}</p>
+          <div>
+            {payload.map((item, index) => {
+              return (
+                <p key={index} className="label">
+                  {item.name}: {item.value}
+                </p>
+              );
+            })}
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <div>err</div>
+      )
+    }
+  }
+
   return (
     <div>
       <LineChart
@@ -60,7 +85,8 @@ export function MetricsLineChart(data: ChartBulkMetrics) {
         <YAxis
           allowDecimals={false}
         />
-        <Tooltip />
+        {/* @ts-ignore */}
+        <Tooltip content={<CustomTooltip />} />
         <Legend />
         {lines}
       </LineChart>
