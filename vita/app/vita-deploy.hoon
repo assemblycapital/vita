@@ -99,11 +99,9 @@
     ==
   ==
 ::
-::
 ++  on-agent
   |=  [=wire =sign:agent:gall]
   ^-  (quip card _this)
-  ~&  [wire sign]
   ?+    -.wire  `this
       %thread
     ?+    -.sign  (on-agent:def wire sign)

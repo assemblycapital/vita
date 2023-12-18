@@ -3,10 +3,11 @@ import Urbit from '@urbit/http-api';
 import { Link, Route, useParams, useNavigate } from 'react-router-dom';
 import './Config.css';
 import { Footer } from '../Footer';
-import { GlobalStateContext, loadDeskDownloads } from '../Global';
+import { GlobalStateContext } from '../Global';
 import { ConfigUploadFrontend } from './ConfigUploadFrontend';
 import { ConfigDocketForm } from './ConfigDocketForm';
 import { ConfigHrefForm } from './ConfigHrefForm';
+import { loadDeskDownloads } from '../../lib/lib';
 
 export function Config() {
   const { subdirectory } = useParams()

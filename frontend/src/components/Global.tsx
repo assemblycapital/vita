@@ -1,116 +1,9 @@
 import Urbit from '@urbit/http-api';
 import React, { createContext, useEffect, useState } from 'react';
 import { scryCharges } from '@urbit/api';
+import { BulkMetrics, ChargeUpdateInitial, Charges, ChartBulkMetrics, DeskMetrics, ShipsByDeskHistory, ShipsByDeskHistoryMoment, hexColorFromPatUxString } from '../lib/lib';
 
 
-export type Charges = {
-  [key: string]: Charge;
-};
-
-export interface ChargeUpdateInitial {
-  initial: {
-    [desk: string]: Charge;
-  }
-}
-
-export type DocketHref = DocketHrefSite | DocketHrefGlob;
-
-export interface DocketHrefGlob {
-  glob: {
-    base: string;
-    "glob-reference": GlobReference;
-  }
-}
-
-export interface DocketHrefSite {
-  site: string;
-}
-
-
-export interface GlobReference {
-  hash: string;
-  location: GlobLocation;
-}
-
-export type GlobLocation = GlobLocationHttp | GlobLocationAmes;
-export interface GlobLocationHttp {
-  http: string;
-}
-export interface GlobLocationAmes {
-  ames: string;
-}
-
-export type Chad = HungChad | GlobChad | SiteChad | InstallChad | SuspendChad;
-
-export interface HungChad {
-  hung: string;
-}
-
-export interface GlobChad {
-  glob: null;
-}
-export interface SiteChad {
-  site: null;
-}
-export interface InstallChad {
-  install: null;
-
-}
-export interface SuspendChad {
-  suspend: null;
-}
-
-export interface Docket {
-  title: string;
-  info?: string;
-  color: string;
-  href: DocketHref;
-  website: string;
-  license: string;
-  version: string;
-  image?: string;
-}
-
-export interface Charge extends Docket {
-  chad: Chad;
-};
-
-export type DeskMetrics = {
-  [key: string]: { downloads: number; activity: number }
-};
-export type ChartBulkMetrics = Array<ChartBulkMetric>;
-export type ChartBulkMetric = {
-  [desk: string]: number;
-  // edge case, deskname could be `time`.
-  // should probably use uppercase `Time` for safety
-  // TODO
-  time: number;
-};
-
-export type BulkMetrics = Array<BulkMetric>;
-
-export interface BulkMetric {
-  desk: string;
-  metrics: BulkMetricMetrics;
-}
-
-export interface BulkMetricMetrics {
-  downloads: ShipsByDesk;
-  activity: ShipsByDesk;
-}
-
-export interface ShipsByDesk {
-  latest: Array<string>;
-  cumulative: Array<string>;
-  history: ShipsByDeskHistory;
-}
-
-export type ShipsByDeskHistory = Array<ShipsByDeskHistoryMoment>;
-export interface ShipsByDeskHistoryMoment {
-  time: number;
-  size: number;
-  set: null | Array<string>;
-}
 
 export interface GlobalState {
   desks: Array<string>;
@@ -118,7 +11,7 @@ export interface GlobalState {
   charges: Charges;
 }
 
-const buntGlobalState = {
+export const buntGlobalState = {
   desks: [],
   metrics: {},
   charges: {},
@@ -161,7 +54,7 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
       api.subscribe({
         app: "vita-deploy",
         path: "/frontend",
-        event: handleSub,
+        event: handleDesksUpdate,
         quit: () => alert("lost connection to your urbit. please refresh"),
         err: (e) => console.log("urbit http-api error:", e),
       }).then((subscriptionId) => {
@@ -179,6 +72,24 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
       loadBulkMetrics();
     });
   }, []);
+
+
+  function handleDesksUpdate(data: any) {
+    // console.log('got update', data)
+    const desks = 'desks'
+    if (data[desks] !== undefined) {
+      const newDesks: Array<string> = data[desks]
+      let newState = { ...state };
+
+      for (let i = 0; i < newDesks.length; i++) {
+        const desk = newDesks[i];
+        if (state.desks.indexOf(desk) === -1) {
+          newState.desks.push(desk);
+        }
+      }
+      setState(newState);
+    }
+  }
 
 
   async function loadMetrics() {
@@ -229,27 +140,6 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
     setState(newState);
   }
 
-  function handleSub(data: any) {
-    // console.log('got update', data)
-    const desks = 'desks'
-    if (data[desks] !== undefined) {
-      const newDesks: Array<string> = data[desks]
-      let newState = { ...state };
-
-      for (let i = 0; i < newDesks.length; i++) {
-        const desk = newDesks[i];
-        if (state.desks.indexOf(desk) === -1) {
-          newState.desks.push(desk);
-        }
-      }
-      setState(newState);
-    }
-  }
-
-  function hexColorFromPatUxString(uxString: string) {
-    return "#" + uxString.slice(2).replace(/\./g, "").padStart(6, "0");
-  }
-
   function removeDeskFromLocal(deskName: string) {
     let newState = { ...state };
     let i = state.desks.indexOf(deskName)
@@ -259,7 +149,6 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
     newState.desks.splice(i, 1);
     setState(newState);
   }
-
 
   async function contextPoke(params: any) {
 
@@ -311,8 +200,6 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
         return response.text();
       })
       .then(data => {
-        // console.log('metrics response', data)
-        // now we have to basically invert this data for displaying it as line graphs.
         let bm: BulkMetrics = JSON.parse(data);
 
         for (let i = 0; i < bm.length; i++) {
@@ -321,12 +208,6 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
           row.metrics.activity.history = pruneBulkMetricsHistory(row.metrics.activity.history);
 
         }
-
-        // console.log('bm', bm);
-
-
-        // console.log('am', activityMetrics);
-        // console.log('dm', downloadMetrics);
         setBulkMetrics(bm);
       })
       .catch(error => {
@@ -343,60 +224,3 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
 };
 
 
-
-export function processBulkMetrics(bulkMetrics: BulkMetrics): [ChartBulkMetrics, ChartBulkMetrics] {
-  const activityMetrics: ChartBulkMetrics = [];
-  const downloadMetrics: ChartBulkMetrics = [];
-
-  // Create a set of all desks
-  const allDesks = new Set<string>();
-  bulkMetrics.forEach(bulkMetric => {
-    allDesks.add(bulkMetric.desk);
-  });
-
-  bulkMetrics.forEach(bulkMetric => {
-    bulkMetric.metrics.activity.history.forEach(historyMoment => {
-      let metric = activityMetrics.find(m => m.time === historyMoment.time);
-      if (!metric) {
-        metric = { time: historyMoment.time };
-        // @ts-ignore
-        allDesks.forEach(desk => metric[desk] = 0); // Initialize all desks with zero
-        activityMetrics.push(metric);
-      }
-      metric[bulkMetric.desk] = historyMoment.size;
-    });
-
-    bulkMetric.metrics.downloads.history.forEach(historyMoment => {
-      let metric = downloadMetrics.find(m => m.time === historyMoment.time);
-      if (!metric) {
-        metric = { time: historyMoment.time };
-        // @ts-ignore
-        allDesks.forEach(desk => metric[desk] = 0); // Initialize all desks with zero
-        downloadMetrics.push(metric);
-      }
-      metric[bulkMetric.desk] = historyMoment.size;
-    });
-  });
-
-  return [activityMetrics, downloadMetrics];
-}
-
-
-export async function loadDeskDownloads(desk: string) {
-
-  let response: string | void = await fetch(`/~/scry/vita/json/downloads/latest/${desk}.json`)
-    .then(response => {
-      if (!response.ok) throw new Error();
-      return response.text()
-    })
-    .then(data => {
-      // console.log('deskdownloads response', data)
-      return data
-    })
-    .catch(error => {
-      console.error(error);
-    });
-
-  if (!response) return;
-  return JSON.parse(response);
-}

@@ -1,10 +1,11 @@
 import { useContext, useEffect } from 'react';
-import { GlobalStateContext, processBulkMetrics } from '../Global';
+import { GlobalStateContext } from '../Global';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Footer } from '../Footer';
 
 import { MetricsLineChart } from './MetricsLineChart';
+import { processBulkMetrics } from '../../lib/lib';
 
 export function Metrics() {
 
