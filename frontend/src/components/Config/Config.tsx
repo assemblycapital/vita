@@ -8,6 +8,7 @@ import { ConfigUploadFrontend } from './ConfigUploadFrontend';
 import { ConfigDocketForm } from './ConfigDocketForm';
 import { ConfigHrefForm } from './ConfigHrefForm';
 import { loadDeskDownloads } from '../../lib/lib';
+import { AppTile } from '../misc/AppTile';
 
 export function Config() {
   const { subdirectory } = useParams()
@@ -69,6 +70,7 @@ export function Config() {
       <hr />
       <div>
         <h3>edit app tile</h3>
+        {/* <AppTile deskName={deskName} /> */}
         <ConfigDocketForm deskName={deskName} />
       </div>
       <hr />
@@ -97,25 +99,35 @@ export function Config() {
 
       <hr />
       <div>
-        <h5>downloaders</h5>
+        <h5
+          style={{
+            margin: '10px 0',
+          }}
+        >
+          downloaders
+        </h5>
         <div
           style={{
             fontSize: '0.8rem',
           }}
         >
-          {downloaders.map((downloader: string) => {
-            return (
-              <div key={downloader}
-                style={{
-                  display: 'inline-block',
-                  margin: '0 5px',
-                }}
-              >
-                {downloader}{', '}
-              </div>
-            )
-          })
-          }
+          {downloaders.length === 0 ? (
+            <div>no one yet!</div>
+          ) : (
+            downloaders.map((downloader: string) => {
+              return (
+                <div key={downloader}
+                  style={{
+                    display: 'inline-block',
+                    margin: '0 5px',
+                  }}
+                >
+                  {downloader}{', '}
+                </div>
+              )
+            })
+          )}
+
         </div>
       </div>
 

@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import './Config.css';
-import { Docket, DocketHref, GlobalStateContext } from '../Global';
+import { GlobalStateContext } from '../Global';
 import { IToast, Toast } from '../misc/Toast';
+import { Docket, DocketHref } from '../../lib/lib';
 
 const initialIsGlobHttp = (docket: Docket) => {
   if ('site' in docket.href) return false;
@@ -105,12 +106,19 @@ export function ConfigHrefForm({ deskName }: { deskName: string }) {
           <div style={{ fontWeight: 'bold' }}>href settings</div>
           (advanced)
         </div>
-        <button onClick={() => {
-          toggleMinimize();
-          setSelectedSite(docketHasSite);
-          setIsGlobHttp(initialIsGlobHttp(docket));
-        }
-        }>
+        <button
+          style={{
+            // margin: '0 0.5rem',
+            width: '1.5rem',
+            height: '1.5rem',
+            // verticalAlign: 'bottom'
+          }}
+          onClick={() => {
+            toggleMinimize();
+            setSelectedSite(docketHasSite);
+            setIsGlobHttp(initialIsGlobHttp(docket));
+          }
+          }>
           {isMinimized ? '+' : '-'}
         </button>
       </div>
@@ -157,6 +165,7 @@ export function ConfigHrefForm({ deskName }: { deskName: string }) {
                       id="app-site"
                       name="app-site"
                       defaultValue={"site" in docket.href ? docket.href.site : ''}
+                      placeholder='/path/to/site'
                     />
                   </div>
                 ) : (

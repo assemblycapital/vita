@@ -1,8 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Urbit from '@urbit/http-api';
 import './Config.css';
-import { Charge, Docket, GlobalStateContext } from '../Global';
+import { GlobalStateContext } from '../Global';
 import { IToast, Toast } from '../misc/Toast';
+import { Docket } from '../../lib/lib';
 
 export function ConfigDocketForm({ deskName }: { deskName: string }) {
 
@@ -56,126 +57,132 @@ export function ConfigDocketForm({ deskName }: { deskName: string }) {
   const docket = charges[deskName];
 
   return (
-    <form>
-      <div>
+    <div>
+      <form>
         <div>
-          <label htmlFor="app-title">title</label>
-          <input type="text" id="app-title"
-            defaultValue={docket.title}
-          />
+          <div>
+            <label htmlFor="app-title">title</label>
+            <input type="text" id="app-title"
+              defaultValue={docket.title}
+            />
+          </div>
         </div>
-      </div>
-      <div>
         <div>
-          <label htmlFor="app-color">color</label>
-          <input type="text" id="app-color"
-            defaultValue={docket.color}
-          />
+          <div>
+            <label htmlFor="app-color">color</label>
+            <input type="text" id="app-color"
+              defaultValue={docket.color}
+            />
+          </div>
         </div>
-      </div>
-      <div>
         <div>
-          <label htmlFor="app-image">image-url</label>
-          <input type="text" id="app-image"
-            defaultValue={docket.image ? docket.image : ''}
-          />
+          <div>
+            <label htmlFor="app-image">image-url</label>
+            <input type="text" id="app-image"
+              defaultValue={docket.image ? docket.image : ''}
+            />
+          </div>
         </div>
-      </div>
 
-      <button
-        style={{
-          margin: '0 1rem',
-        }}
-        onClick={(e) => {
-          e.preventDefault();
-          setShowExtraFields(!showExtraFields)
-        }}>
-        {showExtraFields ? '-' : '+'}
-      </button>
+        <button
+          style={{
+            margin: '10px 1rem',
+            width: '1.5rem',
+            height: '1.5rem',
+            verticalAlign: 'bottom'
+          }}
+          onClick={(e) => {
+            e.preventDefault();
+            setShowExtraFields(!showExtraFields)
+          }}>
+          {showExtraFields ? '-' : '+'}
+        </button>
 
-      {showExtraFields &&
-        <>
-          <div>
+        {showExtraFields &&
+          <>
             <div>
-              <label htmlFor="app-license">license</label>
-              <input type="text" id="app-license"
-                defaultValue={docket.license}
-              />
+              <div>
+                <label htmlFor="app-license">license</label>
+                <input type="text" id="app-license"
+                  defaultValue={docket.license}
+                />
+              </div>
             </div>
-          </div>
 
-          <div>
             <div>
-              <label htmlFor="app-version">version</label>
-              <input type="text" id="app-version"
-                defaultValue={docket.version}
-              />
+              <div>
+                <label htmlFor="app-version">version</label>
+                <input type="text" id="app-version"
+                  defaultValue={docket.version}
+                />
+              </div>
             </div>
-          </div>
 
-          <div>
             <div>
-              <label htmlFor="app-website">website</label>
-              <input type="text" id="app-website"
-                defaultValue={docket.website}
-              />
+              <div>
+                <label htmlFor="app-website">website</label>
+                <input type="text" id="app-website"
+                  defaultValue={docket.website}
+                />
+              </div>
             </div>
-          </div>
 
-          <div>
             <div>
-              <label htmlFor="app-info">info</label>
-              <input type="text" id="app-info"
-                defaultValue={docket.info}
-              />
+              <div>
+                <label htmlFor="app-info">description</label>
+                <input type="text" id="app-info"
+                  defaultValue={docket.info}
+                />
+              </div>
             </div>
-          </div>
-        </>}
+          </>}
 
-      <br />
-      <button
-        onClick={(e) => {
-          e.preventDefault();
-          const title = (document.getElementById('app-title') as HTMLInputElement).value;
-          const color = (document.getElementById('app-color') as HTMLInputElement).value;
-          const image = (document.getElementById('app-image') as HTMLInputElement).value;
+        <br />
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            const title = (document.getElementById('app-title') as HTMLInputElement).value;
+            const color = (document.getElementById('app-color') as HTMLInputElement).value;
+            const image = (document.getElementById('app-image') as HTMLInputElement).value;
 
-          let info;
-          let website;
-          let license;
-          let version;
-          if (showExtraFields) {
-            info = (document.getElementById('app-info') as HTMLInputElement).value;
-            website = (document.getElementById('app-website') as HTMLInputElement).value;
-            license = (document.getElementById('app-license') as HTMLInputElement).value;
-            version = (document.getElementById('app-version') as HTMLInputElement).value;
-          } else {
-            info = docket.info
-            website = docket.website
-            license = docket.license
-            version = docket.version
-          }
+            let info;
+            let website;
+            let license;
+            let version;
+            if (showExtraFields) {
+              info = (document.getElementById('app-info') as HTMLInputElement).value;
+              website = (document.getElementById('app-website') as HTMLInputElement).value;
+              license = (document.getElementById('app-license') as HTMLInputElement).value;
+              version = (document.getElementById('app-version') as HTMLInputElement).value;
+            } else {
+              info = docket.info
+              website = docket.website
+              license = docket.license
+              version = docket.version
+            }
 
-          const newDocket: Docket = {
-            title: title, info: info,
-            color: color,
-            website: website, license: license, version: version,
-            image: image,
-            href: docket.href
-          }
+            const newDocket: Docket = {
+              title: title, info: info,
+              color: color,
+              website: website, license: license, version: version,
+              image: image,
+              href: docket.href
+            }
 
-          setDocket(deskName, newDocket)
-        }}
-      >
-        submit
-      </button>
-      <div
-        style={{
-          margin: '0 0.5rem',
-        }}
-      >
-        <Toast {...toast} />
-      </div>
-    </form >
+            setDocket(deskName, newDocket)
+            // loadCharges();
+          }}
+        >
+          submit
+        </button>
+        <div
+          style={{
+            margin: '0 0.5rem',
+          }}
+        >
+          <Toast {...toast} />
+        </div>
+      </form >
+    </div>
   )
 }
