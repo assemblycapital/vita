@@ -8,11 +8,11 @@ import { LoadingSpinner } from '../misc/LoadingSpinner';
 
 export function ConfigDocketForm({ deskName }: { deskName: string }) {
 
-  const [toast, setToast] = useState<IToast>({ text: '', time: 0 });
   const [showExtraFields, setShowExtraFields] = useState(false);
 
   const { desks, charges, contextPoke, loadCharges } = useContext(GlobalStateContext);
 
+  const [toast, setToast] = useState<IToast>({ text: '', time: 0 });
   function showToast(text: string) {
     setToast({ text: '', time: 0 });
     setToast({ text: text, time: 3000 });

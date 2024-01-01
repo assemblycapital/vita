@@ -4,15 +4,37 @@ import { Link } from 'react-router-dom';
 import './Home.css';
 import { Footer } from './Footer';
 import { LoadingSpinner } from './misc/LoadingSpinner';
+import { IToast, Toast } from './misc/Toast';
 
 export function Home() {
 
   const { desks, metrics, contextPoke, isCreatingApp, setIsCreatingApp } = useContext(GlobalStateContext);
 
-  const invalidDeskNames = ['base', 'landscape', 'groups', 'talk', 'realm', 'vita', 'lemur', 'pals', 'radio', 'rumors', 'portal']
 
+  const [toast, setToast] = useState<IToast>({ text: '', time: 0 });
+  function showToast(text: string) {
+    let time = 3000;
+    if (toast.time <= 3000) {
+      time++;
+    } else if (toast.time > 3000) {
+      time--;
+    }
+  
+    setToast({ text: text, time: time});
+  }
+
+  function isValidDeskName(deskName: string) {
+    if (deskName.length < 4) return false;
+    return /^[a-z][a-z0-9-]*$/.test(deskName);
+  }
+  const invalidDeskNames = ['base', 'landscape', 'groups', 'talk', 'realm', 'vita', 'lemur', 'pals', 'radio', 'rumors', 'trill']
   function newDesk(deskName: string) {
     if (invalidDeskNames.includes(deskName)) {
+      showToast(`%${deskName} is reserved`);
+      return;
+    }
+    if (!isValidDeskName(deskName)) {
+      showToast(`invalid desk name`);
       return;
     }
     contextPoke({
@@ -58,6 +80,8 @@ export function Home() {
               create app
             </button>
           </div>
+          
+          <Toast {...toast} />
         </div>
 
         <div>
