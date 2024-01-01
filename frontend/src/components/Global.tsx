@@ -1,27 +1,28 @@
 import Urbit from '@urbit/http-api';
 import React, { createContext, useEffect, useState } from 'react';
 import { scryCharges } from '@urbit/api';
-import { BulkMetrics, ChargeUpdateInitial, Charges, ChartBulkMetrics, DeskMetrics, ShipsByDeskHistory, ShipsByDeskHistoryMoment, hexColorFromPatUxString } from '../lib/lib';
+import { BulkMetricMetrics, BulkMetrics, ChargeUpdateInitial, Charges, ChartBulkMetrics, DeskMetrics, ShipsByDeskHistory, ShipsByDeskHistoryMoment, hexColorFromPatUxString } from '../lib/lib';
 
 
 
-export interface GlobalState {
-  desks: Array<string>;
-  metrics: DeskMetrics;
-  charges: Charges;
-}
+// export interface GlobalState {
+//   desks: Array<string>;
+//   metrics: DeskMetrics;
+//   charges: Charges;
+// }
 
-export const buntGlobalState = {
-  desks: [],
-  metrics: {},
-  charges: {},
-}
+// export const buntGlobalState = {
+//   desks: [],
+//   metrics: {},
+//   charges: {},
+// }
 
 export interface GlobalContext {
   desks: Array<string>;
   metrics: DeskMetrics;
   bulkMetrics: BulkMetrics | null;
   charges: Charges;
+  // isCreatingApp: boolean;
   loadCharges: () => void;
   loadMetrics: () => void;
   removeDeskFromLocal: (deskName: string) => void;
@@ -32,6 +33,7 @@ const globalContextBunt: GlobalContext = {
   metrics: {},
   bulkMetrics: null,
   charges: {},
+  // isCreatingApp: false,
   loadCharges: () => { },
   loadMetrics: () => { },
   removeDeskFromLocal: (deskName: string) => { },
@@ -44,8 +46,12 @@ const api = new Urbit('', '', window.desk);
 api.ship = window.ship;
 
 export const GlobalStateProvider = ({ children }: { children: React.ReactNode }) => {
-  const [state, setState] = useState<GlobalState>(buntGlobalState);
+  // const [state, setState] = useState<GlobalState>(buntGlobalState);
+  const [desks, setDesks] = useState<Array<string>>([]);
+  const [metrics, setMetrics] = useState<DeskMetrics>({});
   const [bulkMetrics, setBulkMetrics] = useState<BulkMetrics | null>(null);
+  const [charges, setCharges] = useState<Charges>({});
+
 
 
   useEffect(() => {
@@ -79,15 +85,7 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
     const desks = 'desks'
     if (data[desks] !== undefined) {
       const newDesks: Array<string> = data[desks]
-      let newState = { ...state };
-
-      for (let i = 0; i < newDesks.length; i++) {
-        const desk = newDesks[i];
-        if (state.desks.indexOf(desk) === -1) {
-          newState.desks.push(desk);
-        }
-      }
-      setState(newState);
+      setDesks(newDesks);
     }
   }
 
@@ -107,13 +105,13 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
         path: '/json/metrics/summary',
       }).then((result) => {
         console.log('metrics scry result ', result);
-        let newState = { ...state };
+        let newMetrics = { ...metrics};
 
         for (let i = 0; i < result.length; i++) {
           const row = result[i];
-          newState.metrics[row.desk] = { downloads: row.downloads, activity: row.activity };
+          newMetrics[row.desk] = { downloads: row.downloads, activity: row.activity };
         }
-        setState(newState);
+        setMetrics(newMetrics);
 
       });
     });
@@ -121,35 +119,37 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
   }
 
   async function loadCharges() {
-    const charges: Charges = (await api.scry<ChargeUpdateInitial>(scryCharges)).initial;
+    const loadedCharges: Charges = (await api.scry<ChargeUpdateInitial>(scryCharges)).initial;
 
-    console.log('loaded charges', charges)
+    console.log('loaded charges', loadedCharges)
 
-    let newState = { ...state };
-    let keys = Object.keys(charges);
+    let newCharges = { ...charges};
+    let keys = Object.keys(loadedCharges);
+
     for (let i = 0; i < keys.length; i++) {
       const deskName = keys[i];
 
-      let charge = charges[deskName];
+      let charge = loadedCharges[deskName];
       charge.color = hexColorFromPatUxString(charge.color);
-      charges[deskName] = charge;
 
-      newState.charges[deskName] = charges[deskName];
+      newCharges[deskName] = charge;
     }
 
-    setState(newState);
+    setCharges(newCharges);
   }
 
   function removeDeskFromLocal(deskName: string) {
-    let newState = { ...state };
-    let i = state.desks.indexOf(deskName)
-
-    if (i === -1) return;
-
-    newState.desks.splice(i, 1);
-    setState(newState);
+    const index = desks.indexOf(deskName);
+  
+    if (index === -1) return;
+  
+    let newDesks = [...desks];
+  
+    newDesks.splice(index, 1);
+  
+    setDesks(newDesks);
   }
-
+  
   async function contextPoke(params: any) {
 
     console.log("contextPoke", params)
@@ -215,7 +215,16 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
       });
   }
 
-  const value: GlobalContext = { desks: state.desks, metrics: state.metrics, bulkMetrics: bulkMetrics, charges: state.charges, loadCharges, loadMetrics, removeDeskFromLocal, contextPoke };
+  const value: GlobalContext = {
+    desks: desks,
+    metrics: metrics,
+    bulkMetrics: bulkMetrics, 
+    charges: charges, 
+    loadCharges, 
+    loadMetrics, 
+    removeDeskFromLocal, 
+    contextPoke
+    };
   return (
     <GlobalStateContext.Provider value={value}>
       {children}
