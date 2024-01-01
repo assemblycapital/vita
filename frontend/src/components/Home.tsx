@@ -1,15 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react';
-import Urbit from '@urbit/http-api';
 import { GlobalStateContext } from './Global';
 import { Link } from 'react-router-dom';
 import './Home.css';
 import { Footer } from './Footer';
+import { LoadingSpinner } from './misc/LoadingSpinner';
 
 export function Home() {
 
-  const { desks, metrics, contextPoke } = useContext(GlobalStateContext);
+  const { desks, metrics, contextPoke, isCreatingApp, setIsCreatingApp } = useContext(GlobalStateContext);
 
   const invalidDeskNames = ['base', 'landscape', 'groups', 'talk', 'realm', 'vita', 'lemur', 'pals', 'radio', 'rumors', 'portal']
+
   function newDesk(deskName: string) {
     if (invalidDeskNames.includes(deskName)) {
       return;
@@ -21,8 +22,9 @@ export function Home() {
         'create-app': deskName
       },
     });
-
+    setIsCreatingApp(true);
   }
+
 
   return (
     <div className="vita-body">
@@ -37,7 +39,6 @@ export function Home() {
         <div>
 
           <div>
-
             <input type="text" id="new-desk-name"
               placeholder="unique-desk-name"
               autoComplete='off'
@@ -52,7 +53,6 @@ export function Home() {
               }
 
               newDesk(deskName)
-
             }}
             >
               create app
@@ -92,6 +92,11 @@ export function Home() {
               })}
             </tbody>
           </table>
+        </div>
+
+
+        <div>
+          {isCreatingApp && <LoadingSpinner />}
         </div>
 
         <div>

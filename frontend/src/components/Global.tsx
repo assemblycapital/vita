@@ -1,28 +1,15 @@
 import Urbit from '@urbit/http-api';
 import React, { createContext, useEffect, useState } from 'react';
 import { scryCharges } from '@urbit/api';
-import { BulkMetricMetrics, BulkMetrics, ChargeUpdateInitial, Charges, ChartBulkMetrics, DeskMetrics, ShipsByDeskHistory, ShipsByDeskHistoryMoment, hexColorFromPatUxString } from '../lib/lib';
-
-
-
-// export interface GlobalState {
-//   desks: Array<string>;
-//   metrics: DeskMetrics;
-//   charges: Charges;
-// }
-
-// export const buntGlobalState = {
-//   desks: [],
-//   metrics: {},
-//   charges: {},
-// }
+import { BulkMetrics, ChargeUpdateInitial, Charges, DeskMetrics, ShipsByDeskHistory, ShipsByDeskHistoryMoment, hexColorFromPatUxString } from '../lib/lib';
 
 export interface GlobalContext {
   desks: Array<string>;
   metrics: DeskMetrics;
   bulkMetrics: BulkMetrics | null;
   charges: Charges;
-  // isCreatingApp: boolean;
+  isCreatingApp: boolean;
+  setIsCreatingApp: (a:boolean) => any;
   loadCharges: () => void;
   loadMetrics: () => void;
   removeDeskFromLocal: (deskName: string) => void;
@@ -33,7 +20,8 @@ const globalContextBunt: GlobalContext = {
   metrics: {},
   bulkMetrics: null,
   charges: {},
-  // isCreatingApp: false,
+  isCreatingApp: false,
+  setIsCreatingApp: () => { },
   loadCharges: () => { },
   loadMetrics: () => { },
   removeDeskFromLocal: (deskName: string) => { },
@@ -51,6 +39,7 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
   const [metrics, setMetrics] = useState<DeskMetrics>({});
   const [bulkMetrics, setBulkMetrics] = useState<BulkMetrics | null>(null);
   const [charges, setCharges] = useState<Charges>({});
+  const [isCreatingApp, setIsCreatingApp] = useState(false);
 
 
 
@@ -87,6 +76,8 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
       const newDesks: Array<string> = data[desks]
       setDesks(newDesks);
     }
+
+    setIsCreatingApp(false);
   }
 
 
@@ -220,6 +211,8 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
     metrics: metrics,
     bulkMetrics: bulkMetrics, 
     charges: charges, 
+    isCreatingApp: isCreatingApp,
+    setIsCreatingApp: setIsCreatingApp,
     loadCharges, 
     loadMetrics, 
     removeDeskFromLocal, 
