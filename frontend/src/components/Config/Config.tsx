@@ -9,18 +9,23 @@ import { ConfigDocketForm } from './ConfigDocketForm';
 import { ConfigHrefForm } from './ConfigHrefForm';
 import { loadDeskDownloads } from '../../lib/lib';
 import { AppTile } from '../misc/AppTile';
+import { LoadingSpinner } from '../misc/LoadingSpinner';
 
 export function Config() {
   const { subdirectory } = useParams()
   const navigate = useNavigate();
   const [downloaders, setDownloaders] = useState<string[]>([]);
+  const [hasLoadeddownloaders, setHasLoadedDownloaders] = useState(false);
 
-  const { desks, removeDeskFromLocal, contextPoke } = useContext(GlobalStateContext);
+  const { desks, removeDeskFromLocal, contextPoke, loadCharges } = useContext(GlobalStateContext);
 
   const deskName = subdirectory
   if (!deskName) {
     return (
-      <div>oops, nothing here</div>
+      <div>
+        <Link to="/"> home</Link>
+        <p>invalid url</p>
+      </div>
     )
   }
 
@@ -30,9 +35,11 @@ export function Config() {
     async function init() {
 
       if (!deskName) return;
+      loadCharges();
       let res = await loadDeskDownloads(deskName);
       if (!res) return;
       setDownloaders(res);
+      setHasLoadedDownloaders(true);
     }
 
     init()
@@ -41,12 +48,13 @@ export function Config() {
   const hasDesk = desks.indexOf(deskName) > -1
 
 
-  if (!hasDesk) {
+  if (!hasDesk && desks.length !== 0) {
     return (
       <div>
-        <Link to="/"> home</Link>
-        {/* todo this displays initially on load */}
-        <div>oops, nothing here</div>
+      <Link to="/"> home</Link>
+      <h1>vita / %{deskName}</h1>
+      <hr />
+        <p>could not find %{deskName}</p>
       </div>
     )
   }
@@ -112,7 +120,22 @@ export function Config() {
           }}
         >
           {downloaders.length === 0 ? (
-            <div>no one yet!</div>
+
+            <div>
+              {hasLoadeddownloaders ? (
+                'no one yet... invite a friend!' 
+                ):(
+                  <div
+                  style={{
+                    display: 'flex',
+                    gap:'1rem',
+                  }}
+                  >
+                  <LoadingSpinner />
+                  'loading...'
+                  </div>
+              )}
+            </div>
           ) : (
             downloaders.map((downloader: string) => {
               return (

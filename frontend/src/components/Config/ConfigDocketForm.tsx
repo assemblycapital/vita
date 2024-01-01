@@ -4,18 +4,14 @@ import './Config.css';
 import { GlobalStateContext } from '../Global';
 import { IToast, Toast } from '../misc/Toast';
 import { Docket } from '../../lib/lib';
+import { LoadingSpinner } from '../misc/LoadingSpinner';
 
 export function ConfigDocketForm({ deskName }: { deskName: string }) {
 
   const [toast, setToast] = useState<IToast>({ text: '', time: 0 });
   const [showExtraFields, setShowExtraFields] = useState(false);
 
-  const { desks, charges, loadCharges, contextPoke } = useContext(GlobalStateContext);
-
-  useEffect(() => {
-    loadCharges();
-  }, [desks, charges, deskName]);
-
+  const { desks, charges, contextPoke, loadCharges } = useContext(GlobalStateContext);
 
   function showToast(text: string) {
     setToast({ text: '', time: 0 });
@@ -36,6 +32,7 @@ export function ConfigDocketForm({ deskName }: { deskName: string }) {
       },
     }).then((r: any) => {
       showToast('success');
+      loadCharges();
     });
 
   }
@@ -49,7 +46,15 @@ export function ConfigDocketForm({ deskName }: { deskName: string }) {
 
   if (charges[deskName] === undefined) {
     return (
-      <div>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          gap: '1rem',
+
+        }}
+      >
+        <LoadingSpinner />
         <div>loading %{deskName} docket...</div>
       </div>
     )
@@ -170,7 +175,6 @@ export function ConfigDocketForm({ deskName }: { deskName: string }) {
             }
 
             setDocket(deskName, newDocket)
-            // loadCharges();
           }}
         >
           submit

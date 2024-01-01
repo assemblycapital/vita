@@ -71,6 +71,19 @@ export function Home() {
               </tr>
             </thead>
             <tbody>
+              {desks.length == 0 &&
+                <tr>
+                  <td>
+                    <LoadingSpinner />
+                  </td>
+                  <td>
+                    <LoadingSpinner />
+                  </td>
+                  <td>
+                    <LoadingSpinner />
+                  </td>
+                </tr>
+              }
               {desks.map((desk: string) => {
 
                 const mets = metrics[desk]
