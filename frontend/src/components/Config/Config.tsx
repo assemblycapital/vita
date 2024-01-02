@@ -18,9 +18,24 @@ export function Config() {
   const [hasLoadeddownloaders, setHasLoadedDownloaders] = useState(false);
 
   const { desks, removeDeskFromLocal, contextPoke, loadCharges } = useContext(GlobalStateContext);
+  useEffect(() => {
 
-  const deskName = subdirectory
-  if (!deskName) {
+    async function init() {
+
+      if (!subdirectory) return;
+      loadCharges();
+      let res = await loadDeskDownloads(subdirectory);
+      if (!res) return;
+      setDownloaders(res);
+      setHasLoadedDownloaders(true);
+    }
+
+    init()
+  }, [subdirectory]);
+
+
+
+  if (!subdirectory) {
     return (
       <div>
         <Link to="/"> home</Link>
@@ -29,30 +44,35 @@ export function Config() {
     )
   }
 
+  const header = <div>
+    <Link to="/"> home</Link>
+    <h1>vita / %{subdirectory}</h1>
+  </div>
 
-  useEffect(() => {
-
-    async function init() {
-
-      if (!deskName) return;
-      loadCharges();
-      let res = await loadDeskDownloads(deskName);
-      if (!res) return;
-      setDownloaders(res);
-      setHasLoadedDownloaders(true);
-    }
-
-    init()
-  }, []);
+  const deskName = subdirectory
+  if (!desks) {
+    return (
+      <div>
+        {header}
+        {/* <Link to="/"> home</Link> */}
+        <div
+          style={{
+            display: 'flex',
+            gap: '1rem',
+          }}
+        >
+          <LoadingSpinner />
+          loading...
+        </div>
+      </div>
+    )
+  }
 
   const hasDesk = desks.indexOf(deskName) > -1
-
-
   if (!hasDesk && desks.length !== 0) {
     return (
       <div>
-      <Link to="/"> home</Link>
-      <h1>vita / %{deskName}</h1>
+      {header}
       <hr />
         <p>could not find %{deskName}</p>
       </div>
@@ -71,10 +91,10 @@ export function Config() {
     });
   }
 
+
   return (
     <div>
-      <Link to="/"> home</Link>
-      <h1>vita / %{deskName}</h1>
+      {header}
       <hr />
       <div>
         <h3>edit app tile</h3>
@@ -117,6 +137,7 @@ export function Config() {
         <div
           style={{
             fontSize: '0.8rem',
+            margin:'1rem 0',
           }}
         >
           {downloaders.length === 0 ? (
@@ -132,7 +153,7 @@ export function Config() {
                   }}
                   >
                   <LoadingSpinner />
-                  'loading...'
+                  loading...
                   </div>
               )}
             </div>
@@ -151,7 +172,9 @@ export function Config() {
             })
           )}
 
+
         </div>
+          <Link to="/metrics"> /metrics </Link>
       </div>
 
 

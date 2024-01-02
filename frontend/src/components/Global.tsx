@@ -4,7 +4,7 @@ import { scryCharges } from '@urbit/api';
 import { BulkMetrics, ChargeUpdateInitial, Charges, DeskMetrics, ShipsByDeskHistory, ShipsByDeskHistoryMoment, hexColorFromPatUxString } from '../lib/lib';
 
 export interface GlobalContext {
-  desks: Array<string>;
+  desks: Array<string> | null;
   metrics: DeskMetrics;
   bulkMetrics: BulkMetrics | null;
   charges: Charges;
@@ -16,7 +16,7 @@ export interface GlobalContext {
   contextPoke: (params: any) => any,
 }
 const globalContextBunt: GlobalContext = {
-  desks: [],
+  desks: null,
   metrics: {},
   bulkMetrics: null,
   charges: {},
@@ -34,8 +34,7 @@ const api = new Urbit('', '', window.desk);
 api.ship = window.ship;
 
 export const GlobalStateProvider = ({ children }: { children: React.ReactNode }) => {
-  // const [state, setState] = useState<GlobalState>(buntGlobalState);
-  const [desks, setDesks] = useState<Array<string>>([]);
+  const [desks, setDesks] = useState<Array<string> | null>(null);
   const [metrics, setMetrics] = useState<DeskMetrics>({});
   const [bulkMetrics, setBulkMetrics] = useState<BulkMetrics | null>(null);
   const [charges, setCharges] = useState<Charges>({});
@@ -130,6 +129,7 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
   }
 
   function removeDeskFromLocal(deskName: string) {
+    if (!desks) return;
     const index = desks.indexOf(deskName);
   
     if (index === -1) return;

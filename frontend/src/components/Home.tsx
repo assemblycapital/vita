@@ -55,7 +55,7 @@ export function Home() {
         style={{
           display: 'flex',
           flexDirection: 'column',
-          gap: '1rem',
+          gap: '2rem',
         }}
       >
         <div>
@@ -85,61 +85,73 @@ export function Home() {
         </div>
 
         <div>
-          <table
-          >
-            <thead>
-              <tr>
-                <th>desk</th>
-                <th>downloads</th>
-                <th>activity</th>
-              </tr>
-            </thead>
-            <tbody>
-              {desks.length == 0 &&
+          {desks === null ? (
+            <div
+            style={{
+              display: 'flex',
+              gap: '1rem',
+              justifyContent: 'center',
+            }}
+            >
+              <LoadingSpinner />
+              loading apps...
+            </div>
+          ):(
+          <>
+            {desks.length === 0 ? (
+              <div>
+                <p>no apps... try creating one!</p>
+              </div>
+            ):(
+            <table>
+              <thead>
                 <tr>
-                  <td>
-                    <LoadingSpinner />
-                  </td>
-                  <td>
-                    <LoadingSpinner />
-                  </td>
-                  <td>
-                    <LoadingSpinner />
-                  </td>
+                  <th>desk</th>
+                  <th>downloads</th>
+                  <th>activity</th>
                 </tr>
-              }
-              {desks.map((desk: string) => {
+              </thead>
+              <tbody>
+                {desks.map((desk: string) => {
 
-                const mets = metrics[desk]
-                return (
-                  <tr key={desk} >
-                    <td>
-                      <Link to={`/config/${desk}`} >
-                        {'%'}{desk}
-                      </Link>
-                    </td>
-                    <td>
-                      {mets ? mets.downloads : '-'}
-                    </td>
-                    <td>
-                      {mets && mets.activity > 0 ? mets.activity : '-'}
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
+                  const mets = metrics[desk]
+                  return (
+                    <tr key={desk} >
+                      <td>
+                        <Link to={`/config/${desk}`} >
+                          {'%'}{desk}
+                        </Link>
+                      </td>
+                      <td>
+                        {mets ? mets.downloads : '-'}
+                      </td>
+                      <td>
+                        {mets && mets.activity > 0 ? mets.activity : '-'}
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+            )}
+          </>
+          )}
         </div>
 
 
-        <div>
-          {isCreatingApp && <LoadingSpinner />}
-        </div>
+          {isCreatingApp && 
+            <div
+            >
+              <LoadingSpinner />
+            </div>
+          }
 
-        <div>
-          <p>
+        <div
+          style={{
+            margin: '1rem 0',
+          }}
+        >
             <Link to="/metrics"> /metrics </Link>
-          </p>
         </div>
 
       </div>

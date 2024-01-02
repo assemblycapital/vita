@@ -3,6 +3,7 @@ import './Config.css';
 import { GlobalStateContext } from '../Global';
 import { IToast, Toast } from '../misc/Toast';
 import { Docket, DocketHref } from '../../lib/lib';
+import { LoadingSpinner } from '../misc/LoadingSpinner';
 
 const initialIsGlobHttp = (docket: Docket) => {
   if ('site' in docket.href) return false;
@@ -60,7 +61,13 @@ export function ConfigHrefForm({ deskName }: { deskName: string }) {
 
   if (charges[deskName] === undefined) {
     return (
-      <div>
+      <div
+        style={{
+          display: 'flex',
+          gap: '1rem',
+        }}
+      >
+        <LoadingSpinner />
         <div>loading %{deskName} docket...</div>
       </div>
     )
