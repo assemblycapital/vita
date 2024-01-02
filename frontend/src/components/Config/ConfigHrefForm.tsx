@@ -101,7 +101,11 @@ export function ConfigHrefForm({ deskName }: { deskName: string }) {
   }
 
   return (
-    <div>
+    <div
+      style={{
+        margin: '1rem 0',
+      }}
+    >
       <div
         style={{
           display: 'flex',

@@ -110,17 +110,21 @@ export function Config() {
       <ConfigHrefForm deskName={deskName} />
       <hr />
       <form>
-        <button onClick={(e) => {
-          e.preventDefault();
-          let confirmed = confirm(`Are you sure you want to delete %${deskName}? The desk will stil exist, but it will be unpublished and uninstalled.`)
-          if (!confirmed) return;
+        <button
+          style={{
+            margin: '10px 0',
+          }}
+          onClick={(e) => {
+            e.preventDefault();
+            let confirmed = confirm(`Are you sure you want to delete %${deskName}? The desk will stil exist, but it will be unpublished and uninstalled.`)
+            if (!confirmed) return;
 
-          deleteApp(deskName);
-          removeDeskFromLocal(deskName);
-          // redirect to home
-          navigate('/');
-
-        }}>
+            deleteApp(deskName);
+            removeDeskFromLocal(deskName);
+            // redirect to home
+            navigate('/');
+          }}
+        >
           delete %{deskName}
         </button>
       </form>
