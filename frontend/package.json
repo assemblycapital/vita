@@ -19,6 +19,7 @@
     "recharts": "^2.10.3"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.202",
     "@types/papaparse": "^5.3.14",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",

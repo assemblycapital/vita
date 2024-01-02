@@ -1,7 +1,8 @@
 
 import React, { useContext, useEffect, useState } from 'react';
 import { IToast, Toast } from '../misc/Toast';
-import { Docket, DocketHref, GlobalStateContext } from '../Global';
+import { GlobalStateContext } from '../Global';
+import { Docket } from '../../lib/lib';
 
 export function ConfigUploadFrontend({ deskName }: { deskName: string }) {
 
