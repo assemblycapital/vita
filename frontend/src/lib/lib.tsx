@@ -119,8 +119,8 @@ export function hexColorFromPatUxString(uxString: string) {
 }
 
 export function processBulkMetrics(bulkMetrics: BulkMetrics): [ChartBulkMetrics, ChartBulkMetrics] {
-  const activityMetrics: ChartBulkMetrics = [];
-  const downloadMetrics: ChartBulkMetrics = [];
+  let activityMetrics: ChartBulkMetrics = [];
+  let downloadMetrics: ChartBulkMetrics = [];
 
   // Create a set of all desks
   const allDesks = new Set<string>();
@@ -151,6 +151,9 @@ export function processBulkMetrics(bulkMetrics: BulkMetrics): [ChartBulkMetrics,
       metric[bulkMetric.desk] = historyMoment.size;
     });
   });
+
+  activityMetrics.sort((a, b) => a.time - b.time);
+  downloadMetrics.sort((a, b) => a.time - b.time);
 
   return [activityMetrics, downloadMetrics];
 }

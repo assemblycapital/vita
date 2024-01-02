@@ -179,7 +179,8 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
     });
 
 
-    const sortedPrunedDataSet = Array.from(maxPerDay.values()).sort((a, b) => a.time - b.time);
+    let sortedPrunedDataSet = Array.from(maxPerDay.values())
+    sortedPrunedDataSet.sort((a, b) => a.time - b.time);
     // Convert the map values to an array
     return sortedPrunedDataSet;
   }
