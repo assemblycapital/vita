@@ -1,8 +1,7 @@
-import Papa from 'papaparse';
 import React from 'react';
 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, } from 'recharts';
-import { ChartBulkMetrics } from '../Global';
+import { ChartBulkMetrics } from '../../lib/lib';
 
 const timeFormatter = (tick: any) => {
   if (!tick) return ''
@@ -30,7 +29,7 @@ export function MetricsLineChart(data: ChartBulkMetrics) {
     const saturation = 80;
 
     // Set a lower lightness value (between 20% and 40% in this example)
-    const lightness = 20 + Math.floor(Math.random() * 20);
+    const lightness = 30 + Math.floor(Math.random() * 20);
 
     // Construct the HSL color string
     const strokeColor = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
