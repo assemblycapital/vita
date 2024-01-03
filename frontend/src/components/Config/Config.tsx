@@ -54,7 +54,6 @@ export function Config() {
     return (
       <div>
         {header}
-        {/* <Link to="/"> home</Link> */}
         <div
           style={{
             display: 'flex',
@@ -94,11 +93,27 @@ export function Config() {
 
   return (
     <div>
-      {header}
+      <Link to="/"> home</Link>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '1rem',
+        }}
+      >
+        <h1
+          style={{
+            display: 'inline-block',
+            margin: '0 1rem 0 0',
+          }}
+        >
+          vita / %{subdirectory}
+        </h1>
+        <AppTile deskName={deskName} />
+      </div>
       <hr />
       <div>
         <h3>edit app tile</h3>
-        {/* <AppTile deskName={deskName} /> */}
         <ConfigDocketForm deskName={deskName} />
       </div>
       <hr />

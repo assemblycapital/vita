@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { IToast, Toast } from '../misc/Toast';
 import { GlobalStateContext } from '../Global';
 import { Docket } from '../../lib/lib';
+import { LoadingSpinner } from '../misc/LoadingSpinner';
 
 export function ConfigUploadFrontend({ deskName }: { deskName: string }) {
 
@@ -15,6 +16,7 @@ export function ConfigUploadFrontend({ deskName }: { deskName: string }) {
     setToast({ text: '', time: 0 });
     setToast({ text: text, time: 3000 });
   }
+
 
   function uploadFiles() {
 
@@ -122,6 +124,7 @@ export function ConfigUploadFrontend({ deskName }: { deskName: string }) {
             margin: '0 0.5rem',
           }}
         >
+          {isUploading && <LoadingSpinner />}
           <Toast {...toast} />
         </div>
 

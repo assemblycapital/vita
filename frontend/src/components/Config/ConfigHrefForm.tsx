@@ -135,8 +135,11 @@ export function ConfigHrefForm({ deskName }: { deskName: string }) {
       </div>
 
       {!isMinimized && (
-
-        <div>
+        <div
+          style={{
+            margin: '1rem 0',
+          }}
+        >
           <form>
             <div
               style={{
