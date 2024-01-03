@@ -99,6 +99,7 @@ export function Config() {
           display: 'flex',
           alignItems: 'center',
           gap: '1rem',
+          margin: '1rem 0'
         }}
       >
         <h1
@@ -112,6 +113,7 @@ export function Config() {
         <AppTile deskName={deskName} />
       </div>
       <hr />
+
       <div>
         <h3>edit app tile</h3>
         <ConfigDocketForm deskName={deskName} />
@@ -119,11 +121,11 @@ export function Config() {
       <hr />
 
       <ConfigUploadFrontend deskName={deskName} />
-
       <hr />
 
       <ConfigHrefForm deskName={deskName} />
       <hr />
+
       <form>
         <button
           style={{
@@ -156,7 +158,7 @@ export function Config() {
         <div
           style={{
             fontSize: '0.8rem',
-            margin:'1rem 0',
+            margin: '1rem 0',
           }}
         >
           {downloaders.length === 0 ? (
@@ -166,13 +168,13 @@ export function Config() {
                 'no one yet... invite a friend!' 
                 ):(
                   <div
-                  style={{
-                    display: 'flex',
-                    gap:'1rem',
-                  }}
+                    style={{
+                      display: 'flex',
+                      gap: '1rem',
+                    }}
                   >
-                  <LoadingSpinner />
-                  loading...
+                    <LoadingSpinner />
+                    loading...
                   </div>
               )}
             </div>
@@ -193,10 +195,8 @@ export function Config() {
 
 
         </div>
-          <Link to="/metrics"> /metrics </Link>
+        <Link to="/metrics"> /metrics </Link>
       </div>
-
-
       <Footer />
     </div>
   )

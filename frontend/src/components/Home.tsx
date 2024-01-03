@@ -50,7 +50,13 @@ export function Home() {
 
   return (
     <div className="vita-body">
-      <h1>vita</h1>
+      <h1
+        style={{
+          marginBottom:'2rem'
+        }}
+      >
+        vita
+        </h1>
       <div
         style={{
           display: 'flex',
@@ -64,18 +70,24 @@ export function Home() {
             <input type="text" id="new-desk-name"
               placeholder="unique-desk-name"
               autoComplete='off'
-
+              style={{
+                marginBottom:0
+              }}
             />
-            <button onClick={() => {
-              const deskName = (document.getElementById('new-desk-name') as HTMLInputElement).value;
+            <button
+              style={{
+                marginBottom:0
+              }}
+              onClick={() => {
+                const deskName = (document.getElementById('new-desk-name') as HTMLInputElement).value;
 
-              let element = document.getElementById('new-desk-name') as HTMLInputElement;
-              if (element) {
-                element.value = '';
-              }
+                let element = document.getElementById('new-desk-name') as HTMLInputElement;
+                if (element) {
+                  element.value = '';
+                }
 
-              newDesk(deskName)
-            }}
+                newDesk(deskName)
+              }}
             >
               create app
             </button>
@@ -87,11 +99,11 @@ export function Home() {
         <div>
           {desks === null ? (
             <div
-            style={{
-              display: 'flex',
-              gap: '1rem',
-              justifyContent: 'center',
-            }}
+              style={{
+                display: 'flex',
+                gap: '1rem',
+                justifyContent: 'center',
+              }}
             >
               <LoadingSpinner />
               loading apps...
@@ -117,10 +129,21 @@ export function Home() {
                   const mets = metrics[desk]
                   return (
                     <tr key={desk} >
-                      <td>
-                        <Link to={`/config/${desk}`} >
-                          {'%'}{desk}
-                        </Link>
+                      <td
+                        style={{
+                          display: 'flex',
+                          gap: '1rem',
+                        }}
+                      >
+                          <Link to={`/config/${desk}`}
+                            style={{
+                              textDecoration: 'none',
+                              borderBottom: '1px solid blue',
+                              paddingBottom: '1px'
+                            }}
+                          >
+                          {desk}
+                          </Link>
                       </td>
                       <td>
                         {mets ? mets.downloads : '-'}

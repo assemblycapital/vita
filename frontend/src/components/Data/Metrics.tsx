@@ -24,8 +24,8 @@ export function Metrics() {
   }
   let [activityMetrics, downloadMetrics] = processBulkMetrics(bulkMetrics);
 
-  let activityChart = (MetricsLineChart(activityMetrics));
-  let downloadsChart = (MetricsLineChart(downloadMetrics));
+  let activityChart = MetricsLineChart(activityMetrics);
+  let downloadsChart = MetricsLineChart(downloadMetrics);
 
   return (
     <div>
@@ -41,7 +41,13 @@ export function Metrics() {
         <h3>activity</h3>
         {activityChart}
       </div>
+        <p>
+          Activity collection requires backend integration with your app.
+          For more info, check out the <a href="https://github.com/assemblycapital/vita">github repo</a> and/or contact ~bacwyl-samweg.
+        </p>
       <hr />
+      <div>
+      </div>
       <Footer />
     </div>
   );

@@ -15,7 +15,11 @@ const timeFormatter = (tick: any) => {
 export function MetricsLineChart(data: ChartBulkMetrics) {
 
   if (data.length === 0) {
-    return <div>no data</div>
+    return (
+      <div>
+      no data...
+      </div>
+    )
   }
 
   const keys = data.length > 0 ? Object.keys(data[0]).filter(key => key !== 'time') : [];

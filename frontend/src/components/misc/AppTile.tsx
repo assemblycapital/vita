@@ -5,6 +5,7 @@ export function AppTile({ deskName }: { deskName: string }) {
   const { charges } = useContext(GlobalStateContext);
 
   const docket = charges[deskName];
+  if(!docket) return (<div />)
 
   const size = '50px'
   const imageSize = '40px'

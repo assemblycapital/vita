@@ -5,6 +5,8 @@ div.vita-body {
 }
 table {
   margin:auto;
+  border-collapse: separate;
+  border-spacing: 0 10px;
 }
 table th {
   padding:0 0.5rem;
@@ -12,5 +14,5 @@ table th {
 }
 table td {
   padding:0.2rem 0.5rem;
-  text-align:left
+  text-align:left;
 }
