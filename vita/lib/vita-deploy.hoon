@@ -86,9 +86,9 @@
 :: ::
 ++  default-glob-reference
   ^-  glob-reference:docket-sur
-  :-  0v155e4.7i5n2.raqos.pfu60.8vgsg
+  :-  0vsckvo.mrm5r.fl3kl.gtfdo.05mcb
   :-  %http
-  'https://bwyl.nyc3.digitaloceanspaces.com/vita/example-app-globs/example-0-0v155e4.7i5n2.raqos.pfu60.8vgsg.glob'
+  'https://bwyl.nyc3.digitaloceanspaces.com/vita/example-app-globs/example-1-0vsckvo.mrm5r.fl3kl.gtfdo.05mcb.glob'
 ::
 ++  default-docket
   |=  desk-name=@tas
