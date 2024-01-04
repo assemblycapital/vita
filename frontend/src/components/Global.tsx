@@ -61,6 +61,7 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
     }
 
     init().then(() => {
+      scryDeployDesks();
       loadMetrics();
       loadCharges();
       loadBulkMetrics();
@@ -69,7 +70,7 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
 
 
   function handleDesksUpdate(data: any) {
-    // console.log('got update', data)
+    console.log('got update', data)
     const desks = 'desks'
     if (data[desks] !== undefined) {
       const newDesks: Array<string> = data[desks]
@@ -80,6 +81,15 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
   }
 
 
+  async function scryDeployDesks() {
+    api.scry<any>({
+      app: 'vita-deploy',
+      path: '/desks',
+    }).then((result) => {
+      const newDesks: Array<string> = result['desks']
+      setDesks(newDesks);
+    });
+  }
   async function loadMetrics() {
 
     api.poke({

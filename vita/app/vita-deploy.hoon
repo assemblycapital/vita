@@ -29,7 +29,6 @@
 ::
 ++  on-fail   on-fail:def
 ++  on-leave  on-leave:def
-++  on-peek   on-peek:def
 ++  on-arvo   on-arvo:def
 ++  on-save
   ^-  vase
@@ -52,6 +51,15 @@
       [%frontend ~]
     :_  this
     ~[give-desks:hc]
+  ==
+::
+++  on-peek
+  |=  =path
+  ^-  (unit (unit cage))
+  ?+    path  (on-peek:def path)
+    :: http://.../~/scry/vita-deploy/desks.json
+    [%x %desks ~]
+      ``vita-deploy-update+!>([%desks desks])
   ==
 ::
 ++  on-poke
