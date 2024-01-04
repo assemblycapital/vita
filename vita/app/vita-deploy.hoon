@@ -36,7 +36,8 @@
 ::
 ++  on-init
   ^-  (quip card _this)
-  `this
+  :_  this
+  ~[poke-get-desks:hc]
 ++  on-load
   |=  old-state=vase
   ^-  (quip card _this)
