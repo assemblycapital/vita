@@ -27,7 +27,10 @@ export function ConfigUploadFrontend({ deskName }: { deskName: string }) {
       console.log('null files')
       return;
     }
-    setHrefAmes();
+    
+    // this appears to be counterproductive, causing subscribers to fail to load due to 0v0 expected hash.
+    // TODO: investigate further. but for now, it looks like it works without this.
+    // setHrefAmes();
 
     var formData = new FormData();
     // desk field required in docket agent
@@ -83,7 +86,6 @@ export function ConfigUploadFrontend({ deskName }: { deskName: string }) {
       href: { glob: { base: docket.href.glob.base, "glob-reference": { hash: '0v0', location: { ames: '~' + window.ship } } } }
     }
 
-    // return newDocket
 
     contextPoke({
       app: 'vita-deploy',
