@@ -163,7 +163,8 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
 
     dataSet.forEach(entry => {
       // Convert the timestamp to a Date object
-      const date = new Date(entry.time * 1000); // Assuming the timestamp is in seconds
+      const date = new Date(entry['time'] * 1000); // Assuming the timestamp is in seconds
+
       // Normalize to midnight
       date.setHours(0, 0, 0, 0);
 
@@ -178,9 +179,9 @@ export const GlobalStateProvider = ({ children }: { children: React.ReactNode })
       }
     });
 
-
     let sortedPrunedDataSet = Array.from(maxPerDay.values())
     sortedPrunedDataSet.sort((a, b) => a.time - b.time);
+
     // Convert the map values to an array
     return sortedPrunedDataSet;
   }

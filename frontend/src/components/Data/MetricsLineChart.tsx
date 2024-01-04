@@ -22,7 +22,7 @@ export function MetricsLineChart(data: ChartBulkMetrics) {
     )
   }
 
-  const keys = data.length > 0 ? Object.keys(data[0]).filter(key => key !== 'time') : [];
+  const keys = data.length > 0 ? Object.keys(data[0]).filter(key => key !== 'Time') : [];
 
   // Dynamically generate Line components
   const lines = keys.map((key, index) => {
@@ -80,7 +80,7 @@ export function MetricsLineChart(data: ChartBulkMetrics) {
         }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="time"
+        <XAxis dataKey="Time"
           tickFormatter={timeFormatter}
           allowDecimals={false}
         />

@@ -79,9 +79,8 @@ export type ChartBulkMetrics = Array<ChartBulkMetric>;
 export type ChartBulkMetric = {
   [desk: string]: number;
   // edge case, deskname could be `time`.
-  // should probably use uppercase `Time` for safety
-  // TODO
-  time: number;
+  // using uppercase `Time` for safety
+  Time: number;
 };
 
 export type BulkMetrics = Array<BulkMetric>;
@@ -130,9 +129,9 @@ export function processBulkMetrics(bulkMetrics: BulkMetrics): [ChartBulkMetrics,
 
   bulkMetrics.forEach(bulkMetric => {
     bulkMetric.metrics.activity.history.forEach(historyMoment => {
-      let metric = activityMetrics.find(m => m.time === historyMoment.time);
+      let metric = activityMetrics.find(m => m.Time === historyMoment.time);
       if (!metric) {
-        metric = { time: historyMoment.time };
+        metric = { Time: historyMoment.time };
         // @ts-ignore
         allDesks.forEach(desk => metric[desk] = 0); // Initialize all desks with zero
         activityMetrics.push(metric);
@@ -141,9 +140,9 @@ export function processBulkMetrics(bulkMetrics: BulkMetrics): [ChartBulkMetrics,
     });
 
     bulkMetric.metrics.downloads.history.forEach(historyMoment => {
-      let metric = downloadMetrics.find(m => m.time === historyMoment.time);
+      let metric = downloadMetrics.find(m => m.Time === historyMoment.time);
       if (!metric) {
-        metric = { time: historyMoment.time };
+        metric = { Time: historyMoment.time };
         // @ts-ignore
         allDesks.forEach(desk => metric[desk] = 0); // Initialize all desks with zero
         downloadMetrics.push(metric);
@@ -152,8 +151,8 @@ export function processBulkMetrics(bulkMetrics: BulkMetrics): [ChartBulkMetrics,
     });
   });
 
-  activityMetrics.sort((a, b) => a.time - b.time);
-  downloadMetrics.sort((a, b) => a.time - b.time);
+  activityMetrics.sort((a, b) => a.Time - b.Time);
+  downloadMetrics.sort((a, b) => a.Time - b.Time);
 
   return [activityMetrics, downloadMetrics];
 }

@@ -27,6 +27,18 @@ export function Metrics() {
   let activityChart = MetricsLineChart(activityMetrics);
   let downloadsChart = MetricsLineChart(downloadMetrics);
 
+  const handleDownload = () => {
+    const json = JSON.stringify(bulkMetrics, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'bulk-metrics.json';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div>
       <Link to="/"> home</Link>
@@ -47,6 +59,7 @@ export function Metrics() {
         </p>
       <hr />
       <div>
+        <button onClick={handleDownload}>download all metrics</button>
       </div>
       <Footer />
     </div>
