@@ -10,9 +10,9 @@ table {
 }
 table th {
   padding:0 0.5rem;
-  text-align:left
+  text-align:left;
 }
 table td {
   padding:0.2rem 0.5rem;
-  text-align:left;
+  text-align:center;
 }
