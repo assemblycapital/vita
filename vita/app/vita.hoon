@@ -87,7 +87,6 @@
     :~
       get-all-card:hc
       [%pass /eyre/connect %arvo %e %disconnect [~ /apps/[dap.bowl]]]
-      [%pass /eyre/connect %arvo %e %connect [~ /[dap.bowl]] dap.bowl]
     ==
   ==
 ::

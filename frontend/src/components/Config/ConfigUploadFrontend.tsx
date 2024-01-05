@@ -10,7 +10,7 @@ export function ConfigUploadFrontend({ deskName }: { deskName: string }) {
   const [isUploading, setIsUploading] = useState(false);
   const [toast, setToast] = useState<IToast>({ text: '', time: 0 });
 
-  const { charges, contextPoke } = useContext(GlobalStateContext);
+  const { charges, contextPoke, loadCharges } = useContext(GlobalStateContext);
 
   function showToast(text: string) {
     setToast({ text: '', time: 0 });
@@ -30,7 +30,7 @@ export function ConfigUploadFrontend({ deskName }: { deskName: string }) {
     
     // this appears to be counterproductive, causing subscribers to fail to load due to 0v0 expected hash.
     // TODO: investigate further. but for now, it looks like it works without this.
-    // setHrefAmes();
+    setHrefAmes();
 
     var formData = new FormData();
     // desk field required in docket agent
@@ -53,6 +53,7 @@ export function ConfigUploadFrontend({ deskName }: { deskName: string }) {
           if (data.status === 200) {
             showToast('success');
             fileInput.value = '';
+            loadCharges();
 
           } else {
             showToast('error!');

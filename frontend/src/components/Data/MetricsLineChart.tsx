@@ -78,11 +78,7 @@ export function MetricsLineChart(data: ChartBulkMetrics) {
           left: 20,
           bottom: 5,
         }}
-      
-      //  innerRadius={0} 
-      //  outerRadius={0} 
       >
-        {/* <CartesianGrid strokeDasharray="3 3" /> */}
         <CartesianGrid />
         <XAxis dataKey="Time"
           tickFormatter={timeFormatter}
