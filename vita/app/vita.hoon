@@ -33,7 +33,7 @@
   ==
 +$  card     card:agent:gall
 --
-%+  verb  &
+%+  verb  |
 %-  agent:dbug
 =|  state-1
 =*  state  -
