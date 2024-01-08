@@ -104,12 +104,18 @@ export function ConfigUploadFrontend({ deskName }: { deskName: string }) {
   return (
     <div>
       <h3>upload frontend</h3>
-      <form>
+      <form
+        style={{
+          margin: '1rem 0',
+          display: 'flex',
+        }}
+      >
         <input type="file" id="app-files"
           // @ts-ignore
           directory="true"
           webkitdirectory="true"
           mozdirectory="true"
+          style={{margin:'0'}}
         />
         <button
           onClick={(e) => {
@@ -117,15 +123,15 @@ export function ConfigUploadFrontend({ deskName }: { deskName: string }) {
             e.preventDefault();
             uploadFiles();
           }}
-
+          style={{margin:'0'}}
         >
           upload
         </button>
 
         <div
-          style={{
-            margin: '0 0.5rem',
-          }}
+        style={{
+          margin: '0 1rem',
+        }}
         >
           {isUploading && <LoadingSpinner />}
           <Toast {...toast} />
