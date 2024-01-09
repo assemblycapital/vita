@@ -1,0 +1,26 @@
+
+form {
+  display: block;
+  /* flex-direction: column;
+  align-items: flex-start; */
+}
+
+input, button {
+  margin-bottom: 10px;
+}
+
+form div {
+  display:inline-block;
+  /* flex-direction: column; */
+
+}
+form div div {
+
+  display:flex;
+  flex-direction: column;
+}
+
+div.labeled-text {
+  display: flex;
+  flex-direction: column;
+}

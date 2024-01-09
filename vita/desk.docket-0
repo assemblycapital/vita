@@ -2,8 +2,9 @@
     info+'monitor your app distributions'
     color+0xff.ffff
     image+'https://bwyl.nyc3.digitaloceanspaces.com/vita%2Fvita.png'
-    version+[0 1 0]
-    site+/apps/vita
+    version+[2 0 0]
+    base+'vita'
+    glob-http+['https://bwyl.nyc3.digitaloceanspaces.com/vita/globs/vita-2.0.0-0v5.4s4bj.kbolk.08fbo.8simo.4gopt.glob' 0v5.4s4bj.kbolk.08fbo.8simo.4gopt]
     website+'https://github.com/assemblycapital/vita'
     license+'MIT'
 ==
