@@ -30,7 +30,7 @@ export function ConfigUploadFrontend({ deskName }: { deskName: string }) {
     
     // this appears to be counterproductive, causing subscribers to fail to load due to 0v0 expected hash.
     // TODO: investigate further. but for now, it looks like it works without this.
-    // setHrefAmes();
+    setHrefAmes();
 
     var formData = new FormData();
     // desk field required in docket agent

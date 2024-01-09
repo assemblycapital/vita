@@ -6,6 +6,7 @@ import { Footer } from '../Footer';
 
 import { MetricsLineChart } from './MetricsLineChart';
 import { processBulkMetrics } from '../../lib/lib';
+import { LoadingSpinner } from '../misc/LoadingSpinner';
 
 export function Metrics() {
 
@@ -18,7 +19,7 @@ export function Metrics() {
         <Link to="/"> home</Link>
         <h1>vita / metrics</h1>
         <hr />
-        <div>metrics unavailable...</div>
+        <LoadingSpinner />
       </div>
     )
   }

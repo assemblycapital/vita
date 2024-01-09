@@ -18,6 +18,7 @@ export function AppTile({ deskName }: { deskName: string }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        borderRadius: '2px',
       }}
     >
       {docket.image && 
