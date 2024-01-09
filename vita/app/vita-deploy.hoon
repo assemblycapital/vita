@@ -76,6 +76,8 @@
         %create-app
       :: =/  has  (has-desk:b desk-name.act)
       :: TODO use has?
+      ::   we could use has to prevent overwriting an existing desk,
+      ::   but that would prevent from recreating a desk that was "deleted" from the frontend
       =/  tid  `@ta`(cat 3 'thread_' (scot %uv (sham eny.bowl)))
       =/  ta-now  `@ta`(scot %da now.bowl)
       =/  start-args  [~ `tid byk.bowl(r da+now.bowl) %vita-deploy !>(desk-name.act)]

@@ -320,7 +320,7 @@
       today
     :-  ~(wyt in scry-result)
     ?.  collect-full-moments  ~
-    `latest.activity.met
+    `latest.downloads.met
   met
 ::
 ++  put-activity
