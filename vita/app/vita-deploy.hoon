@@ -2,7 +2,7 @@
 /-  sur=vita-deploy
 /-  tt=treaty
 /+  lib=vita-deploy, docket-lib=docket
-/+  default-agent, verb, dbug, agentio, strandio
+/+  default-agent, verb, dbug, agentio
 :: :: ::
 |%
 +$  versioned-state
