@@ -47,7 +47,7 @@ vita: our %radio has 326 subs
 
 to unregister a desk: `:vita|d %kids`. WARNING: all data collected on an unregistered desk will be lost.
 
-once every 24 hours, `:vita` grabs downloads metrics on each registered desk using `.^((set ship) %cs /=mydesk=/subs)`. every time this scry is performed, `:vita` logs the size of the set with a timestamp. `:vita` keeps one copy of the latest full set of downloaders, and a cumulative set of all unique downloaders.
+once every 24 hours, `:vita` grabs downloads metrics on each registered desk using `.^((set [@p rave:clay]) %cx /=//=/cult/mydesk)` (filtered by ships watching the latest desk version). every time this scry is performed, `:vita` logs the size of the set with a timestamp. `:vita` keeps one copy of the latest full set of downloaders, and a cumulative set of all unique downloaders.
 
 when users unsync from your local desk, `latest.downloads` wont go down until your next `|commit` to the desk.
 `cumulative.downloads` only goes up.
@@ -113,13 +113,24 @@ the vita frontend displays the data collected by `:vita` plus some forms for app
 
 ## install from source
 
-1. create a blank `%vita` desk.
-2. copy in basic app dependencies.
+1. ```bash
+   rm -rI vita-full/
+   find vita -type f | while read f; do { d=$(dirname "$f" | sed "s/^vita/vita-full/"); mkdir -p "$d"; ln -sr -t "$d" "$f"; }; done
+   git clone -b 411k --depth 1 https://github.com/urbit/urbit.git urb
+   cp urb/pkg/arvo/lib/{agentio*,verb*,strand*} vita-full/lib/
+   cp urb/pkg/arvo/sur/{spider*,verb*} vita-full/sur/
+   git clone -b sl/server-schooner-z412k --depth 1 https://github.com/sidnym-ladrut/yard.git yar
+   cp yar/desk/lib/{dbug*,default-agent*,skeleton*,rudder*,server*,docket*,mip*} vita-full/lib/
+   cp yar/desk/mar/{bill*,docket*,hoon*,kelvin*,mime*,noun*,ship*,json*} vita-full/mar/
+   cp yar/desk/sur/docket* vita-full/sur/
+   git clone -b v1.25.0 --depth 1 https://github.com/tloncorp/landscape.git lan
+   cp lan/desk/sur/treaty* vita-full/sur/
+   ```
+2. `|new-desk %vita`
 3. `|mount %vita`
-4. cd `<this_repo>/vita`
-5. `./install.sh -w <my_pier>/vita`
-6. `|commit %vita`
-7. `|install our %vita`
+4. `rm -rf <my_pier>/vita/*; cp -rf <this-repo>/vita-full <my_pier>/vita`
+5. `|commit %vita`
+6. `|install our %vita`
 
 ## urbit.org grant
 
