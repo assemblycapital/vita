@@ -292,13 +292,12 @@
   ^-  (set ship)
   =-  ((slog leaf+"vita: our {<desk>} has {<(lent ~(tap in -))>} subs" ~) -)
   =+  [our=(scot %p our.bowl) now=(scot %da now.bowl)]
-  =+  car=ud:.^(cass:clay %cw /[our]/[desk]/[now])
   %-  sy
   %-  turn  :_  head
   %+  skim  ~(tap in .^((set [@p rave:clay]) %cx /[our]//[now]/cult/[desk]))
   |=  [@p rav=rave:clay]
   ?&  ?=([%sing %w [%ud @] ~] rav)
-      .=(+(car) +>->.rav))
+      .=(+>->.rav +(ud:.^(cass:clay %cw /[our]/[desk]/[now])))
   ==
 ::
 ++  scry-treaty-alliance
