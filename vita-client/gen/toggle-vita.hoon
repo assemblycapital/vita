@@ -1,10 +1,10 @@
 ::  Tell app whether to share usage data with :vita
 ::
-:: :myagent +mydesk!share-usage
+:: :myagent +mydesk!toggle-vita
 ::   enables sharing
-:: :myagent +mydesk!share-usage &
+:: :myagent +mydesk!toggle-vita &
 ::   enables sharing
-:: :myagent +mydesk!share-usage |
+:: :myagent +mydesk!toggle-vita |
 ::   disables sharing
 ::
 :-  %say

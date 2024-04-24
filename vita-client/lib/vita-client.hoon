@@ -6,7 +6,7 @@
 ::   from somewhere that indicates real user activity
 ::
 :: on %log-activity, we check if we already poked :~parent/vita today.
-:: if so, ignore. if not, poke :~parent/vita with 
+:: if so, ignore. if not, poke :~parent/vita with
 ::
 :: on init, vita-client can be set to be enabled / disabled by default.
 :: on init, vita-client is configured with its parent @p
@@ -132,7 +132,13 @@
     ++  on-peek
       |=  =path
       ^-  (unit (unit cage))
-      (on-peek:ag path)
+      ?.  ?=([@ %vita *] path)
+        (on-peek:ag path)
+      ?+  path  [~ ~]
+        [%u %vita ~]                 ``noun+!>(&)
+        [%x %vita %last ~]           ``noun+!>(last)
+        [%x %vita %enabled ~]        ``noun+!>(enabled.config)
+      ==
     ::
     ++  on-agent
       |=  [=wire =sign:agent:gall]

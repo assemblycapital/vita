@@ -297,8 +297,9 @@
   %-  turn  :_  head
   %+  skim  ~(tap in .^((set [@p rave:clay]) %cx /[our]//[now]/cult/[desk]))
   |=  [@p rav=rave:clay]
-  ?.  ?=([%sing %w [%ud @] ~] rav)  %|
-  =(+(car) +>->.rav)
+  ?&  ?=([%sing %w [%ud @] ~] rav)
+      .=(+(car) +>->.rav))
+  ==
 ::
 ++  scry-treaty-alliance
   .^(update:alliance:tt %gx /[(scot %p our.bowl)]/treaty/[(scot %da now.bowl)]/alliance/noun)
