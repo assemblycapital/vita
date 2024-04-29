@@ -102,10 +102,10 @@
           `this(config cfg.pok)
             %log-activity
           ?.  enabled.config
-            :: %-  (slog leaf+"{<dap.bowl>} vita-client: not sending activity, disabled." ~)
+            ::  %-  (slog leaf+"{<dap.bowl>} vita-client: not sending activity, disabled." ~)
             `this
           ?.  (gth now.bowl (add last ~h8)) ::TODO ~d1 constant?
-            %-  (slog leaf+"{<dap.bowl>} vita-client: not sending activity. already sent." ~)
+            ::  %-  (slog leaf+"{<dap.bowl>} vita-client: not sending activity. already sent." ~)
             `this
           =.  last  now.bowl
           :_  this
