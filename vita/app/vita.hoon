@@ -9,7 +9,7 @@
 ::  accept foreign pokes attesting to activity on a desk
 ::  count unique active users each day
 ::  export to csv
-::  
+::
 /-  sur=vita, tt=treaty
 /+  vita
 /+  default-agent, verb, dbug, agentio
@@ -250,7 +250,7 @@
     |=  [time=@da =duct]
     ^-  ?
     ?.  ?=(^ duct)
-      %.n 
+      %.n
     ?=([%gall %use %vita *] i.duct)
   %+  turn  timers
     |=  [time=@da =duct]
@@ -290,10 +290,15 @@
 ++  scry-clay-subs
   |=  [desk=@tas]
   ^-  (set ship)
-  =;  s=(set ship)
-    %-  (slog leaf+"vita: our {<desk>} has {<(lent ~(tap in s))>} subs" ~)
-    s
-  .^((set ship) %cs /[(scot %p our.bowl)]/[desk]/[(scot %da now.bowl)]/subs)
+  =-  ((slog leaf+"vita: our {<desk>} has {<(lent ~(tap in -))>} subs" ~) -)
+  =+  [our=(scot %p our.bowl) now=(scot %da now.bowl)]
+  %-  sy
+  %-  turn  :_  head
+  %+  skim  ~(tap in .^((set [@p rave:clay]) %cx /[our]//[now]/cult/[desk]))
+  |=  [@p rav=rave:clay]
+  ?&  ?=([%sing %w [%ud @] ~] rav)
+      .=(+>->.rav +(ud:.^(cass:clay %cw /[our]/[desk]/[now])))
+  ==
 ::
 ++  scry-treaty-alliance
   .^(update:alliance:tt %gx /[(scot %p our.bowl)]/treaty/[(scot %da now.bowl)]/alliance/noun)
@@ -400,4 +405,4 @@
       new-met
     new
   ==
--- 
+--

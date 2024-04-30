@@ -6,7 +6,7 @@
 ::   from somewhere that indicates real user activity
 ::
 :: on %log-activity, we check if we already poked :~parent/vita today.
-:: if so, ignore. if not, poke :~parent/vita with 
+:: if so, ignore. if not, poke :~parent/vita with
 ::
 :: on init, vita-client can be set to be enabled / disabled by default.
 :: on init, vita-client is configured with its parent @p
@@ -102,10 +102,10 @@
           `this(config cfg.pok)
             %log-activity
           ?.  enabled.config
-            :: %-  (slog leaf+"{<dap.bowl>} vita-client: not sending activity, disabled." ~)
+            ::  %-  (slog leaf+"{<dap.bowl>} vita-client: not sending activity, disabled." ~)
             `this
           ?.  (gth now.bowl (add last ~h8)) ::TODO ~d1 constant?
-            %-  (slog leaf+"{<dap.bowl>} vita-client: not sending activity. already sent." ~)
+            ::  %-  (slog leaf+"{<dap.bowl>} vita-client: not sending activity. already sent." ~)
             `this
           =.  last  now.bowl
           :_  this
